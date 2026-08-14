@@ -65,11 +65,16 @@ public abstract class Vehiculo {
             kilometraje = nuevoKilometraje;
         } else {
             throw new IllegalArgumentException(
-                    "El nuevo kilometraje debe ser mayor que el kilometraje registrado anteriormente"
+                    "El nuevo kilometraje debe ser mayor al registrado"
             );
         }
     }
 
+    //Metodo para implementar polimorfismo
+    public abstract double costoInspeccion();
+
+
+    // Metodo para ver los datos en consola, aunque tambien es polimorfismo
     public String toString() {
         return "Vehículo {" +
                 "id=" + idVehiculo +

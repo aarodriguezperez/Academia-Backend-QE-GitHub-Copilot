@@ -11,6 +11,20 @@ public class Automovil extends Vehiculo{
         this.tipoTransmision = tipoTransmision;
     }
 
+    public String getTipoTransmision() {
+        return tipoTransmision;
+    }
+
+    //Polimorfismo
+    @Override
+    public double costoInspeccion() {
+        if(getKilometraje()>30000){
+            return 2000;
+        } else {
+            return 1000;
+        }
+    }
+
     @Override
     public String toString() {
         return super.toString() +

@@ -10,4 +10,23 @@ public class Motocicleta extends Vehiculo{
         super(idVehiculo, placa, marca, modelo, anio, kilometraje);
         this.cilindrada = cilindrada;
     }
+
+    public int getCilindrada() {
+        return cilindrada;
+    }
+
+    //Polimorfismo
+    @Override
+    public double costoInspeccion() {
+        if(getCilindrada()>60){
+            return 3000;
+        } else {
+            return 2000;
+        }
+    }
+    @Override
+    public String toString() {
+        return super.toString() +
+                ", cilindrada=" + cilindrada + '}';
+    }
 }
