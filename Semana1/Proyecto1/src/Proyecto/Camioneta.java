@@ -4,6 +4,7 @@ public class Camioneta extends Vehiculo{
 
     private double capacidadCarga;
 
+    // Uso de Constructores
     public Camioneta(int idVehiculo, String placa, String marca, String modelo,
                      int anio, double kilometraje, int capacidadCarga) {
         super(idVehiculo, placa, marca, modelo, anio, kilometraje);

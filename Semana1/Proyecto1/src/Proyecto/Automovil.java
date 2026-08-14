@@ -4,9 +4,16 @@ public class Automovil extends Vehiculo{
 
     private String tipoTransmision;
 
+    // Uso de Constructores
     public Automovil(int idVehiculo, String placa, String marca, String modelo,
                      int anio, double kilometraje, String tipoTransmision) {
         super(idVehiculo, placa, marca, modelo, anio, kilometraje);
         this.tipoTransmision = tipoTransmision;
+    }
+
+    @Override
+    public String toString() {
+        return super.toString() +
+                ", tipoTransmision=" + tipoTransmision + '}';
     }
 }
