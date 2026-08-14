@@ -4,7 +4,7 @@ public class Motocicleta extends Vehiculo{
 
     private int cilindrada;
 
-    // Uso de Constructores
+//    Uso de Constructores
     public Motocicleta(int idVehiculo, String placa, String marca, String modelo,
                        int anio, double kilometraje, int cilindrada) {
         super(idVehiculo, placa, marca, modelo, anio, kilometraje);
@@ -15,7 +15,7 @@ public class Motocicleta extends Vehiculo{
         return cilindrada;
     }
 
-    //Polimorfismo
+//    Polimorfismo
     @Override
     public double costoInspeccion() {
         if(getCilindrada()>60){

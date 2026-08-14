@@ -4,14 +4,14 @@ public class Camioneta extends Vehiculo {
 
     private double capacidadCarga;
 
-    // Uso de Constructores
+//    Uso de Constructores
     public Camioneta(int idVehiculo, String placa, String marca, String modelo,
                      int anio, double kilometraje, double capacidadCarga) {
         super(idVehiculo, placa, marca, modelo, anio, kilometraje);
         this.capacidadCarga = capacidadCarga;
     }
 
-    //Polimorfismo
+//    Polimorfismo
     @Override
     public double costoInspeccion() {
         if(getAnio()>2020){

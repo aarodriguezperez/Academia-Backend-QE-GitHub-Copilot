@@ -4,7 +4,7 @@ public class Automovil extends Vehiculo{
 
     private String tipoTransmision;
 
-    // Uso de Constructores
+//    Uso de Constructores
     public Automovil(int idVehiculo, String placa, String marca, String modelo,
                      int anio, double kilometraje, String tipoTransmision) {
         super(idVehiculo, placa, marca, modelo, anio, kilometraje);
@@ -15,7 +15,7 @@ public class Automovil extends Vehiculo{
         return tipoTransmision;
     }
 
-    //Polimorfismo
+//    Polimorfismo
     @Override
     public double costoInspeccion() {
         if(getKilometraje()>30000){

@@ -1,11 +1,10 @@
 package Proyecto;
 
-// Uso de clase abstracta, 3 clases hijas = diferentes tipos de vehiculos
+// Uso de clase abstracta, con 3 clases hijas = diferentes tipos de vehiculos
 public abstract class Vehiculo {
 
-    // Uso de final, para que el idVehiculo no se pueda modificar
+//    Uso de final, para que el idVehiculo no se pueda modificar
     private final int idVehiculo;
-
     private String placa;
     private String marca;
     private String modelo;
@@ -13,7 +12,7 @@ public abstract class Vehiculo {
     private double kilometraje;
 
 
-    // Uso de Constructores, dar valor inicial a los atributos
+//    Uso de Constructores, dan valor inicial a los atributos
     public Vehiculo(int idVehiculo, String placa, String marca,
                     String modelo, int anio, double kilometraje) {
         this.idVehiculo = idVehiculo;
@@ -24,14 +23,14 @@ public abstract class Vehiculo {
         this.kilometraje = kilometraje;
     }
 
-    // Encapsulamiento getters y setters
+//    Encapsulamiento getters y setters
 
-    // Solo getter porque el id no debe modificarse
+//    Para IdVehiculo solo getter porque el id no debe modificarse
     public int getIdVehiculo() {
         return idVehiculo;
     }
 
-    // Una placa si podria cambiar por eso se le agregan ambos
+//    Para placa si podria cambiar, por eso se agrega el setter y getter
     public String getPlaca() {
         return placa;
     }
@@ -40,7 +39,7 @@ public abstract class Vehiculo {
         this.placa = placa;
     }
 
-    // Marca, modelo, año: son valores que no cambian en un vehiculo
+//    Marca, modelo, año: son valores que no cambian en un vehiculo
     public String getMarca() {
         return marca;
     }
@@ -53,9 +52,8 @@ public abstract class Vehiculo {
         return anio;
     }
 
-   /* Para el kilometraje se hace uso del get, pero no del set ya que se utiliza
-    un metodo para solo permitir actualizar el valor por un número mayor */
-
+//    Para el kilometraje se hace uso del get, pero el set se sustituye por
+//    un metodo que permita unicamente actualizar el valor por un número mayor
     public double getKilometraje() {
         return kilometraje;
     }
@@ -70,11 +68,12 @@ public abstract class Vehiculo {
         }
     }
 
-    //Metodo para implementar polimorfismo
+//    Metodo para implementar polimorfismo, este metodo se utiliza en
+//    las clases hijas y en cada una tiene una implementación disntinta
     public abstract double costoInspeccion();
 
 
-    // Metodo para ver los datos en consola, aunque tambien es polimorfismo
+//    Metodo para ver los datos en consola, tambien es polimorfismo
     public String toString() {
         return "Vehículo {" +
                 "id=" + idVehiculo +
