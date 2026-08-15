@@ -13,7 +13,7 @@ public class Mecanico extends Persona{
 
 //    Ambos atributos pueden cambiar, tanto la especialidad
 //    como la disponibilidad
-    
+
     public String getEspecialidad() {
         return especialidad;
     }

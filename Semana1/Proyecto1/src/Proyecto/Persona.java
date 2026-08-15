@@ -1,8 +1,11 @@
 package Proyecto;
 
+import java.util.*;
+
 //Segundo uso de clase abstracta, 2 clases hijas: Cliente y Mecanico
 public abstract class Persona {
 
+    //    Uso de final, para que el idPersona no se pueda modificar
     private final int idPersona;
     private String nombre;
     private String apellido;
