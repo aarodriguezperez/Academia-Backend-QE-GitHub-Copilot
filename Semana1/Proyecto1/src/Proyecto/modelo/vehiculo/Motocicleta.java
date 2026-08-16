@@ -1,6 +1,6 @@
-package Proyecto;
+package Proyecto.modelo.vehiculo;
 
-public class Motocicleta extends Vehiculo{
+public class Motocicleta extends Vehiculo {
 
     private int cilindrada;
 
@@ -26,7 +26,6 @@ public class Motocicleta extends Vehiculo{
     }
     @Override
     public String toString() {
-        return super.toString() +
-                ", cilindrada=" + cilindrada + '}';
+        return super.toString();
     }
 }

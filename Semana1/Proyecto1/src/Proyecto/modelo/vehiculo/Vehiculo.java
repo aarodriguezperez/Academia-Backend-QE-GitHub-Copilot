@@ -1,4 +1,4 @@
-package Proyecto;
+package Proyecto.modelo.vehiculo;
 
 // Uso de clase abstracta, con 3 clases hijas = diferentes tipos de vehiculos
 public abstract class Vehiculo {
@@ -52,8 +52,9 @@ public abstract class Vehiculo {
         return anio;
     }
 
-//    Para el kilometraje se hace uso del get, pero el set se sustituye por
-//    un metodo que permita unicamente actualizar el valor por un número mayor
+//    Para el kilometraje se hace uso del get, pero el set se sustituye
+//    por un metodo que permita unicamente actualizar el valor por
+//    un número mayor, permitiendonos implementar un Exception
     public double getKilometraje() {
         return kilometraje;
     }
@@ -63,7 +64,7 @@ public abstract class Vehiculo {
             kilometraje = nuevoKilometraje;
         } else {
             throw new IllegalArgumentException(
-                    "El nuevo kilometraje debe ser mayor al registrado"
+                    "El nuevo kilometraje: " + nuevoKilometraje + " debe ser mayor al registrado"
             );
         }
     }
@@ -75,13 +76,7 @@ public abstract class Vehiculo {
 
 //    Metodo para ver los datos en consola, tambien es polimorfismo
     public String toString() {
-        return "Vehículo {" +
-                "id=" + idVehiculo +
-                ", placa='" + placa + '\'' +
-                ", marca='" + marca + '\'' +
-                ", modelo='" + modelo + '\'' +
-                ", anio=" + anio +
-                ", kilometraje=" + kilometraje;
+        return getMarca() + " " + getModelo();
     }
 
 

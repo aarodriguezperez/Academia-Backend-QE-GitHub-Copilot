@@ -1,4 +1,4 @@
-package Proyecto;
+package Proyecto.modelo.vehiculo;
 
 public class Camioneta extends Vehiculo {
 
@@ -27,7 +27,6 @@ public class Camioneta extends Vehiculo {
 
     @Override
     public String toString() {
-        return super.toString() +
-                ", capacidadCarga=" + capacidadCarga + '}';
+        return super.toString();
     }
 }

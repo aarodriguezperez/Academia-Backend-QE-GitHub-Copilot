@@ -1,6 +1,4 @@
-package Proyecto;
-
-import java.util.*;
+package Proyecto.modelo.persona;
 
 //Segundo uso de clase abstracta, 2 clases hijas: Cliente y Mecanico
 public abstract class Persona {
@@ -57,6 +55,16 @@ public abstract class Persona {
 
     public void setCorreo(String correo) {
         this.correo = correo;
+    }
+
+    @Override
+    public String toString() {
+        return "Persona{" +
+                "idPersona=" + idPersona +
+                ", nombre='" + nombre + '\'' +
+                ", apellido='" + apellido + '\'' +
+                ", telefono='" + telefono + '\'' +
+                ", correo='" + correo + '\'' ;
     }
 }
 

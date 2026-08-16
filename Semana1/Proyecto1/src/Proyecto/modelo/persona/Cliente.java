@@ -1,9 +1,11 @@
-package Proyecto;
+package Proyecto.modelo.persona;
+
+import Proyecto.modelo.vehiculo.Vehiculo;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class Cliente extends Persona{
+public class Cliente extends Persona {
 
     public Cliente(int idPersona, String nombre, String apellido, String telefono, String correo) {
         super(idPersona, nombre, apellido, telefono, correo);
@@ -21,5 +23,10 @@ public class Cliente extends Persona{
     //    Metodo para consultar vehiculos
     public List<Vehiculo> getVehiculos() {
         return vehiculos;
+    }
+
+    @Override
+    public String toString() {
+        return getNombre() + " " + getApellido();
     }
 }

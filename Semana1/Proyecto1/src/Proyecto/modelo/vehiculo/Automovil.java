@@ -1,6 +1,6 @@
-package Proyecto;
+package Proyecto.modelo.vehiculo;
 
-public class Automovil extends Vehiculo{
+public class Automovil extends Vehiculo {
 
     private String tipoTransmision;
 
@@ -25,9 +25,4 @@ public class Automovil extends Vehiculo{
         }
     }
 
-    @Override
-    public String toString() {
-        return super.toString() +
-                ", tipoTransmision=" + tipoTransmision + '}';
-    }
 }
