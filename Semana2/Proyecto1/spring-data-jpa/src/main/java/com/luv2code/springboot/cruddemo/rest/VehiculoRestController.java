@@ -23,7 +23,7 @@ public class VehiculoRestController {
         jsonMapper = theJsonMapper;
     }
 
-    // agrega mapeo para GET "/vehiculos" y regresa la lista de vehiculos
+    // expone "/vehiculos" y regresa la lista de vehiculos
     @GetMapping("/vehiculos")
     public List<Vehiculo> findAll() {
         return vehiculoService.findAll();
@@ -69,8 +69,8 @@ public class VehiculoRestController {
         return dbVehiculo;
     }
 
-    // agregar mapeo para PATCH /vehiculos/{vehiculoId} - patch vehiculo ... parcial
-    // actualización
+    // agregar mapeo para PATCH /vehiculos/{vehiculoId} - patch vehiculo ...
+    // actualización parcial
 
     @PatchMapping("/vehiculos/{vehiculoId}")
     public Vehiculo patchVehiculo(@PathVariable int vehiculoId,
@@ -84,6 +84,7 @@ public class VehiculoRestController {
         }
 
         // Paso 2: Prueba de seguridad - Prevenir modificaciones de iD
+        // El ID no debe cambiar NUNCA, por eso se rechazan los intentos por modificarlo
         if (patchPayload.containsKey("id")) {
             throw new RuntimeException(
                     "Vehiculo id no se puede modificar. " +
@@ -107,7 +108,7 @@ public class VehiculoRestController {
 
         Vehiculo tempVehiculo = vehiculoService.findById(vehiculoId);
 
-        // mandar excepción en caso de que sea null el vehiculo
+        // lanza excepción en caso de que sea null el vehiculo
 
         if (tempVehiculo == null) {
             throw new RuntimeException("No encontrado vehiculo id - " + vehiculoId);
