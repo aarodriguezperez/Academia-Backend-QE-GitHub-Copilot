@@ -1,4 +1,4 @@
-# Academia Backend Java - QE - GitHub - Cpopilot
+# Academia Backend Java - QE - GitHub - Copilot
 
 Este repositorio contiene los proyectos y ejercicios realizados durante la Academia, organizados por semana.
 
