@@ -2,7 +2,7 @@
 
 Este repositorio contiene los proyectos y ejercicios realizados durante la Academia, organizados por semana.
 
-El objetivo es aplicar de manera práctica los conceptos vistos durante las sesiones, comenzando con fundamentos de **Programación en Java** durante la primer semana, avanzando hacia el desarrollo de aplicaciones con **Spring Boot** y uso de **Docker** en esta segunda semana.
+El objetivo es aplicar de manera práctica los conceptos vistos durante las sesiones, comenzando con fundamentos de **Programación en Java** durante la primera semana, avanzando hacia el desarrollo de aplicaciones con **Spring Boot** y uso de **Docker** en esta segunda semana.
 
 ---
 
@@ -155,7 +155,7 @@ La API queda disponible en:
 http://localhost:8081
 ```
 
-Se utiliza un puerto diferente al Programa 1 para permitir que ambos proyectos puedan ejecutarse al mismo tiempo.
+Se utiliza un puerto diferente al Proyecto 1 para permitir que ambos proyectos puedan ejecutarse al mismo tiempo.
 
 ### Mongo Express
 
