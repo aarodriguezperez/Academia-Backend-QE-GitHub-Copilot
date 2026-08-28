@@ -1,4 +1,10 @@
-# Proyecto 01 - Semana 01 - Taller Automotriz
+# Taller Automotriz - Fundamentos de Java y POO
+
+Este proyecto simula el funcionamiento básico de un **taller automotriz**, manejando clientes, mecánicos, vehículos, servicios, refacciones y órdenes de trabajo.
+
+El objetivo del proyecto es aplicar de manera práctica diferentes conceptos de **Java y Programación Orientada a Objetos (POO)** dentro de un mismo escenario.
+
+---
 
 ## Conceptos utilizados
 
@@ -216,7 +222,7 @@ La lambda toma cada orden de la lista y ejecuta una acción.
 
 ---
 
-### 14. Final
+### 14. `final`
 
 Se utiliza `final` en los identificadores.
 
@@ -232,7 +238,7 @@ Esto evita que el identificador cambie después de crear el objeto.
 
 ---
 
-### 15. Static
+### 15. `static`
 
 Se utiliza principalmente en el patrón Singleton.
 
@@ -332,7 +338,7 @@ No se agregó en el proyecto porque no había una necesidad real de utilizarlo.
 
 ---
 
-### 21. Override
+### 21. `@Override`
 
 Se utiliza `@Override` cuando una clase cambia la implementación de un método heredado o implementa un método definido por una interfaz.
 
@@ -346,7 +352,7 @@ Se utiliza `@Override` cuando una clase cambia la implementación de un método 
 
 ---
 
-# Resumen
+## Resumen
 
 El proyecto **Taller Automotriz** utiliza Programación Orientada a Objetos para manejar clientes, mecánicos, vehículos, servicios, refacciones y órdenes.
 
@@ -368,6 +374,9 @@ Los conceptos principales utilizados fueron:
 * Constructores
 * Encapsulación
 * Getters y Setters
-* Exceptions
+* Excepciones
 * Modificadores de acceso
 * `@Override`
+---
+[← Volver a Semana 01](../README.md)
+
