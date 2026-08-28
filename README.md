@@ -201,7 +201,7 @@ En este proyecto el `id` es de tipo `String`, ya que MongoDB genera un `ObjectId
 
 ---
 
-## Programa 3 - Inyección de dependencias en Java
+## Proyecto 3 - Inyección de dependencias en Java
 
 El tercer programa demuestra el funcionamiento de la **inyección de dependencias utilizando Java puro**, sin utilizar Spring.
 
