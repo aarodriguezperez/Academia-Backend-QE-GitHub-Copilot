@@ -53,4 +53,4 @@ En este proyecto el `id` es de tipo `int` y MySQL lo genera automáticamente med
 
 ---
 
-[← Volver a Semana 02](./README.md)
+[← Volver a Semana 02](../README.md)
