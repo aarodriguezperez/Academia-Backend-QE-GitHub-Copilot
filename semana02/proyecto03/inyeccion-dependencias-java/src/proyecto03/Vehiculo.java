@@ -1,4 +1,4 @@
-package proyecto3;
+package proyecto03;
 
 public interface Vehiculo {
     public void asignar();

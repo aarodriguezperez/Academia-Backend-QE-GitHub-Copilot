@@ -1,12 +1,12 @@
-package proyecto3;
+package proyecto03;
 
-public class Camioneta implements Vehiculo {
+public class Automovil implements Vehiculo {
     private String marca;
     private String modelo;
     private String color;
     private int anio;
 
-    public Camioneta(String marca, String modelo, String color, int anio) {
+    public Automovil(String marca, String modelo, String color, int anio) {
         this.marca = marca;
         this.modelo = modelo;
         this.color = color;
@@ -15,6 +15,7 @@ public class Camioneta implements Vehiculo {
 
     @Override
     public void asignar() {
-        System.out.println("Vehiculo: " + marca + " " + modelo + ", " + color + ", " + anio);
+        System.out.println("Vehiculo: " + marca + " " + modelo +
+                ", " + color + ", " + anio);
     }
 }

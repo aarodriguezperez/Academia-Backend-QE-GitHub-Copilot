@@ -1,4 +1,4 @@
-package proyecto3;
+package proyecto03;
 
 public class Orden {
     private int idOrden;
