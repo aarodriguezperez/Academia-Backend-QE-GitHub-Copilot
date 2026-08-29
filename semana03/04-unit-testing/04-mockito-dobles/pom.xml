@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<groupId>com.academymty</groupId>
+	<artifactId>mockito-dobles</artifactId>
+	<version>1.0.0</version>
+	<name>mockito-dobles</name>
+	<description>JUnit 04 - Dobles de prueba con Mockito</description>
+
+	<properties>
+		<maven.compiler.release>21</maven.compiler.release>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<junit.version>6.1.3</junit.version>
+		<mockito.version>5.23.0</mockito.version>
+		<surefire.version>3.5.6</surefire.version>
+		<dependency-plugin.version>3.8.1</dependency-plugin.version>
+	</properties>
+
+	<dependencyManagement>
+		<dependencies>
+			<!-- OJO AL ORDEN: el junit-bom va PRIMERO, y por eso gana.              -->
+			<!--                                                                     -->
+			<!-- mockito-junit-jupiter 5.23.0 declara junit-jupiter-api 5.13.4 entre -->
+			<!-- sus dependencias. Si miras el pom de Mockito parece que te va a     -->
+			<!-- bajar JUnit 5. No lo hace: el BOM de arriba fija 6.1.3 para todo    -->
+			<!-- el arbol. Compruebalo tu mismo:                                     -->
+			<!--     ./mvnw dependency:tree "-Dincludes=org.junit*:*"                -->
+			<dependency>
+				<groupId>org.junit</groupId>
+				<artifactId>junit-bom</artifactId>
+				<version>${junit.version}</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
+			<dependency>
+				<groupId>org.mockito</groupId>
+				<artifactId>mockito-bom</artifactId>
+				<version>${mockito.version}</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
+
+	<dependencies>
+		<dependency>
+			<groupId>org.junit.jupiter</groupId>
+			<artifactId>junit-jupiter</artifactId>
+			<scope>test</scope>
+		</dependency>
+
+		<!-- mock(), when(), verify(), ArgumentCaptor... -->
+		<dependency>
+			<groupId>org.mockito</groupId>
+			<artifactId>mockito-core</artifactId>
+			<scope>test</scope>
+		</dependency>
+
+		<!-- Solo aporta MockitoExtension, para @ExtendWith y @Mock.
+		     Sin esto, @Mock no se rellena y te salen NullPointerException. -->
+		<dependency>
+			<groupId>org.mockito</groupId>
+			<artifactId>mockito-junit-jupiter</artifactId>
+			<scope>test</scope>
+		</dependency>
+	</dependencies>
+
+	<build>
+		<plugins>
+			<!-- Publica la ruta del jar de cada dependencia como propiedad,
+			     para poder escribir ${org.mockito:mockito-core:jar} abajo. -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-dependency-plugin</artifactId>
+				<version>${dependency-plugin.version}</version>
+				<executions>
+					<execution><goals><goal>properties</goal></goals></execution>
+				</executions>
+			</plugin>
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<version>${surefire.version}</version>
+				<configuration>
+					<!-- ESTO NO ES OPCIONAL, y la guia lo explica en la seccion 01.
+					     Sin esta linea, cada corrida escupe:
+
+					       Mockito is currently self-attaching to enable the
+					       inline-mock-maker. This will no longer work in future
+					       releases of the JDK.
+					       WARNING: A Java agent has been loaded dynamically
+					       WARNING: Dynamic loading of agents will be disallowed
+					                by default in a future release
+
+					     Cargando el agente aqui, el aviso desaparece, y ademas
+					     los tests van mas rapido, porque Mockito no tiene que
+					     auto-engancharse en caliente. Medido: 0.427s -> 0.169s. -->
+					<argLine>-javaagent:${org.mockito:mockito-core:jar} -Xshare:off</argLine>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+</project>

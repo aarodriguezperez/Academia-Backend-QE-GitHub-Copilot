@@ -1,0 +1,826 @@
+<meta charset="utf-8">
+<title>JUnit 5 contra JUnit 6</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&family=Zilla+Slab:wght@600;700&display=swap">
+<style>
+:root{
+  --bg:#f4f6f5;
+  --surface:#ffffff;
+  --surface-2:#eaeeec;
+  --ink:#12181a;
+  --ink-2:#4a5559;
+  --ink-3:#78848a;
+  --rule:#dbe2df;
+  --accent:#0e6b63;
+  --accent-soft:#dcedea;
+
+  --warn:#8a5a10;      --warn-bg:#f7eeda;
+  --next:#2f7d3a;      --next-bg:#e2f0e4;
+  --error:#b23a2e;     --error-bg:#f8e6e3;
+  --complete:#1f5b96;  --complete-bg:#e3edf8;
+
+  --term-bg:#101619;
+  --term-ink:#dbe4e6;
+  --term-dim:#7b8a8e;
+  --term-prompt:#5fb8ac;
+  --term-out:#a3b0b3;
+  --term-rule:#232d31;
+
+  --step:clamp(1.9rem,1.4rem + 1.6vw,2.6rem);
+  --h2:clamp(1.45rem,1.2rem + 1vw,1.9rem);
+  --h3:1.1rem;
+  --body:1rem;
+  --small:.87rem;
+  --tiny:.76rem;
+  --radius:10px;
+  --maxw:1180px;
+}
+
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --bg:#0d1113;
+    --surface:#151b1e;
+    --surface-2:#1b2327;
+    --ink:#e6edee;
+    --ink-2:#9fadb0;
+    --ink-3:#78868a;
+    --rule:#242e32;
+    --accent:#5fc0b4;
+    --accent-soft:#122b29;
+
+    --warn:#dfa955;      --warn-bg:#2e2312;
+    --next:#69bf7a;      --next-bg:#152a1a;
+    --error:#e8908b;     --error-bg:#2f1a18;
+    --complete:#7fb0e8;  --complete-bg:#16243a;
+
+    --term-bg:#070a0c;
+    --term-ink:#dbe4e6;
+    --term-dim:#6c797d;
+    --term-prompt:#6fc9bc;
+    --term-out:#94a2a5;
+    --term-rule:#1d262a;
+  }
+}
+
+:root[data-theme="dark"]{
+  --bg:#0d1113;
+  --surface:#151b1e;
+  --surface-2:#1b2327;
+  --ink:#e6edee;
+  --ink-2:#9fadb0;
+  --ink-3:#78868a;
+  --rule:#242e32;
+  --accent:#5fc0b4;
+  --accent-soft:#122b29;
+
+  --warn:#dfa955;      --warn-bg:#2e2312;
+  --next:#69bf7a;      --next-bg:#152a1a;
+  --error:#e8908b;     --error-bg:#2f1a18;
+  --complete:#7fb0e8;  --complete-bg:#16243a;
+
+  --term-bg:#070a0c;
+  --term-ink:#dbe4e6;
+  --term-dim:#6c797d;
+  --term-prompt:#6fc9bc;
+  --term-out:#94a2a5;
+  --term-rule:#1d262a;
+}
+
+*{box-sizing:border-box}
+
+body{
+  margin:0;
+  background:var(--bg);
+  color:var(--ink);
+  font-family:"IBM Plex Sans",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  font-size:var(--body);
+  line-height:1.62;
+  -webkit-font-smoothing:antialiased;
+}
+
+.wrap{max-width:var(--maxw);margin:0 auto;padding:0 1.5rem}
+
+/* ---------- masthead ---------- */
+.masthead{
+  border-bottom:1px solid var(--rule);
+  background:var(--surface);
+  padding:3.2rem 0 2.4rem;
+}
+.eyebrow{
+  font-family:"JetBrains Mono",monospace;
+  font-size:var(--tiny);letter-spacing:.09em;text-transform:uppercase;
+  color:var(--ink-3);margin:0 0 1rem;
+}
+.masthead h1{
+  font-family:"Zilla Slab",Georgia,serif;font-weight:700;
+  font-size:clamp(2.4rem,1.7rem + 3.2vw,4rem);
+  line-height:1.04;letter-spacing:-.015em;
+  margin:0 0 1.1rem;max-width:16ch;text-wrap:balance;
+}
+.lede{
+  font-size:clamp(1.02rem,.98rem + .35vw,1.2rem);
+  color:var(--ink-2);max-width:62ch;margin:0 0 1.6rem;
+}
+.facts{
+  list-style:none;display:flex;flex-wrap:wrap;gap:.45rem;margin:0;padding:0;
+}
+.facts li{
+  font-family:"JetBrains Mono",monospace;font-size:var(--tiny);
+  color:var(--ink-2);background:var(--surface-2);
+  border:1px solid var(--rule);border-radius:99px;padding:.28rem .7rem;
+}
+
+/* ---------- shell ---------- */
+.shell{
+  display:grid;grid-template-columns:minmax(0,1fr);gap:2.4rem;
+  padding-top:2.6rem;padding-bottom:5rem;
+}
+@media (min-width:1000px){
+  .shell{grid-template-columns:216px minmax(0,1fr);gap:3.4rem}
+}
+
+.toc{font-size:var(--small);align-self:start}
+@media (min-width:1000px){
+  .toc{position:sticky;top:1.6rem;max-height:calc(100vh - 3.2rem);overflow-y:auto}
+}
+.toc h2{
+  font-family:"JetBrains Mono",monospace;font-size:var(--tiny);font-weight:700;
+  letter-spacing:.09em;text-transform:uppercase;color:var(--ink-3);
+  margin:0 0 .6rem;padding-bottom:.4rem;border-bottom:1px solid var(--rule);
+}
+.toc h2+*{margin-top:0}
+.toc ol,.toc ul{list-style:none;margin:0 0 1.6rem;padding:0;display:flex;flex-direction:column;gap:.08rem}
+.toc a{
+  display:flex;gap:.55rem;align-items:baseline;
+  color:var(--ink-2);text-decoration:none;
+  padding:.3rem .45rem;border-radius:6px;line-height:1.35;
+}
+.toc a:hover{color:var(--ink);background:var(--surface-2)}
+.toc a:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
+.toc .n{
+  font-family:"JetBrains Mono",monospace;font-size:.7rem;
+  color:var(--ink-3);flex:none;
+}
+.toc a.cur{color:var(--ink);font-weight:600;background:var(--surface-2)}
+
+main{min-width:0;max-width:70ch}
+
+/* ---------- secciones ---------- */
+section{
+  padding-top:2.2rem;margin-top:2.2rem;border-top:1px solid var(--rule);
+}
+section:first-child{padding-top:0;margin-top:0;border-top:0}
+.rubric{
+  font-family:"JetBrains Mono",monospace;font-size:var(--tiny);
+  letter-spacing:.09em;text-transform:uppercase;color:var(--accent);
+  margin:0 0 .35rem;
+}
+h2.sec{
+  font-family:"Zilla Slab",Georgia,serif;font-weight:700;
+  font-size:var(--h2);line-height:1.14;letter-spacing:-.01em;
+  margin:0 0 1.1rem;display:flex;gap:.75rem;align-items:baseline;text-wrap:balance;
+}
+h2.sec .num{
+  font-family:"JetBrains Mono",monospace;font-size:.8rem;font-weight:700;
+  color:var(--ink-3);flex:none;
+}
+h3{
+  font-family:"Zilla Slab",Georgia,serif;font-weight:600;font-size:var(--h3);
+  margin:2rem 0 .6rem;letter-spacing:-.005em;
+}
+p{margin:0 0 1rem;max-width:66ch}
+strong{font-weight:600}
+em{font-style:italic}
+a{color:var(--accent)}
+
+code{
+  font-family:"JetBrains Mono",monospace;font-size:.86em;
+  background:var(--surface-2);border:1px solid var(--rule);
+  border-radius:4px;padding:.08em .34em;
+}
+
+/* ---------- notas ---------- */
+.note{
+  background:var(--surface);border:1px solid var(--rule);
+  border-left:3px solid var(--accent);border-radius:var(--radius);
+  padding:.85rem 1.05rem;margin:0 0 1.2rem;font-size:var(--small);
+  color:var(--ink-2);max-width:66ch;
+}
+.note strong{color:var(--ink)}
+.note.warn{border-left-color:var(--warn);background:var(--warn-bg)}
+.note.warn strong{color:var(--ink)}
+.note.key{border-left-color:var(--accent);background:var(--accent-soft)}
+.note.key strong{color:var(--ink)}
+.note p:last-child{margin-bottom:0}
+
+/* ---------- analogía ---------- */
+.ana{
+  background:var(--surface);border:1px solid var(--rule);border-radius:var(--radius);
+  padding:1.1rem 1.2rem;margin:0 0 1.3rem;max-width:66ch;
+  position:relative;
+}
+.ana .tag{
+  font-family:"JetBrains Mono",monospace;font-size:.68rem;font-weight:700;
+  letter-spacing:.1em;text-transform:uppercase;color:var(--accent);
+  display:block;margin-bottom:.5rem;
+}
+.ana p:last-child{margin-bottom:0}
+.ana h4{
+  font-family:"Zilla Slab",Georgia,serif;font-weight:600;font-size:1.05rem;
+  margin:0 0 .5rem;
+}
+
+/* ---------- terminal / código ---------- */
+.term{
+  background:var(--term-bg);border:1px solid var(--term-rule);
+  border-radius:var(--radius);margin:0 0 1.2rem;position:relative;overflow:hidden;
+}
+.term pre{
+  margin:0;padding:1rem 1.1rem;overflow-x:auto;
+  font-family:"JetBrains Mono",monospace;font-size:.8rem;line-height:1.72;
+  color:var(--term-ink);
+}
+.term code{background:none;border:0;padding:0;font-size:inherit;color:inherit}
+.term .cm{color:var(--term-dim)}
+.term .p{color:var(--term-prompt);user-select:none}
+.term .kw{color:#c99bd8}
+.term .ty{color:#7fc3e8}
+.term .st{color:#c8d98a}
+.term .out{color:var(--term-out)}
+.term .bad{color:#e8908b}
+.term .ok{color:#8ed49a}
+.term .lbl{
+  font-family:"JetBrains Mono",monospace;font-size:.66rem;font-weight:700;
+  letter-spacing:.1em;text-transform:uppercase;color:var(--term-dim);
+  padding:.55rem 1.1rem .1rem;display:block;
+}
+.copy{
+  position:absolute;top:.5rem;right:.5rem;z-index:2;
+  font-family:"JetBrains Mono",monospace;font-size:.66rem;
+  color:var(--term-dim);background:transparent;
+  border:1px solid var(--term-rule);border-radius:5px;
+  padding:.2rem .5rem;cursor:pointer;
+}
+.copy:hover{color:var(--term-ink);border-color:var(--term-dim)}
+.copy:focus-visible{outline:2px solid var(--term-prompt);outline-offset:1px}
+
+/* ---------- figuras ---------- */
+figure.flow{
+  background:var(--surface);border:1px solid var(--rule);border-radius:var(--radius);
+  padding:1.15rem 1.15rem .9rem;margin:0 0 1.4rem;overflow-x:auto;
+}
+figure.flow svg{display:block;width:100%;height:auto;color:var(--ink-2)}
+figure.flow figcaption{
+  font-family:"JetBrains Mono",monospace;font-size:var(--tiny);
+  color:var(--ink-3);line-height:1.55;margin-top:.85rem;
+}
+figure.flow figcaption strong{color:var(--ink-2)}
+
+figure.mapa{
+  background:var(--surface);border:1px solid var(--rule);border-radius:var(--radius);
+  padding:.85rem;margin:0 0 1.4rem;
+}
+figure.mapa img{display:block;width:100%;height:auto;border-radius:6px}
+figure.mapa figcaption{
+  font-family:"JetBrains Mono",monospace;font-size:var(--tiny);
+  color:var(--ink-3);line-height:1.55;margin-top:.8rem;
+}
+
+/* ---------- tablas ---------- */
+.tw{overflow-x:auto;margin:0 0 1.3rem;border:1px solid var(--rule);border-radius:var(--radius)}
+table{border-collapse:collapse;width:100%;font-size:var(--small);background:var(--surface)}
+th,td{text-align:left;padding:.6rem .8rem;border-bottom:1px solid var(--rule);vertical-align:top}
+thead th{
+  font-family:"JetBrains Mono",monospace;font-size:.7rem;font-weight:700;
+  letter-spacing:.06em;text-transform:uppercase;color:var(--ink-3);
+  background:var(--surface-2);white-space:nowrap;
+}
+tbody tr:last-child td{border-bottom:0}
+td code{font-size:.8rem}
+
+/* ---------- señales ---------- */
+.sig{
+  font-family:"JetBrains Mono",monospace;font-size:.72rem;font-weight:700;
+  padding:.16rem .45rem;border-radius:5px;white-space:nowrap;
+}
+.sig.n{color:var(--next);background:var(--next-bg)}
+.sig.e{color:var(--error);background:var(--error-bg)}
+.sig.c{color:var(--complete);background:var(--complete-bg)}
+
+/* ---------- listas ---------- */
+ul.plain,ol.plain{margin:0 0 1.2rem;padding-left:1.15rem;max-width:66ch}
+ul.plain li,ol.plain li{margin-bottom:.45rem}
+
+ul.check{list-style:none;margin:0 0 1.3rem;padding:0;display:flex;flex-direction:column;gap:.4rem;max-width:66ch}
+ul.check li{
+  display:grid;grid-template-columns:auto minmax(0,1fr);gap:.6rem;align-items:start;
+  background:var(--surface);border:1px solid var(--rule);border-radius:8px;
+  padding:.6rem .8rem;font-size:var(--small);
+}
+ul.check .box{font-family:"JetBrains Mono",monospace;color:var(--ink-3);flex:none}
+ul.check b{display:block;margin-bottom:.1rem;font-size:.95rem;color:var(--ink)}
+
+/* ---------- trampa ---------- */
+.trap{
+  display:grid;grid-template-columns:auto minmax(0,1fr);gap:.85rem;align-items:start;
+  background:var(--surface);border:1px solid var(--rule);border-radius:var(--radius);
+  padding:.85rem 1rem;margin-bottom:.55rem;font-size:var(--small);max-width:66ch;
+}
+.trap .k{
+  font-family:"JetBrains Mono",monospace;font-size:.72rem;font-weight:700;
+  color:var(--error);background:var(--error-bg);
+  border-radius:5px;padding:.22rem .5rem;white-space:nowrap;
+}
+.trap b{display:block;margin-bottom:.15rem;font-size:.95rem;color:var(--ink)}
+
+/* ---------- glosario ---------- */
+dl.glos{margin:0 0 1.3rem;max-width:66ch}
+dl.glos dt{
+  font-family:"JetBrains Mono",monospace;font-size:.8rem;font-weight:700;
+  color:var(--accent);margin-top:.9rem;
+}
+dl.glos dd{margin:.15rem 0 0;font-size:var(--small);color:var(--ink-2)}
+
+/* ---------- cierre ---------- */
+.closing{
+  border-top:1px solid var(--rule);margin-top:3rem;padding-top:1.6rem;
+  font-size:var(--small);color:var(--ink-3);
+}
+.closing a{color:var(--ink-2)}
+
+@media (prefers-reduced-motion:reduce){
+  *{animation:none !important;transition:none !important;scroll-behavior:auto !important}
+}
+html{scroll-behavior:smooth}
+
+/* ---------- añadidos de la serie JUnit ----------
+   Estas clases se usaban ya en las guías de springWebFlux pero no
+   llegaron a definirse en su hoja de estilo: .arch, .cmd, .dir, .hi, .ver.
+   Se definen aquí, más .veredicto, propia de esta serie.                */
+
+.term .cmd{color:var(--term-ink);font-weight:500}
+.term .hi{color:#f0d48a}
+.term .dir{color:#7fc3e8;font-weight:500}
+.term .num{color:#e0a86a}
+
+.arch{
+  font-family:"JetBrains Mono",monospace;font-size:var(--small);
+  background:var(--term-bg);color:var(--term-ink);
+  border-radius:var(--radius);padding:1.15rem 1.25rem;margin:0 0 1.3rem;
+  overflow-x:auto;line-height:1.75;white-space:pre;
+}
+.arch .dir{color:#7fc3e8;font-weight:500}
+.arch .hi{color:#f0d48a}
+.arch .cm{color:var(--term-dim)}
+
+.ver{
+  border:1px solid var(--rule);border-left:3px solid var(--next);
+  background:var(--next-bg);border-radius:var(--radius);
+  padding:.9rem 1.15rem;margin:0 0 1.3rem;font-size:var(--small);
+}
+.ver b{display:block;color:var(--ink);margin-bottom:.2rem}
+.ver p:last-child{margin-bottom:0}
+
+.veredicto{
+  display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
+  gap:.75rem;margin:0 0 1.4rem;
+}
+.veredicto div{
+  border:1px solid var(--rule);border-radius:var(--radius);
+  background:var(--surface);padding:.9rem 1rem;font-size:var(--small);
+}
+.veredicto b{display:block;font-family:"JetBrains Mono",monospace;
+  font-size:var(--tiny);letter-spacing:.07em;text-transform:uppercase;
+  margin-bottom:.35rem;}
+.veredicto .ok b{color:var(--next)}
+.veredicto .bad b{color:var(--error)}
+.veredicto .mid b{color:var(--warn)}
+/* ---------- ligaduras: fuera, y no es cosmetica ----------
+   JetBrains Mono dibuja  <!--  como una flecha,  -->  como otra, y  >=  como
+   un solo glifo. En una guia de codigo eso deja de ser bonito y pasa a ser
+   un error: el alumno no puede ver la sintaxis literal que tiene que teclear.
+   Y en esta serie es critico -- toda la seccion 07 de la guia 01 trata sobre
+   la diferencia entre  >=  y  >.  Se apagan en TODO contexto de codigo.       */
+.term pre, .term code, .arch, code, pre, kbd, samp{
+  font-variant-ligatures:none;
+  font-feature-settings:"liga" 0,"clig" 0,"calt" 0;
+}
+
+</style>
+
+<header class="masthead">
+  <div class="wrap">
+    <p class="eyebrow">JUnit 6.1.3 &middot; Mockito 5.23 &middot; Anexo &middot; Fe de erratas y migración</p>
+    <h1>JUnit 5 contra JUnit 6</h1>
+    <p class="lede">Todo lo que vas a encontrar escrito dice «JUnit 5». Tu <code>pom.xml</code> dice 6, y el de tus proyectos de Spring Boot dice 6 sin que nadie lo pusiera. Y con Mockito pasa exactamente lo mismo. Este anexo explica qué cambió, qué no, y cómo leer los tutoriales viejos sin equivocarte.</p>
+    <ul class="facts">
+      <li>versiones verificadas en Maven Central</li>
+      <li>tabla JUnit 4 → 5/6</li>
+      <li>y Mockito 4 → 5</li>
+      <li>consulta, no lectura seguida</li>
+    </ul>
+  </div>
+</header>
+
+<div class="wrap shell">
+
+<nav class="toc" aria-label="Contenido">
+  <h2>La ruta</h2>
+  <ol>
+    <li><a href="#cual"><span class="n">01</span> Qué versión usas de verdad</a></li>
+    <li><a href="#nombres"><span class="n">02</span> Por qué hay tres nombres</a></li>
+    <li><a href="#cambio"><span class="n">03</span> Qué cambió de 5 a 6</a></li>
+    <li><a href="#leer"><span class="n">04</span> Leer un tutorial de «JUnit 5» hoy</a></li>
+    <li><a href="#junit4"><span class="n">05</span> El JUnit 4 que te vas a encontrar</a></li>
+    <li><a href="#deps"><span class="n">06</span> Las dependencias, resumidas</a></li>
+    <li><a href="#mockito"><span class="n">07</span> Mockito 4 contra Mockito 5</a></li>
+    <li><a href="#fuentes"><span class="n">08</span> De dónde salen estos datos</a></li>
+  </ol>
+
+  <h2>La serie</h2>
+  <ul>
+    <li><a href="guia-00-por-que-se-prueba.html"><span class="n">00</span> Por qué se prueba</a></li>
+    <li><a href="guia-01-anatomia-de-un-test.html"><span class="n">01</span> Anatomía de un test</a></li>
+    <li><a href="guia-02-el-catalogo.html"><span class="n">02</span> El catálogo</a></li>
+    <li><a href="guia-03-un-test-muchos-datos.html"><span class="n">03</span> Un test, muchos datos</a></li>
+    <li><a href="guia-04-dobles-de-prueba.html"><span class="n">04</span> Dobles de prueba</a></li>
+    <li><a href="#cual" class="cur"><span class="n">··</span> JUnit 5 contra 6</a></li>
+  </ul>
+</nav>
+
+<main>
+
+<section id="cual">
+  <p class="rubric">El hecho</p>
+  <h2 class="sec"><span class="num">01</span> Qué versión usas de verdad</h2>
+
+  <p>Empecemos por lo que sorprende: <strong>si has hecho los proyectos 15, 16, 17 o los de WebFlux, ya estabas usando JUnit 6 sin saberlo.</strong></p>
+
+  <div class="tw">
+    <table>
+      <thead><tr><th>Dónde</th><th>Versión</th><th>Cómo llega</th></tr></thead>
+      <tbody>
+        <tr><td>Última publicada de <code>org.junit.jupiter:junit-jupiter</code></td><td><strong>6.1.3</strong></td><td>Maven Central.</td></tr>
+        <tr><td>Los tres proyectos de esta serie</td><td><strong>6.1.3</strong></td><td>La pediste tú, en el <code>junit-bom</code>.</td></tr>
+        <tr><td><code>spring-boot-dependencies:4.1.0</code></td><td><strong>6.0.3</strong></td><td>La gestiona Spring Boot. No escribiste ninguna versión.</td></tr>
+        <tr><td>Requisito de Java</td><td><strong>17 o superior</strong></td><td>Tú estás en 21.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <p class="note key"><strong>Y sin embargo casi todo lo escrito dice «JUnit 5».</strong> No es que esté obsoleto: es que la marca se quedó pegada al nombre. Los paquetes, las anotaciones y las aserciones son las mismas. Un tutorial de JUnit 5 de hace tres años sigue compilando hoy contra 6.1.3 — con las excepciones de la sección 04.</p>
+</section>
+
+<section id="nombres">
+  <p class="rubric">El vocabulario</p>
+  <h2 class="sec"><span class="num">02</span> Por qué hay tres nombres</h2>
+
+  <p>JUnit no es una librería: son tres piezas con trabajos distintos. Saberlo evita la mitad de la confusión al leer un <code>pom.xml</code> ajeno.</p>
+
+  <dl class="glos">
+    <dt>JUnit Platform</dt>
+    <dd>El motor de arranque. Descubre los tests y los ejecuta, y con quien hablan Maven, Gradle, Eclipse e IntelliJ. No sabe nada de <code>@Test</code>: solo sabe pedirle tests a un <em>engine</em>. Artefactos <code>junit-platform-*</code>.</dd>
+
+    <dt>JUnit Jupiter</dt>
+    <dd>El engine moderno y la API que escribes: <code>@Test</code>, <code>@BeforeEach</code>, <code>Assertions</code>, <code>@ParameterizedTest</code>. <strong>Cuando alguien dice «JUnit 5» casi siempre quiere decir Jupiter.</strong> Artefactos <code>junit-jupiter-*</code>.</dd>
+
+    <dt>JUnit Vintage</dt>
+    <dd>Un engine que ejecuta tests de <strong>JUnit 4</strong> sobre la plataforma nueva. Existe para migraciones: te deja convivir con el código viejo sin reescribirlo de golpe. Artefacto <code>junit-vintage-engine</code>.</dd>
+  </dl>
+
+  <p>Un test de Jupiter y uno de JUnit 4 pueden correr <strong>en la misma suite</strong>, si están los dos engines en el <em>classpath</em>. Es la ruta de migración normal en un proyecto grande: se añade Jupiter, se escriben los tests nuevos ahí, y los viejos se van pasando cuando toca tocarlos.</p>
+</section>
+
+<section id="cambio">
+  <p class="rubric">La fe de erratas</p>
+  <h2 class="sec"><span class="num">03</span> Qué cambió de 5 a 6</h2>
+
+  <h3>Lo que NO cambió — que es casi todo</h3>
+
+  <div class="tw">
+    <table>
+      <thead><tr><th>Sigue igual</th><th>Comprobado</th></tr></thead>
+      <tbody>
+        <tr><td>Los paquetes: <code>org.junit.jupiter.api</code>, <code>.extension</code>, <code>.condition</code>, <code>.io</code>, <code>.parallel</code></td><td class="si">Sí</td></tr>
+        <tr><td>Las anotaciones: <code>@Test</code>, <code>@BeforeEach</code>, <code>@Nested</code>, <code>@Tag</code>, <code>@ParameterizedTest</code>…</td><td class="si">Sí</td></tr>
+        <tr><td><code>Assertions</code> y <code>Assumptions</code>, con los mismos métodos</td><td class="si">Sí</td></tr>
+        <tr><td>Los <em>imports</em> de cualquier tutorial de JUnit 5</td><td class="si">Sí</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <p class="note key"><strong>Traducido:</strong> no hay nada que reaprender. Todo el código de estas tres guías se llama «JUnit 5» en internet y compila contra 6.1.3 sin tocar una línea.</p>
+
+  <h3>Lo que sí cambió</h3>
+
+  <div class="trap">
+    <span class="k">01</span>
+    <span><b>Java 17 es el mínimo</b>JUnit 5 corría con Java 8. JUnit 6 exige 17 o superior <em>en tiempo de ejecución</em> — aunque puedes seguir probando código compilado con versiones anteriores. Si un proyecto viejo se queda en Java 11, se queda en JUnit 5.</span>
+  </div>
+
+  <div class="trap">
+    <span class="k">02</span>
+    <span><b>Las versiones se alinearon, y eso explica una rareza que quizá ya viste</b>En JUnit 5, Jupiter iba por 5.x y la Platform por <strong>1.x</strong> — dos numeraciones para el mismo lanzamiento. Por eso los tutoriales viejos tienen dos propiedades de versión en el <code>pom</code>. En JUnit 6 todo va por 6.x.</span>
+  </div>
+
+  <div class="term">
+    <button class="copy" type="button" data-etiqueta="Copiar">Copiar</button>
+    <span class="lbl">la misma librería, dos épocas</span>
+<pre><code><span class="cm"># JUnit 5 (bom 5.13.4) -- dos numeraciones</span>
+junit-jupiter-api        <span class="num">5.13.4</span>
+junit-platform-commons   <span class="num">1.13.4</span>   <span class="cm">&lt;- el 1.x que descoloca a todo el mundo</span>
+
+<span class="cm"># JUnit 6 (bom 6.1.3) -- una sola</span>
+junit-jupiter-api        <span class="num">6.1.3</span>
+junit-platform-commons   <span class="num">6.1.3</span>
+junit-vintage-engine     <span class="num">6.1.3</span></code></pre>
+  </div>
+
+  <div class="trap">
+    <span class="k">03</span>
+    <span><b>Se retiró API que llevaba tiempo marcada como obsoleta</b>Es lo normal en un salto de versión mayor. Si migras un proyecto y algo no compila, lo más probable es que fuera algo ya <em>deprecated</em> en 5.x. Consulta las notas de la versión — enlace en la sección 07.</span>
+  </div>
+
+  <p class="note"><strong>Y el consejo práctico que sale de todo esto:</strong> usa el <code>junit-bom</code> y no escribas versiones sueltas. Es lo que hacen los tres proyectos de esta serie, y es lo que evita la mezcla de una <code>api</code> 6.1 con un <code>engine</code> 6.0 — una fuente clásica de errores raros en tiempo de ejecución que además no se ven al compilar.</p>
+</section>
+
+<section id="leer">
+  <p class="rubric">La práctica</p>
+  <h2 class="sec"><span class="num">04</span> Leer un tutorial de «JUnit 5» hoy</h2>
+
+  <p>Esta serie sigue el temario clásico de <a href="https://www.baeldung.com/junit-5">la guía de JUnit 5 de Baeldung</a>, que es la referencia habitual en español y en inglés. Al leerla — o cualquier otra de la misma época — estos son los cuatro puntos donde hay que ajustar:</p>
+
+  <div class="tw">
+    <table>
+      <thead><tr><th>Si el tutorial dice…</th><th>Hoy</th></tr></thead>
+      <tbody>
+        <tr>
+          <td>Dependencias sueltas: <code>junit-jupiter-api</code> + <code>junit-jupiter-engine</code> + <code>junit-jupiter-params</code>, cada una con su versión</td>
+          <td>Una sola: <code>junit-jupiter</code>, y la versión del <code>junit-bom</code>. Las tres siguen existiendo — el agregador simplemente las trae.</td>
+        </tr>
+        <tr>
+          <td><code>junit-platform-runner</code> con <code>@RunWith(JUnitPlatform.class)</code></td>
+          <td>Retirado. Las suites se hacen con <code>@Suite</code> de <code>junit-platform-suite</code>, como en la <a href="guia-02-el-catalogo.html">guía 02</a>.</td>
+        </tr>
+        <tr>
+          <td>Una versión de Surefire 2.x, o ninguna</td>
+          <td><strong>Surefire 3.x</strong> obligatorio. Con 2.x el build sale verde con <code>Tests run: 0</code>.</td>
+        </tr>
+        <tr>
+          <td>«JUnit 5», <code>5.8.x</code>, <code>5.9.x</code>…</td>
+          <td>El API es el mismo. Solo cambia el número que escribes en el <code>pom</code>.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <p class="note warn"><strong>Nota de método, para que sepas qué estás leyendo.</strong> El sitio de referencia bloquea la lectura automatizada (devuelve <code>HTTP 403</code>), así que esta serie no reproduce su texto: sigue su <em>temario</em> — arquitectura, anotaciones básicas, aserciones y <em>assumptions</em>, excepciones, suites, tests dinámicos, repetidos y parametrizados, inyección de dependencias y migración desde JUnit 4 — y todo el código se verificó contra la documentación oficial y ejecutándolo. Los números de versión de este anexo salen de Maven Central, no de ningún tutorial.</p>
+</section>
+
+<section id="junit4">
+  <p class="rubric">Migración</p>
+  <h2 class="sec"><span class="num">05</span> El JUnit 4 que te vas a encontrar</h2>
+
+  <p>En cualquier proyecto con unos años dentro vas a abrir tests de JUnit 4. Se reconocen a la primera por el <em>import</em>: <code>org.junit.Test</code>, sin <code>jupiter</code>. Esta es la tabla completa de equivalencias.</p>
+
+  <div class="tw">
+    <table>
+      <thead><tr><th>JUnit 4</th><th>JUnit 5 / 6 (Jupiter)</th><th>Nota</th></tr></thead>
+      <tbody>
+        <tr><td><code>org.junit.Test</code></td><td><code>org.junit.jupiter.api.Test</code></td><td>El cambio de <em>import</em> más frecuente.</td></tr>
+        <tr><td><code>@Before</code></td><td><code>@BeforeEach</code></td><td>Nombre más claro: <em>cada</em>.</td></tr>
+        <tr><td><code>@After</code></td><td><code>@AfterEach</code></td><td></td></tr>
+        <tr><td><code>@BeforeClass</code></td><td><code>@BeforeAll</code></td><td>Sigue teniendo que ser <code>static</code>.</td></tr>
+        <tr><td><code>@AfterClass</code></td><td><code>@AfterAll</code></td><td></td></tr>
+        <tr><td><code>@Ignore</code></td><td><code>@Disabled</code></td><td></td></tr>
+        <tr><td><code>@Category</code></td><td><code>@Tag</code></td><td>Y las etiquetas son cadenas, no clases.</td></tr>
+        <tr><td><code>@RunWith(…)</code></td><td><code>@ExtendWith(…)</code></td><td>Un test solo podía tener <strong>un</strong> <em>runner</em>; puede tener <strong>varias</strong> extensiones. Es la mejora estructural más grande.</td></tr>
+        <tr><td><code>@Rule</code>, <code>@ClassRule</code></td><td><code>@ExtendWith</code>, <code>@RegisterExtension</code></td><td>Las <em>rules</em> ya no existen.</td></tr>
+        <tr><td><code>org.junit.Assert</code></td><td><code>org.junit.jupiter.api.Assertions</code></td><td>Ojo al orden: en JUnit 4 el mensaje iba <strong>primero</strong>; en Jupiter va <strong>último</strong>.</td></tr>
+        <tr><td><code>@Test(expected = X.class)</code></td><td><code>assertThrows(X.class, () -&gt; …)</code></td><td>Mejora real: <code>expected</code> aprobaba el test aunque la excepción saliera de la <em>preparación</em> en vez del código probado.</td></tr>
+        <tr><td><code>@Test(timeout = 1000)</code></td><td><code>@Timeout</code> o <code>assertTimeout</code></td><td><a href="guia-02-el-catalogo.html">Guía 02</a>.</td></tr>
+        <tr><td><code>@Parameters</code> + <code>Parameterized</code></td><td><code>@ParameterizedTest</code> + fuentes</td><td>Mucho más simple. <a href="guia-03-un-test-muchos-datos.html">Guía 03</a>.</td></tr>
+        <tr><td><code>Assume</code></td><td><code>Assumptions</code></td><td>Mismo concepto.</td></tr>
+        <tr><td>Clases y métodos <code>public</code> obligatorios</td><td>Ya no hacen falta</td><td>Package-private es lo idiomático.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <p class="note key"><strong>Los dos cambios de fondo, más allá de los nombres.</strong> Primero, <code>assertThrows</code> en lugar de <code>expected=</code>: con <code>expected</code>, si la excepción la lanzaba una línea de preparación en vez del código que querías probar, el test pasaba igual — y no probaba nada. Segundo, extensiones en lugar de <em>runners</em>: un test solo podía tener un <em>runner</em>, lo que obligaba a elegir entre Spring y Mockito, por ejemplo. Con <code>@ExtendWith</code> se apilan.</p>
+
+  <div class="term">
+    <button class="copy" type="button" data-etiqueta="Copiar">Copiar</button>
+    <span class="lbl">correr los dos a la vez, durante una migración</span>
+<pre><code><span class="cm">&lt;!-- los tests nuevos, en Jupiter --&gt;</span>
+&lt;<span class="ty">dependency</span>&gt;
+  &lt;groupId&gt;<span class="st">org.junit.jupiter</span>&lt;/groupId&gt;
+  &lt;artifactId&gt;<span class="st">junit-jupiter</span>&lt;/artifactId&gt;
+  &lt;scope&gt;<span class="st">test</span>&lt;/scope&gt;
+&lt;/<span class="ty">dependency</span>&gt;
+
+<span class="cm">&lt;!-- los viejos de JUnit 4, sin tocarlos --&gt;</span>
+&lt;<span class="ty">dependency</span>&gt;
+  &lt;groupId&gt;<span class="st">org.junit.vintage</span>&lt;/groupId&gt;
+  &lt;artifactId&gt;<span class="st">junit-vintage-engine</span>&lt;/artifactId&gt;
+  &lt;scope&gt;<span class="st">test</span>&lt;/scope&gt;
+&lt;/<span class="ty">dependency</span>&gt;</code></pre>
+  </div>
+
+  <p>Las dos suites corren juntas en el mismo <code>mvn test</code>. Existe además <code>junit-jupiter-migrationsupport</code>, que sabe traducir algunas <em>rules</em> de JUnit 4 — útil si arrastras muchas.</p>
+</section>
+
+<section id="deps">
+  <p class="rubric">Referencia</p>
+  <h2 class="sec"><span class="num">06</span> Las dependencias, resumidas</h2>
+
+  <div class="tw">
+    <table>
+      <thead><tr><th>Artefacto</th><th>Cuándo lo necesitas</th></tr></thead>
+      <tbody>
+        <tr><td><code>org.junit:junit-bom</code></td><td><strong>Siempre.</strong> En <code>dependencyManagement</code>, con <code>&lt;type&gt;pom&lt;/type&gt;</code> y <code>&lt;scope&gt;import&lt;/scope&gt;</code>.</td></tr>
+        <tr><td><code>org.junit.jupiter:junit-jupiter</code></td><td><strong>Siempre.</strong> Trae <code>api</code> + <code>params</code> + <code>engine</code>.</td></tr>
+        <tr><td><code>org.junit.platform:junit-platform-suite</code></td><td>Solo si usas <code>@Suite</code>.</td></tr>
+        <tr><td><code>org.junit.vintage:junit-vintage-engine</code></td><td>Solo si conservas tests de JUnit 4.</td></tr>
+        <tr><td><code>maven-surefire-plugin</code> <strong>3.x</strong></td><td><strong>Siempre.</strong> Con 2.x no se ejecuta ningún test — y no falla.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <p class="note"><strong>En un proyecto de Spring Boot no pidas nada de esto.</strong> <code>spring-boot-starter-test</code> ya trae JUnit Jupiter, AssertJ, Mockito y Hamcrest, con las versiones coordinadas por el <em>parent</em>. Añadir un <code>junit-bom</code> propio encima es la forma más rápida de acabar con dos versiones peleándose.</p>
+</section>
+
+<section id="mockito">
+  <p class="rubric">La otra librería</p>
+  <h2 class="sec"><span class="num">07</span> Mockito 4 contra Mockito 5</h2>
+
+  <p>Pasa lo mismo que con JUnit: casi todo el material que encontrarás &mdash; incluido el <a href="https://www.youtube.com/watch?v=j9k3epjUgr8">video en el que se basa la guía 04</a>, que usa <code>4.6.1</code> &mdash; está escrito para Mockito 4. El API se parece mucho, pero hay tres diferencias que se notan el primer día.</p>
+
+  <div class="tw">
+    <table>
+      <thead><tr><th></th><th>Mockito 4</th><th>Mockito 5</th></tr></thead>
+      <tbody>
+        <tr>
+          <td>Java mínimo</td>
+          <td class="no">8</td>
+          <td class="si">11</td>
+        </tr>
+        <tr>
+          <td>Mock maker de fábrica</td>
+          <td><em>subclass</em> &mdash; no puede con clases ni métodos <code>final</code></td>
+          <td><strong><em>inline</em></strong> &mdash; puede con todo, sin configurar nada</td>
+        </tr>
+        <tr>
+          <td>Para mockear un <code>final</code></td>
+          <td>Había que añadir el artefacto <code>mockito-inline</code> aparte</td>
+          <td>Ya no existe: se dejó de publicar en <code>5.2.0</code>, porque se fusionó dentro de <code>mockito-core</code></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <p class="note key"><strong>La consecuencia práctica.</strong> Si sigues un tutorial de Mockito 4 y llegas a la parte de «para mockear clases <code>final</code> añade <code>mockito-inline</code>», <strong>sáltatela</strong>: hoy esa dependencia no existe y el comportamiento ya viene de serie. Y si copias <code>4.6.1</code> tal cual sobre un proyecto en Java 21, prepárate para problemas &mdash; esa versión es de la época de Java 8.</p>
+
+  <h3>Compruébalo tú mismo</h3>
+
+  <div class="term">
+    <button class="copy" type="button" data-etiqueta="Copiar">Copiar</button>
+<pre><code><span class="cm"># Que mock maker esta activo de verdad en tu proyecto</span>
+<span class="ty">System</span>.out.println(<span class="ty">org.mockito.internal.configuration.plugins.Plugins</span>
+        .getMockMaker().getClass().getName());
+
+<span class="out ok">org.mockito.internal.creation.bytebuddy.InlineByteBuddyMockMaker</span>
+<span class="cm">#                                        ^^^^^^ el inline, sin configurar nada</span></code></pre>
+  </div>
+
+  <p>Y el aviso del agente de Java que sale al usar Mockito en Java 21, con su arreglo, está explicado en la <a href="guia-04-dobles-de-prueba.html">sección 00 de la guía 04</a> &mdash; es la línea del <code>-javaagent</code> en el <code>pom</code>.</p>
+
+  <p class="note"><strong>Lo que NO cambió:</strong> <code>@Mock</code>, <code>@InjectMocks</code>, <code>@Spy</code>, <code>@Captor</code>, <code>when(...).thenReturn(...)</code>, <code>verify(...)</code>, <code>times(n)</code>, los matchers. Todo el código de un tutorial de Mockito 4 compila contra la 5 sin tocar una línea. Igual que con JUnit: cambia el número del <code>pom</code>, no lo que escribes.</p>
+</section>
+
+<section id="fuentes">
+  <p class="rubric">Trazabilidad</p>
+  <h2 class="sec"><span class="num">08</span> De dónde salen estos datos</h2>
+
+  <p>Los números de este anexo no salen de ningún tutorial. Se comprobaron así, y se pueden volver a comprobar:</p>
+
+  <div class="term">
+    <button class="copy" type="button" data-etiqueta="Copiar">Copiar</button>
+<pre><code><span class="cm"># La ultima version publicada de cualquier artefacto</span>
+<span class="p">$</span> <span class="cmd">curl -s https://repo1.maven.org/maven2/org/junit/jupiter/junit-jupiter/maven-metadata.xml</span>
+
+<span class="cm"># Que versiones fija el BOM</span>
+<span class="p">$</span> <span class="cmd">curl -s https://repo1.maven.org/maven2/org/junit/junit-bom/6.1.3/junit-bom-6.1.3.pom</span>
+
+<span class="cm"># Que version de JUnit te esta dando Spring Boot</span>
+<span class="p">$</span> <span class="cmd">./mvnw dependency:tree &quot;-Dincludes=org.junit*&quot;</span>
+
+<span class="cm"># Los paquetes que trae el jar, para comprobar que no cambiaron.</span>
+<span class="cm"># Maven ya lo descargo aqui:</span>
+<span class="p">$</span> <span class="cmd">unzip -l ~/.m2/repository/org/junit/jupiter/junit-jupiter-api/6.1.3/junit-jupiter-api-6.1.3.jar \
+      | grep 'org/junit/jupiter/api/.*\.class'</span></code></pre>
+
+  <p class="note warn"><strong>Las comillas del <code>dependency:tree</code> no son opcionales.</strong> Sin ellas, <code>zsh</code> &mdash; el shell por defecto de macOS &mdash; intenta expandir el <code>*</code> como si fuera un nombre de archivo y aborta con <code>no matches found</code>. Con <code>bash</code> a veces pasa y a veces no. Ponlas siempre.</p>
+  </div>
+
+  <ul class="plain">
+    <li><strong>Documentación oficial:</strong> <a href="https://docs.junit.org/current/user-guide/">docs.junit.org/current/user-guide</a> — el <em>user guide</em>, siempre la versión actual.</li>
+    <li><strong>Notas de cada versión:</strong> <a href="https://docs.junit.org/current/release-notes/">docs.junit.org/current/release-notes</a> — lo que se retiró en cada salto.</li>
+    <li><strong>Temario de referencia:</strong> <a href="https://www.baeldung.com/junit-5">baeldung.com/junit-5</a>.</li>
+  </ul>
+
+  <p class="note key"><strong>Y el hábito que vale más que este anexo:</strong> antes de copiar un <code>pom.xml</code> de un tutorial, comprueba la versión en Maven Central. Cuesta veinte segundos y te ahorra la tarde en que nada compila por un número de 2019.</p>
+
+  <p class="closing">Anexo &middot; Serie <strong>JUnit</strong> &middot; Academia Monterrey. Vuelve a <a href="guia-00-por-que-se-prueba.html">Por qué se prueba</a>, <a href="guia-01-anatomia-de-un-test.html">Anatomía de un test</a>, <a href="guia-02-el-catalogo.html">El catálogo</a> o <a href="guia-03-un-test-muchos-datos.html">Un test, muchos datos</a>.</p>
+</section>
+
+</main>
+</div>
+
+<script>
+document.querySelectorAll('.copy').forEach(function (btn) {
+  btn.addEventListener('click', function () {
+    var pre = btn.parentElement.querySelector('pre');
+    if (!pre) return;
+    var texto = pre.innerText;
+
+    function avisar(msg) {
+      var prev = btn.dataset.etiqueta || 'Copiar';
+      btn.textContent = msg;
+      setTimeout(function () { btn.textContent = prev; }, 1400);
+    }
+
+    // Plan B con execCommand. Hace falta de verdad: estas guias se abren
+    // con doble clic (file://) y en varios navegadores navigator.clipboard
+    // no esta disponible o rechaza ahi. Sin este respaldo, el boton se
+    // quedaria en "Error" y el alumno no podria copiar nada.
+    function copiarALaAntigua() {
+      var ta = document.createElement('textarea');
+      ta.value = texto;
+      ta.setAttribute('readonly', '');
+      ta.style.position = 'fixed';
+      ta.style.top = '-1000px';
+      document.body.appendChild(ta);
+      ta.select();
+      var ok = false;
+      try { ok = document.execCommand('copy'); } catch (e) { ok = false; }
+      document.body.removeChild(ta);
+      avisar(ok ? 'Copiado' : 'Selecciona y copia a mano');
+    }
+
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(texto)
+        .then(function () { avisar('Copiado'); })
+        .catch(copiarALaAntigua);
+    } else {
+      copiarALaAntigua();
+    }
+  });
+});
+(function () {
+  var links = Array.prototype.slice.call(document.querySelectorAll('.toc a[href^="#"]'));
+  var map = {};
+  links.forEach(function (a) {
+    var el = document.getElementById(a.getAttribute('href').slice(1));
+    if (el) map[el.id] = a;
+  });
+  var obs = new IntersectionObserver(function (entries) {
+    entries.forEach(function (e) {
+      if (!map[e.target.id]) return;
+      if (e.isIntersecting) {
+        links.forEach(function (a) { a.classList.remove('cur'); });
+        map[e.target.id].classList.add('cur');
+      }
+    });
+  }, { rootMargin: '-10% 0px -75% 0px', threshold: 0 });
+  Object.keys(map).forEach(function (id) { obs.observe(document.getElementById(id)); });
+})();
+
+// ---------------------------------------------------------------------
+//  Los enlaces entre guias son RELATIVOS en el HTML, a proposito: el
+//  alumno abre el archivo con doble clic y navegar tiene que funcionar
+//  sin internet y sin permisos.
+//
+//  Cuando la misma pagina corre publicada como artifact, un enlace
+//  relativo no resuelve a nada -- cada artifact vive en su propio
+//  origen. Por eso aqui se reescriben a su URL, y SOLO ahi.
+//
+//  Antes esto estaba al reves (URL fijas en el HTML) y rompia el caso
+//  que de verdad se usa: el archivo local.
+// ---------------------------------------------------------------------
+(function () {
+  var PUBLICADAS = {
+    'guia-00-por-que-se-prueba.html': 'dc6ceb37-bac9-4a8c-bbd0-89f91dbc7def',
+    'guia-01-anatomia-de-un-test.html': '6755acb6-a6c0-42ac-95dd-e2ffb84a3a71',
+    'guia-02-el-catalogo.html': 'b02ccd10-cb0b-4545-a130-a0dc29e6a26c',
+    'guia-03-un-test-muchos-datos.html': 'dec3fbf5-39f0-411c-8daa-02bb3dec3eb0',
+    'guia-04-dobles-de-prueba.html': '33074df8-6377-44cd-a3c6-68f766ff4b78',
+    'anexo-junit5-vs-junit6.html': '53f58e3c-f8ea-4c4c-a6a9-ae93e2b9ca9a'
+  };
+  if (!/claudeusercontent|claude\.ai/.test(location.hostname)) return;
+  document.querySelectorAll('a[href]').forEach(function (a) {
+    var id = PUBLICADAS[a.getAttribute('href')];
+    if (id) a.setAttribute('href', 'https://claude.ai/code/artifact/' + id);
+  });
+})();
+</script>

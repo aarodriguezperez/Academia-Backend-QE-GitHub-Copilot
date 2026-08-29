@@ -1,0 +1,1208 @@
+<meta charset="utf-8">
+<title>Dobles de prueba</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&family=Zilla+Slab:wght@600;700&display=swap">
+<style>
+:root{
+  --bg:#f4f6f5;
+  --surface:#ffffff;
+  --surface-2:#eaeeec;
+  --ink:#12181a;
+  --ink-2:#4a5559;
+  --ink-3:#78848a;
+  --rule:#dbe2df;
+  --accent:#0e6b63;
+  --accent-soft:#dcedea;
+
+  --warn:#8a5a10;      --warn-bg:#f7eeda;
+  --next:#2f7d3a;      --next-bg:#e2f0e4;
+  --error:#b23a2e;     --error-bg:#f8e6e3;
+  --complete:#1f5b96;  --complete-bg:#e3edf8;
+
+  --term-bg:#101619;
+  --term-ink:#dbe4e6;
+  --term-dim:#7b8a8e;
+  --term-prompt:#5fb8ac;
+  --term-out:#a3b0b3;
+  --term-rule:#232d31;
+
+  --step:clamp(1.9rem,1.4rem + 1.6vw,2.6rem);
+  --h2:clamp(1.45rem,1.2rem + 1vw,1.9rem);
+  --h3:1.1rem;
+  --body:1rem;
+  --small:.87rem;
+  --tiny:.76rem;
+  --radius:10px;
+  --maxw:1180px;
+}
+
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --bg:#0d1113;
+    --surface:#151b1e;
+    --surface-2:#1b2327;
+    --ink:#e6edee;
+    --ink-2:#9fadb0;
+    --ink-3:#78868a;
+    --rule:#242e32;
+    --accent:#5fc0b4;
+    --accent-soft:#122b29;
+
+    --warn:#dfa955;      --warn-bg:#2e2312;
+    --next:#69bf7a;      --next-bg:#152a1a;
+    --error:#e8908b;     --error-bg:#2f1a18;
+    --complete:#7fb0e8;  --complete-bg:#16243a;
+
+    --term-bg:#070a0c;
+    --term-ink:#dbe4e6;
+    --term-dim:#6c797d;
+    --term-prompt:#6fc9bc;
+    --term-out:#94a2a5;
+    --term-rule:#1d262a;
+  }
+}
+
+:root[data-theme="dark"]{
+  --bg:#0d1113;
+  --surface:#151b1e;
+  --surface-2:#1b2327;
+  --ink:#e6edee;
+  --ink-2:#9fadb0;
+  --ink-3:#78868a;
+  --rule:#242e32;
+  --accent:#5fc0b4;
+  --accent-soft:#122b29;
+
+  --warn:#dfa955;      --warn-bg:#2e2312;
+  --next:#69bf7a;      --next-bg:#152a1a;
+  --error:#e8908b;     --error-bg:#2f1a18;
+  --complete:#7fb0e8;  --complete-bg:#16243a;
+
+  --term-bg:#070a0c;
+  --term-ink:#dbe4e6;
+  --term-dim:#6c797d;
+  --term-prompt:#6fc9bc;
+  --term-out:#94a2a5;
+  --term-rule:#1d262a;
+}
+
+*{box-sizing:border-box}
+
+body{
+  margin:0;
+  background:var(--bg);
+  color:var(--ink);
+  font-family:"IBM Plex Sans",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  font-size:var(--body);
+  line-height:1.62;
+  -webkit-font-smoothing:antialiased;
+}
+
+.wrap{max-width:var(--maxw);margin:0 auto;padding:0 1.5rem}
+
+/* ---------- masthead ---------- */
+.masthead{
+  border-bottom:1px solid var(--rule);
+  background:var(--surface);
+  padding:3.2rem 0 2.4rem;
+}
+.eyebrow{
+  font-family:"JetBrains Mono",monospace;
+  font-size:var(--tiny);letter-spacing:.09em;text-transform:uppercase;
+  color:var(--ink-3);margin:0 0 1rem;
+}
+.masthead h1{
+  font-family:"Zilla Slab",Georgia,serif;font-weight:700;
+  font-size:clamp(2.4rem,1.7rem + 3.2vw,4rem);
+  line-height:1.04;letter-spacing:-.015em;
+  margin:0 0 1.1rem;max-width:16ch;text-wrap:balance;
+}
+.lede{
+  font-size:clamp(1.02rem,.98rem + .35vw,1.2rem);
+  color:var(--ink-2);max-width:62ch;margin:0 0 1.6rem;
+}
+.facts{
+  list-style:none;display:flex;flex-wrap:wrap;gap:.45rem;margin:0;padding:0;
+}
+.facts li{
+  font-family:"JetBrains Mono",monospace;font-size:var(--tiny);
+  color:var(--ink-2);background:var(--surface-2);
+  border:1px solid var(--rule);border-radius:99px;padding:.28rem .7rem;
+}
+
+/* ---------- shell ---------- */
+.shell{
+  display:grid;grid-template-columns:minmax(0,1fr);gap:2.4rem;
+  padding-top:2.6rem;padding-bottom:5rem;
+}
+@media (min-width:1000px){
+  .shell{grid-template-columns:216px minmax(0,1fr);gap:3.4rem}
+}
+
+.toc{font-size:var(--small);align-self:start}
+@media (min-width:1000px){
+  .toc{position:sticky;top:1.6rem;max-height:calc(100vh - 3.2rem);overflow-y:auto}
+}
+.toc h2{
+  font-family:"JetBrains Mono",monospace;font-size:var(--tiny);font-weight:700;
+  letter-spacing:.09em;text-transform:uppercase;color:var(--ink-3);
+  margin:0 0 .6rem;padding-bottom:.4rem;border-bottom:1px solid var(--rule);
+}
+.toc h2+*{margin-top:0}
+.toc ol,.toc ul{list-style:none;margin:0 0 1.6rem;padding:0;display:flex;flex-direction:column;gap:.08rem}
+.toc a{
+  display:flex;gap:.55rem;align-items:baseline;
+  color:var(--ink-2);text-decoration:none;
+  padding:.3rem .45rem;border-radius:6px;line-height:1.35;
+}
+.toc a:hover{color:var(--ink);background:var(--surface-2)}
+.toc a:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
+.toc .n{
+  font-family:"JetBrains Mono",monospace;font-size:.7rem;
+  color:var(--ink-3);flex:none;
+}
+.toc a.cur{color:var(--ink);font-weight:600;background:var(--surface-2)}
+
+main{min-width:0;max-width:70ch}
+
+/* ---------- secciones ---------- */
+section{
+  padding-top:2.2rem;margin-top:2.2rem;border-top:1px solid var(--rule);
+}
+section:first-child{padding-top:0;margin-top:0;border-top:0}
+.rubric{
+  font-family:"JetBrains Mono",monospace;font-size:var(--tiny);
+  letter-spacing:.09em;text-transform:uppercase;color:var(--accent);
+  margin:0 0 .35rem;
+}
+h2.sec{
+  font-family:"Zilla Slab",Georgia,serif;font-weight:700;
+  font-size:var(--h2);line-height:1.14;letter-spacing:-.01em;
+  margin:0 0 1.1rem;display:flex;gap:.75rem;align-items:baseline;text-wrap:balance;
+}
+h2.sec .num{
+  font-family:"JetBrains Mono",monospace;font-size:.8rem;font-weight:700;
+  color:var(--ink-3);flex:none;
+}
+h3{
+  font-family:"Zilla Slab",Georgia,serif;font-weight:600;font-size:var(--h3);
+  margin:2rem 0 .6rem;letter-spacing:-.005em;
+}
+p{margin:0 0 1rem;max-width:66ch}
+strong{font-weight:600}
+em{font-style:italic}
+a{color:var(--accent)}
+
+code{
+  font-family:"JetBrains Mono",monospace;font-size:.86em;
+  background:var(--surface-2);border:1px solid var(--rule);
+  border-radius:4px;padding:.08em .34em;
+}
+
+/* ---------- notas ---------- */
+.note{
+  background:var(--surface);border:1px solid var(--rule);
+  border-left:3px solid var(--accent);border-radius:var(--radius);
+  padding:.85rem 1.05rem;margin:0 0 1.2rem;font-size:var(--small);
+  color:var(--ink-2);max-width:66ch;
+}
+.note strong{color:var(--ink)}
+.note.warn{border-left-color:var(--warn);background:var(--warn-bg)}
+.note.warn strong{color:var(--ink)}
+.note.key{border-left-color:var(--accent);background:var(--accent-soft)}
+.note.key strong{color:var(--ink)}
+.note p:last-child{margin-bottom:0}
+
+/* ---------- analogía ---------- */
+.ana{
+  background:var(--surface);border:1px solid var(--rule);border-radius:var(--radius);
+  padding:1.1rem 1.2rem;margin:0 0 1.3rem;max-width:66ch;
+  position:relative;
+}
+.ana .tag{
+  font-family:"JetBrains Mono",monospace;font-size:.68rem;font-weight:700;
+  letter-spacing:.1em;text-transform:uppercase;color:var(--accent);
+  display:block;margin-bottom:.5rem;
+}
+.ana p:last-child{margin-bottom:0}
+.ana h4{
+  font-family:"Zilla Slab",Georgia,serif;font-weight:600;font-size:1.05rem;
+  margin:0 0 .5rem;
+}
+
+/* ---------- terminal / código ---------- */
+.term{
+  background:var(--term-bg);border:1px solid var(--term-rule);
+  border-radius:var(--radius);margin:0 0 1.2rem;position:relative;overflow:hidden;
+}
+.term pre{
+  margin:0;padding:1rem 1.1rem;overflow-x:auto;
+  font-family:"JetBrains Mono",monospace;font-size:.8rem;line-height:1.72;
+  color:var(--term-ink);
+}
+.term code{background:none;border:0;padding:0;font-size:inherit;color:inherit}
+.term .cm{color:var(--term-dim)}
+.term .p{color:var(--term-prompt);user-select:none}
+.term .kw{color:#c99bd8}
+.term .ty{color:#7fc3e8}
+.term .st{color:#c8d98a}
+.term .out{color:var(--term-out)}
+.term .bad{color:#e8908b}
+.term .ok{color:#8ed49a}
+.term .lbl{
+  font-family:"JetBrains Mono",monospace;font-size:.66rem;font-weight:700;
+  letter-spacing:.1em;text-transform:uppercase;color:var(--term-dim);
+  padding:.55rem 1.1rem .1rem;display:block;
+}
+.copy{
+  position:absolute;top:.5rem;right:.5rem;z-index:2;
+  font-family:"JetBrains Mono",monospace;font-size:.66rem;
+  color:var(--term-dim);background:transparent;
+  border:1px solid var(--term-rule);border-radius:5px;
+  padding:.2rem .5rem;cursor:pointer;
+}
+.copy:hover{color:var(--term-ink);border-color:var(--term-dim)}
+.copy:focus-visible{outline:2px solid var(--term-prompt);outline-offset:1px}
+
+/* ---------- figuras ---------- */
+figure.flow{
+  background:var(--surface);border:1px solid var(--rule);border-radius:var(--radius);
+  padding:1.15rem 1.15rem .9rem;margin:0 0 1.4rem;overflow-x:auto;
+}
+figure.flow svg{display:block;width:100%;height:auto;color:var(--ink-2)}
+figure.flow figcaption{
+  font-family:"JetBrains Mono",monospace;font-size:var(--tiny);
+  color:var(--ink-3);line-height:1.55;margin-top:.85rem;
+}
+figure.flow figcaption strong{color:var(--ink-2)}
+
+figure.mapa{
+  background:var(--surface);border:1px solid var(--rule);border-radius:var(--radius);
+  padding:.85rem;margin:0 0 1.4rem;
+}
+figure.mapa img{display:block;width:100%;height:auto;border-radius:6px}
+figure.mapa figcaption{
+  font-family:"JetBrains Mono",monospace;font-size:var(--tiny);
+  color:var(--ink-3);line-height:1.55;margin-top:.8rem;
+}
+
+/* ---------- tablas ---------- */
+.tw{overflow-x:auto;margin:0 0 1.3rem;border:1px solid var(--rule);border-radius:var(--radius)}
+table{border-collapse:collapse;width:100%;font-size:var(--small);background:var(--surface)}
+th,td{text-align:left;padding:.6rem .8rem;border-bottom:1px solid var(--rule);vertical-align:top}
+thead th{
+  font-family:"JetBrains Mono",monospace;font-size:.7rem;font-weight:700;
+  letter-spacing:.06em;text-transform:uppercase;color:var(--ink-3);
+  background:var(--surface-2);white-space:nowrap;
+}
+tbody tr:last-child td{border-bottom:0}
+td code{font-size:.8rem}
+
+/* ---------- señales ---------- */
+.sig{
+  font-family:"JetBrains Mono",monospace;font-size:.72rem;font-weight:700;
+  padding:.16rem .45rem;border-radius:5px;white-space:nowrap;
+}
+.sig.n{color:var(--next);background:var(--next-bg)}
+.sig.e{color:var(--error);background:var(--error-bg)}
+.sig.c{color:var(--complete);background:var(--complete-bg)}
+
+/* ---------- listas ---------- */
+ul.plain,ol.plain{margin:0 0 1.2rem;padding-left:1.15rem;max-width:66ch}
+ul.plain li,ol.plain li{margin-bottom:.45rem}
+
+ul.check{list-style:none;margin:0 0 1.3rem;padding:0;display:flex;flex-direction:column;gap:.4rem;max-width:66ch}
+ul.check li{
+  display:grid;grid-template-columns:auto minmax(0,1fr);gap:.6rem;align-items:start;
+  background:var(--surface);border:1px solid var(--rule);border-radius:8px;
+  padding:.6rem .8rem;font-size:var(--small);
+}
+ul.check .box{font-family:"JetBrains Mono",monospace;color:var(--ink-3);flex:none}
+ul.check b{display:block;margin-bottom:.1rem;font-size:.95rem;color:var(--ink)}
+
+/* ---------- trampa ---------- */
+.trap{
+  display:grid;grid-template-columns:auto minmax(0,1fr);gap:.85rem;align-items:start;
+  background:var(--surface);border:1px solid var(--rule);border-radius:var(--radius);
+  padding:.85rem 1rem;margin-bottom:.55rem;font-size:var(--small);max-width:66ch;
+}
+.trap .k{
+  font-family:"JetBrains Mono",monospace;font-size:.72rem;font-weight:700;
+  color:var(--error);background:var(--error-bg);
+  border-radius:5px;padding:.22rem .5rem;white-space:nowrap;
+}
+.trap b{display:block;margin-bottom:.15rem;font-size:.95rem;color:var(--ink)}
+
+/* ---------- glosario ---------- */
+dl.glos{margin:0 0 1.3rem;max-width:66ch}
+dl.glos dt{
+  font-family:"JetBrains Mono",monospace;font-size:.8rem;font-weight:700;
+  color:var(--accent);margin-top:.9rem;
+}
+dl.glos dd{margin:.15rem 0 0;font-size:var(--small);color:var(--ink-2)}
+
+/* ---------- cierre ---------- */
+.closing{
+  border-top:1px solid var(--rule);margin-top:3rem;padding-top:1.6rem;
+  font-size:var(--small);color:var(--ink-3);
+}
+.closing a{color:var(--ink-2)}
+
+@media (prefers-reduced-motion:reduce){
+  *{animation:none !important;transition:none !important;scroll-behavior:auto !important}
+}
+html{scroll-behavior:smooth}
+
+/* ---------- añadidos de la serie JUnit ----------
+   Estas clases se usaban ya en las guías de springWebFlux pero no
+   llegaron a definirse en su hoja de estilo: .arch, .cmd, .dir, .hi, .ver.
+   Se definen aquí, más .veredicto, propia de esta serie.                */
+
+.term .cmd{color:var(--term-ink);font-weight:500}
+.term .hi{color:#f0d48a}
+.term .dir{color:#7fc3e8;font-weight:500}
+.term .num{color:#e0a86a}
+
+.arch{
+  font-family:"JetBrains Mono",monospace;font-size:var(--small);
+  background:var(--term-bg);color:var(--term-ink);
+  border-radius:var(--radius);padding:1.15rem 1.25rem;margin:0 0 1.3rem;
+  overflow-x:auto;line-height:1.75;white-space:pre;
+}
+.arch .dir{color:#7fc3e8;font-weight:500}
+.arch .hi{color:#f0d48a}
+.arch .cm{color:var(--term-dim)}
+
+.ver{
+  border:1px solid var(--rule);border-left:3px solid var(--next);
+  background:var(--next-bg);border-radius:var(--radius);
+  padding:.9rem 1.15rem;margin:0 0 1.3rem;font-size:var(--small);
+}
+.ver b{display:block;color:var(--ink);margin-bottom:.2rem}
+.ver p:last-child{margin-bottom:0}
+
+.veredicto{
+  display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
+  gap:.75rem;margin:0 0 1.4rem;
+}
+.veredicto div{
+  border:1px solid var(--rule);border-radius:var(--radius);
+  background:var(--surface);padding:.9rem 1rem;font-size:var(--small);
+}
+.veredicto b{display:block;font-family:"JetBrains Mono",monospace;
+  font-size:var(--tiny);letter-spacing:.07em;text-transform:uppercase;
+  margin-bottom:.35rem;}
+.veredicto .ok b{color:var(--next)}
+.veredicto .bad b{color:var(--error)}
+.veredicto .mid b{color:var(--warn)}
+/* ---------- ligaduras: fuera, y no es cosmetica ----------
+   JetBrains Mono dibuja  <!--  como una flecha,  -->  como otra, y  >=  como
+   un solo glifo. En una guia de codigo eso deja de ser bonito y pasa a ser
+   un error: el alumno no puede ver la sintaxis literal que tiene que teclear.
+   Y en esta serie es critico -- toda la seccion 07 de la guia 01 trata sobre
+   la diferencia entre  >=  y  >.  Se apagan en TODO contexto de codigo.       */
+.term pre, .term code, .arch, code, pre, kbd, samp{
+  font-variant-ligatures:none;
+  font-feature-settings:"liga" 0,"clig" 0,"calt" 0;
+}
+
+</style>
+
+<header class="masthead">
+  <div class="wrap">
+    <p class="eyebrow">Mockito 5.23 &middot; JUnit 6.1.3 &middot; Java 21 &middot; Laboratorio &middot; 04 de 04</p>
+    <h1>Dobles de prueba</h1>
+    <p class="lede">Un mock es una mentira que tú controlas. Aquí aprendes a construirla — y, lo que casi ningún tutorial enseña, a reconocer cuándo te la estás creyendo: dos clases de test que prueban lo mismo, y solo una se entera de que el código está roto.</p>
+    <ul class="facts">
+      <li>45 tests</li>
+      <li>9 clases de test</li>
+      <li>1 mal ejemplo, a propósito</li>
+      <li>120 min</li>
+    </ul>
+  </div>
+</header>
+
+<div class="wrap shell">
+
+<nav class="toc" aria-label="Contenido">
+  <h2>La ruta</h2>
+  <ol>
+    <li><a href="#empezar"><span class="n">00</span> Poner en marcha</a></li>
+    <li><a href="#porque"><span class="n">01</span> Por qué existe un doble</a></li>
+    <li><a href="#quees"><span class="n">02</span> Qué es un mock</a></li>
+    <li><a href="#when"><span class="n">03</span> Programar la respuesta</a></li>
+    <li><a href="#verify"><span class="n">04</span> La otra mitad: <code>verify</code></a></li>
+    <li><a href="#servicio"><span class="n">05</span> El test de verdad</a></li>
+    <li><a href="#captor"><span class="n">06</span> Con qué lo llamaron</a></li>
+    <li><a href="#espia"><span class="n">07</span> El espía y la trampa</a></li>
+    <li><a href="#estrictez"><span class="n">08</span> La estrictez te ayuda</a></li>
+    <li><a href="#mentira"><span class="n">09</span> Cuándo NO mockear</a></li>
+    <li><a href="#trampas"><span class="n">10</span> Trampas y ejercicios</a></li>
+  </ol>
+
+  <h2>La serie</h2>
+  <ul>
+    <li><a href="guia-00-por-que-se-prueba.html"><span class="n">00</span> Por qué se prueba</a></li>
+    <li><a href="guia-01-anatomia-de-un-test.html"><span class="n">01</span> Anatomía de un test</a></li>
+    <li><a href="guia-02-el-catalogo.html"><span class="n">02</span> El catálogo</a></li>
+    <li><a href="guia-03-un-test-muchos-datos.html"><span class="n">03</span> Un test, muchos datos</a></li>
+    <li><a href="#empezar" class="cur"><span class="n">04</span> Dobles de prueba</a></li>
+    <li><a href="anexo-junit5-vs-junit6.html"><span class="n">··</span> JUnit 5 contra 6</a></li>
+  </ul>
+</nav>
+
+<main>
+
+<section id="empezar">
+  <p class="rubric">Antes de empezar</p>
+  <h2 class="sec"><span class="num">00</span> Poner en marcha</h2>
+
+  <ul class="check">
+    <li><span class="box">[ ]</span><span><b>Haber hecho las guías 01 y 02</b> Aquí se dan por sabidos <code>@Test</code>, <code>assertThrows</code>, <code>@Nested</code> y <code>@Tag</code>.</span></li>
+    <li><span class="box">[ ]</span><span><b>Java 21</b> Sigue sin haber base de datos ni Docker. El «repositorio lento» es un <code>Map</code> con un <code>Thread.sleep</code>.</span></li>
+  </ul>
+
+  <div class="term">
+    <button class="copy" type="button" data-etiqueta="Copiar">Copiar</button>
+<pre><code><span class="p">$</span> <span class="cmd">cd testing/proyectos/04-mockito-dobles</span>
+<span class="p">$</span> <span class="cmd">./mvnw test</span>
+
+<span class="out ok">[INFO] Tests run: 45, Failures: 0, Errors: 0, Skipped: 0</span>
+<span class="out ok">[INFO] BUILD SUCCESS</span></code></pre>
+  </div>
+
+  <h3>Dos cosas del <code>pom.xml</code> que hay que entender antes de seguir</h3>
+
+  <div class="trap">
+    <span class="k">01</span>
+    <span><b>Mockito dice depender de JUnit 5. No le hagas caso.</b>Si abres el <code>pom</code> de <code>mockito-junit-jupiter:5.23.0</code> verás que declara <code>junit-jupiter-api:5.13.4</code>. Parece que te va a bajar JUnit 5 al lado de tu JUnit 6. <strong>No pasa</strong>: el <code>junit-bom</code> va declarado <em>antes</em> en el <code>dependencyManagement</code> y fija 6.1.3 para todo el árbol. Compruébalo tú: <code>./mvnw dependency:tree "-Dincludes=org.junit*:*"</code>.</span>
+  </div>
+
+  <div class="trap">
+    <span class="k">02</span>
+    <span><b>El aviso del agente de Java, y por qué el <code>pom</code> lleva una línea rara</b>Recién puesto Mockito, cada corrida escupe esto. No es un error, pero asusta — y en una versión futura del JDK <strong>sí</strong> lo será.</span>
+  </div>
+
+  <div class="term">
+    <button class="copy" type="button" data-etiqueta="Copiar">Copiar</button>
+    <span class="lbl">lo que sale SIN configurar nada</span>
+<pre><code><span class="out bad">Mockito is currently self-attaching to enable the inline-mock-maker.</span>
+<span class="out bad">This will no longer work in future releases of the JDK.</span>
+<span class="out bad">WARNING: A Java agent has been loaded dynamically (byte-buddy-agent-1.17.7.jar)</span>
+<span class="out bad">WARNING: Dynamic loading of agents will be disallowed by default in a future release</span></code></pre>
+  </div>
+
+  <p>Para mockear, Mockito necesita reescribir clases en caliente, y para eso engancha un <em>agente de Java</em> sobre la marcha. Desde Java 21 el JDK avisa de esa práctica, y ha anunciado que la prohibirá. La solución es cargar el agente <strong>al arrancar</strong>, que es como debe hacerse:</p>
+
+  <div class="term">
+    <button class="copy" type="button" data-etiqueta="Copiar">Copiar</button>
+    <span class="lbl">pom.xml — el arreglo, ya puesto en el proyecto</span>
+<pre><code><span class="cm">&lt;!-- publica la ruta del jar de cada dependencia como propiedad --&gt;</span>
+&lt;<span class="ty">plugin</span>&gt;
+  &lt;artifactId&gt;<span class="st">maven-dependency-plugin</span>&lt;/artifactId&gt;
+  &lt;version&gt;<span class="st">3.8.1</span>&lt;/version&gt;
+  &lt;executions&gt;&lt;execution&gt;&lt;goals&gt;&lt;goal&gt;<span class="st">properties</span>&lt;/goal&gt;&lt;/goals&gt;&lt;/execution&gt;&lt;/executions&gt;
+&lt;/<span class="ty">plugin</span>&gt;
+
+&lt;<span class="ty">plugin</span>&gt;
+  &lt;artifactId&gt;<span class="st">maven-surefire-plugin</span>&lt;/artifactId&gt;
+  &lt;configuration&gt;
+    &lt;argLine&gt;<span class="st">-javaagent:${org.mockito:mockito-core:jar} -Xshare:off</span>&lt;/argLine&gt;
+  &lt;/configuration&gt;
+&lt;/<span class="ty">plugin</span>&gt;</code></pre>
+  </div>
+
+  <div class="ver">
+    <b>No solo calla el aviso: además va más rápido</b>
+    <p>Medido en este proyecto sobre un test suelto: <strong>0.427 s → 0.169 s</strong>. Mockito ya no tiene que engancharse en caliente en mitad de la corrida.</p>
+  </div>
+
+  <h3>Si vienes del video de <em>Programando en JAVA</em></h3>
+
+  <p>Esta guía sigue el temario de <a href="https://www.youtube.com/watch?v=j9k3epjUgr8">ese tutorial</a> y lo amplía. Los nombres cambian porque el dominio es el de la academia, pero la correspondencia es directa:</p>
+
+  <div class="tw">
+    <table>
+      <thead><tr><th>En el video</th><th>Aquí</th></tr></thead>
+      <tbody>
+        <tr><td><code>UsuarioServicio</code></td><td><code>ServicioInscripcion</code></td></tr>
+        <tr><td><code>UsuarioRepositorio</code> (interfaz)</td><td><code>RepositorioAlumnos</code> y <code>RepositorioCursos</code></td></tr>
+        <tr><td><code>UsuarioDTO</code></td><td><code>Alumno</code>, <code>Inscripcion</code> (<code>record</code>)</td></tr>
+        <tr><td><code>crearUsuario(String)</code></td><td><code>inscribir(String, String)</code></td></tr>
+        <tr><td><code>obtenerUsuario(Long)</code></td><td><code>repoAlumnos.buscar(String)</code></td></tr>
+        <tr><td>&mdash;</td><td><code>Notificador</code>, que no tiene equivalente: es el colaborador con <strong>efecto externo</strong>, y el que justifica <code>verify</code> de verdad</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <p>Y dónde está cada cosa del video en esta guía:</p>
+
+  <div class="tw">
+    <table>
+      <thead><tr><th>Lo que enseña el video</th><th>Sección</th></tr></thead>
+      <tbody>
+        <tr><td><code>@ExtendWith(MockitoExtension.class)</code></td><td><a href="#quees">§02</a></td></tr>
+        <tr><td><code>@Mock</code> y <code>Mockito.mock(X.class)</code></td><td><a href="#quees">§02</a></td></tr>
+        <tr><td>Inyectar a mano en <code>@BeforeEach</code>, y luego <code>@InjectMocks</code></td><td><a href="#servicio">§05</a></td></tr>
+        <tr><td><code>when(...).thenReturn(...)</code></td><td><a href="#when">§03</a></td></tr>
+        <tr><td><code>anyString()</code></td><td><a href="#when">§03</a></td></tr>
+        <tr><td><code>verify(...)</code> y <code>times(n)</code></td><td><a href="#verify">§04</a></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <p class="note key"><strong>Una diferencia de fondo, y no es un reproche al video.</strong> Allí el <code>UsuarioServicio</code> es deliberadamente mínimo: dos métodos que delegan en el repositorio y poco más. Es lo correcto para enseñar la mecánica sin ruido. Aquí el servicio tiene <strong>una regla de negocio de verdad</strong> — el cupo — y eso es a propósito: sin una regla que se pueda romper, la sección 09 no podría existir. Es justo lo que ningún tutorial de Mockito llega a mostrar.</p>
+
+  <div class="trap">
+    <span class="k">03</span>
+    <span><b>El video usa Mockito 4.6.1; aquí es 5.23.0</b>No es un capricho: entre las dos hay cambios que se notan el primer día. El más visible es que en la 4 mockear una clase <code>final</code> exigía añadir el artefacto <code>mockito-inline</code>, y en la 5 funciona sin configurar nada. La tabla completa está en el <a href="anexo-junit5-vs-junit6.html">anexo</a>. Si copias <code>4.6.1</code> del video sobre este proyecto, además, chocará con Java 21.</span>
+  </div>
+
+  <div class="arch"><span class="dir">04-mockito-dobles/</span>
+├── <span class="dir">scripts/</span>
+│   ├── <span class="hi">por-que-mockear.sh</span>      <span class="cm">← el experimento de la §01</span>
+│   └── <span class="hi">la-mentira.sh</span>           <span class="cm">← el experimento de la §09</span>
+├── <span class="dir">src/main/java/…/academia/</span>
+│   ├── <span class="hi">ServicioInscripcion.java</span>   <span class="cm">el código bajo prueba</span>
+│   ├── <span class="hi">Curso.java</span>                 <span class="cm">la regla del cupo. NO se mockea</span>
+│   ├── <span class="hi">RepositorioAlumnos.java</span>    <span class="cm">interfaz  · lento</span>
+│   ├── <span class="hi">RepositorioAlumnosLento.java</span> <span class="cm">real · 300 ms por consulta</span>
+│   ├── <span class="hi">RepositorioCursos.java</span>     <span class="cm">interfaz  · caro de montar</span>
+│   └── <span class="hi">Notificador.java</span>           <span class="cm">interfaz  · efecto externo</span>
+└── <span class="dir">src/test/java/…/academia/</span>
+    ├── <span class="hi">PrimerMockTest.java</span>        <span class="cm">§02</span>
+    ├── <span class="hi">RespuestasTest.java</span>        <span class="cm">§03</span>
+    ├── <span class="hi">VerificarTest.java</span>         <span class="cm">§04</span>
+    ├── <span class="hi">ServicioInscripcionTest.java</span> <span class="cm">§05  el bueno</span>
+    ├── <span class="hi">CaptorTest.java</span>            <span class="cm">§06</span>
+    ├── <span class="hi">EspiaTest.java</span>             <span class="cm">§07</span>
+    ├── <span class="hi">EstrictezTest.java</span>         <span class="cm">§08</span>
+    ├── <span class="hi">SobreMockeoTest.java</span>       <span class="cm">§09  el MAL ejemplo</span>
+    └── <span class="hi">ConRepositorioRealTest.java</span> <span class="cm">§01  @Tag("lento")</span></div>
+</section>
+
+<section id="porque">
+  <p class="rubric">El experimento</p>
+  <h2 class="sec"><span class="num">01</span> Por qué existe un doble</h2>
+
+  <p>El código bajo prueba es un <code>ServicioInscripcion</code> que no hace nada por sí solo: <strong>coordina a tres colaboradores</strong>. Y cada uno es imposible de usar de verdad en un test, por un motivo distinto.</p>
+
+  <div class="tw">
+    <table>
+      <thead><tr><th>Colaborador</th><th>Por qué no puedes usar el real</th></tr></thead>
+      <tbody>
+        <tr><td><code>RepositorioAlumnos</code></td><td><strong>Es lento.</strong> 300 ms por consulta.</td></tr>
+        <tr><td><code>RepositorioCursos</code></td><td><strong>Montar el escenario es caro.</strong> Para probar «curso lleno» habría que inscribir a treinta alumnos primero.</td></tr>
+        <tr><td><code>Notificador</code></td><td><strong>Tiene efecto externo.</strong> Manda correos de verdad, a personas de verdad, cada vez que alguien ejecuta <code>mvn test</code>. Y eso no se deshace.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <p>La velocidad es la razón más fácil de medir, así que empecemos por ella. El proyecto trae la misma prueba escrita dos veces: una contra el repositorio real y otra con dobles.</p>
+
+  <div class="term">
+    <button class="copy" type="button" data-etiqueta="Copiar">Copiar</button>
+    <span class="lbl">una corrida de ejemplo — tus segundos serán otros, la proporción no</span>
+<pre><code><span class="p">$</span> <span class="cmd">./scripts/por-que-mockear.sh</span>
+
+<span class="out">== La misma prueba, con y sin dobles ==</span>
+<span class="out bad">   con el repositorio REAL (300 ms)   Tests run:  5, Failures: 0    1.734s</span>
+<span class="out ok">   con dobles de Mockito              Tests run: 40, Failures: 0    0.263s</span></code></pre>
+  </div>
+
+  <p class="note key"><strong>Cinco tests contra la pieza real tardan más que los cuarenta que usan dobles.</strong> Y 300 ms es una latencia modesta: una consulta real por red no es más rápida. Doscientos tests que consulten dos veces cada uno son dos minutos de espera — y a los dos minutos la gente deja de correr la suite antes de subir código. Ya sabes cómo sigue eso desde la <a href="guia-02-el-catalogo.html">guía 02</a>: una suite que nadie corre no protege nada.</p>
+
+  <p>Pero la velocidad no es la razón más fuerte. Las otras dos:</p>
+
+  <div class="veredicto">
+    <div class="ok"><b>Control</b>Con un doble provocas en una línea lo que con la pieza real cuesta un escenario entero: la base caída, el curso lleno, el <em>timeout</em>.</div>
+    <div class="ok"><b>Seguridad</b>El notificador real manda correos. Un test que lo use los manda de verdad. Eso no se puede deshacer.</div>
+    <div class="mid"><b>Velocidad</b>La más visible y la menos importante de las tres.</div>
+  </div>
+
+  <p class="note warn"><strong>Y una precisión que casi nunca se hace.</strong> Nada de esto dice que <code>ConRepositorioRealTest</code> sobre. Es el único test que comprueba que el repositorio de verdad funciona — si todo se mockea, nadie prueba nunca la pieza real. Lo que no puede pasar es que <strong>toda</strong> la suite sea así. Va etiquetada <code>@Tag("lento")</code> justo por eso.</p>
+</section>
+
+<section id="quees">
+  <p class="rubric">El concepto</p>
+  <h2 class="sec"><span class="num">02</span> Qué es un mock</h2>
+
+  <p>Un mock <strong>no</strong> es una versión falsa que alguien programó a mano. Es un objeto que Mockito <em>fabrica en tiempo de ejecución</em> implementando tu interfaz, con todos los métodos vacíos y una libreta donde apunta cada llamada que recibe.</p>
+
+  <p>De ahí salen sus dos poderes, y conviene tenerlos separados en la cabeza desde el primer día:</p>
+
+  <div class="veredicto">
+    <div class="ok"><b>Puedes decirle qué responder</b><code>when(...)</code> — sección 03. Sirve cuando te importa lo que el colaborador <em>devuelve</em>.</div>
+    <div class="ok"><b>Puedes preguntarle qué le llamaron</b><code>verify(...)</code> — sección 04. Sirve cuando te importa que <em>se le llamó</em>.</div>
+  </div>
+
+  <p>Casi todos los errores de principiante vienen de confundir esos dos.</p>
+
+  <div class="term">
+    <button class="copy" type="button" data-etiqueta="Copiar">Copiar</button>
+    <span class="lbl">PrimerMockTest.java</span>
+<pre><code><span class="kw">@ExtendWith</span>(<span class="ty">MockitoExtension</span>.<span class="kw">class</span>)     <span class="cm">// sin esto, @Mock se queda en null</span>
+<span class="kw">class</span> <span class="ty">PrimerMockTest</span> {
+
+    <span class="kw">@Mock</span>
+    <span class="kw">private</span> <span class="ty">RepositorioAlumnos</span> repo;
+
+    <span class="kw">@Test</span>
+    <span class="kw">void</span> losValoresPorDefecto() {
+        <span class="cm">// Sin programar nada, un mock NO truena: devuelve el "vacio" del tipo.</span>
+        assertEquals(<span class="ty">Optional</span>.empty(), repo.buscar(<span class="st">"A01"</span>));
+    }
+}</code></pre>
+  </div>
+
+  <div class="trap">
+    <span class="k">01</span>
+    <span><b>El error número uno al empezar</b>Olvidar <code>@ExtendWith(MockitoExtension.class)</code>. El campo <code>@Mock</code> se queda en <code>null</code> y el primer test truena con <code>NullPointerException</code> sin ninguna pista de por qué.</span>
+  </div>
+
+  <p class="note warn"><strong>Y esa amabilidad del valor por defecto es una trampa.</strong> Un mock sin programar devuelve <code>null</code>, <code>0</code>, <code>false</code> o <code>Optional.empty()</code> según el tipo, sin avisar. Eso significa que un test puede pasar <em>por casualidad</em> sobre un mock que nunca programaste — y lo estarás leyendo como si probara algo.</p>
+
+  <h3>El vocabulario, que sí importa</h3>
+
+  <p>«Mock» se usa coloquialmente para todo, y en la literatura son cinco cosas distintas. Merece la pena saber cuál estás usando:</p>
+
+  <dl class="glos">
+    <dt>dummy</dt>
+    <dd>Un objeto que solo está ahí para rellenar un parámetro. Nunca se usa. Un <code>null</code>, muchas veces.</dd>
+
+    <dt>stub</dt>
+    <dd>Devuelve respuestas fijas y ya. Es lo que consigues con <code>when(...).thenReturn(...)</code>.</dd>
+
+    <dt>spy</dt>
+    <dd>Envuelve un objeto <strong>real</strong> y apunta lo que le pasa, dejándolo funcionar. Sección 07.</dd>
+
+    <dt>mock</dt>
+    <dd>Un objeto vacío al que además le puedes <em>preguntar</em> qué le llamaron. Es lo que fabrica <code>mock()</code>.</dd>
+
+    <dt>fake</dt>
+    <dd>Una implementación de verdad, simplificada. Un repositorio con un <code>Map</code> dentro en lugar de una base de datos. <strong>Mockito no los hace</strong>: los escribes tú. Y a veces son la mejor opción — más legibles que veinte líneas de <code>when()</code>.</dd>
+  </dl>
+
+  <p class="note"><strong>El nombre general de los cinco es <em>doble de prueba</em></strong> (<em>test double</em>), por analogía con el doble de cine. De ahí el título de esta guía.</p>
+</section>
+
+<section id="when">
+  <p class="rubric">El código</p>
+  <h2 class="sec"><span class="num">03</span> Programar la respuesta</h2>
+
+  <div class="term">
+    <button class="copy" type="button" data-etiqueta="Copiar">Copiar</button>
+<pre><code>when(repo.buscar(<span class="st">"A01"</span>)).thenReturn(<span class="ty">Optional</span>.of(ANA));
+<span class="cm">//   ^^^^^^^^^^^^^^^^^^  ^^^^^^^^^^^^^^^^^^^^^^^^</span>
+<span class="cm">//   la llamada          la respuesta</span></code></pre>
+  </div>
+
+  <p class="note key"><strong>Eso de dentro de <code>when()</code> no es una llamada de verdad.</strong> Cuando escribes <code>repo.buscar("A01")</code> ahí, Mockito intercepta la invocación y la usa como <em>patrón</em>, no la ejecuta. Por eso el resultado de esa línea no significa nada. Guárdalo: en la sección 07 esta misma mecánica se convierte en una trampa cara.</p>
+
+  <div class="trap">
+    <span class="k">02</span>
+    <span><b>El mock solo responde al argumento EXACTO que programaste</b>Programas <code>"A01"</code>, tu código pregunta por <code>"A99"</code>, y el mock devuelve <code>Optional.empty()</code> sin quejarse. Es coherente y sorprende a todo el mundo la primera vez. (La estrictez de la sección 08 te avisa de esto — otra razón para no apagarla.)</span>
+  </div>
+
+  <h3>Los matchers, y su regla de todo-o-nada</h3>
+
+  <div class="term">
+    <button class="copy" type="button" data-etiqueta="Copiar">Copiar</button>
+<pre><code>when(repo.buscar(anyString())).thenReturn(<span class="ty">Optional</span>.of(ANA));   <span class="cm">// cualquiera</span>
+
+<span class="cm">// argThat: tu propia condicion</span>
+when(repo.buscar(argThat(m -&gt; m != <span class="kw">null</span> &amp;&amp; m.startsWith(<span class="st">"A"</span>))))
+        .thenReturn(<span class="ty">Optional</span>.of(ANA));</code></pre>
+  </div>
+
+  <p class="note warn"><strong>La regla que hay que memorizar:</strong> si usas un matcher en un argumento, <strong>todos</strong> los argumentos de esa llamada tienen que ser matchers. Un valor literal mezclado con matchers lanza <code>InvalidUseOfMatchersException</code>. Para eso existe <code>eq(...)</code>: «este valor concreto, pero en forma de matcher».</p>
+
+  <h3>Lo demás del catálogo</h3>
+
+  <div class="tw">
+    <table>
+      <thead><tr><th>Forma</th><th>Para qué</th></tr></thead>
+      <tbody>
+        <tr><td><code>thenThrow(...)</code></td><td>Programar el camino triste. Es la única forma razonable de probar «qué hace mi código cuando la base de datos se cae» — con la base real habría que apagarla.</td></tr>
+        <tr><td><code>thenReturn(a).thenReturn(b)</code></td><td>Una respuesta distinta por llamada. Para reintentos: «la primera vez falla, la segunda funciona». A partir de la última, se repite la última.</td></tr>
+        <tr><td><code>thenAnswer(...)</code></td><td>La respuesta se <em>calcula</em> a partir del argumento recibido.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <p class="note"><strong>Con <code>thenAnswer</code>, poco.</strong> Un mock con lógica dentro empieza a ser un segundo programa, que también puede tener bugs y que nadie prueba. Si te encuentras escribiendo mucho <code>thenAnswer</code>, casi siempre lo que querías era un <em>fake</em> escrito a mano.</p>
+</section>
+
+<section id="verify">
+  <p class="rubric">El código</p>
+  <h2 class="sec"><span class="num">04</span> La otra mitad: <code>verify</code></h2>
+
+  <p><code>when()</code> sirve cuando te importa lo que el colaborador <strong>devuelve</strong>. <code>verify()</code> sirve cuando te importa que <strong>se le llamó</strong>.</p>
+
+  <p>Y hay una familia entera de casos donde solo existe la segunda: <strong>los métodos <code>void</code></strong>. Un notificador de correo no devuelve nada. La única pregunta que se le puede hacer es «se mandó el correo, sí o no».</p>
+
+  <div class="tw">
+    <table>
+      <thead><tr><th>Forma</th><th>Comprueba</th></tr></thead>
+      <tbody>
+        <tr><td><code>verify(mock).metodo(x)</code></td><td>Se llamó exactamente una vez. Equivale a <code>times(1)</code>.</td></tr>
+        <tr><td><code>verify(mock, times(n))</code></td><td>Exactamente <em>n</em> veces. También <code>atLeast</code>, <code>atMost</code>.</td></tr>
+        <tr><td><code>verify(mock, never())</code></td><td><strong>No</strong> se llamó. Sigue leyendo.</td></tr>
+        <tr><td><code>verifyNoInteractions(mock)</code></td><td>A ese doble no lo tocaron para nada — ni un método.</td></tr>
+        <tr><td><code>verifyNoMoreInteractions(mock)</code></td><td>Y además no ocurrió nada más.</td></tr>
+        <tr><td><code>inOrder(a, b)</code></td><td>El orden entre llamadas, cuando el orden <em>es</em> la regla.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="ver">
+    <b>El verify más valioso de todos es <code>never()</code></b>
+    <p>«Cuando la inscripción es rechazada, <strong>no</strong> se manda la confirmación.» Ese test no existe en la mayoría de las suites, y es justo el que evita el correo de «felicidades, ya estás inscrito» a alguien que se quedó fuera. <strong>Piensa en <code>never()</code> cada vez que escribas un <code>if</code>.</strong></p>
+  </div>
+
+  <p class="note warn"><strong>Con <code>verifyNoMoreInteractions</code>, moderación.</strong> Es un test frágil por naturaleza: cualquier llamada nueva y legítima que añadas al código lo rompe, aunque el comportamiento siga siendo correcto. Resérvalo para los colaboradores donde «una llamada de más» es un bug de verdad: cobros, correos, borrados.</p>
+</section>
+
+<section id="servicio">
+  <p class="rubric">El código</p>
+  <h2 class="sec"><span class="num">05</span> El test de verdad</h2>
+
+  <p><code>@InjectMocks</code> construye el objeto real y le pasa los <code>@Mock</code> por el constructor, emparejándolos por tipo.</p>
+
+  <div class="term">
+    <button class="copy" type="button" data-etiqueta="Copiar">Copiar</button>
+    <span class="lbl">ServicioInscripcionTest.java — fíjate en la línea del Curso</span>
+<pre><code><span class="kw">@ExtendWith</span>(<span class="ty">MockitoExtension</span>.<span class="kw">class</span>)
+<span class="kw">class</span> <span class="ty">ServicioInscripcionTest</span> {
+
+    <span class="kw">@Mock</span> <span class="kw">private</span> <span class="ty">RepositorioAlumnos</span> repoAlumnos;   <span class="cm">// lento    -&gt; doble</span>
+    <span class="kw">@Mock</span> <span class="kw">private</span> <span class="ty">RepositorioCursos</span>  repoCursos;    <span class="cm">// caro     -&gt; doble</span>
+    <span class="kw">@Mock</span> <span class="kw">private</span> <span class="ty">Notificador</span>        notificador;   <span class="cm">// externo  -&gt; doble</span>
+
+    <span class="kw">@InjectMocks</span> <span class="kw">private</span> <span class="ty">ServicioInscripcion</span> servicio;
+
+    <span class="kw">private</span> <span class="ty">Curso</span> java101;
+
+    <span class="kw">@BeforeEach</span>
+    <span class="kw">void</span> cursoRealConDosLugares() {
+        java101 = <span class="kw">new</span> <span class="ty">Curso</span>(<span class="st">"JAVA-101"</span>, <span class="st">2</span>);   <span class="cm">// REAL. Y es la decision</span>
+    }                                            <span class="cm">// mas importante del archivo.</span></code></pre>
+  </div>
+
+  <h3>Las dos formas de inyectar, y cuándo prefiere cada una</h3>
+
+  <p>Antes de <code>@InjectMocks</code> conviene ver lo que hace por ti, porque no es magia: es un constructor.</p>
+
+  <div class="term">
+    <button class="copy" type="button" data-etiqueta="Copiar">Copiar</button>
+    <span class="lbl">a mano — más código, y el compilador vigilando</span>
+<pre><code><span class="kw">@Mock</span> <span class="kw">private</span> <span class="ty">RepositorioAlumnos</span> repoAlumnos;
+<span class="kw">@Mock</span> <span class="kw">private</span> <span class="ty">RepositorioCursos</span>  repoCursos;
+<span class="kw">@Mock</span> <span class="kw">private</span> <span class="ty">Notificador</span>        notificador;
+
+<span class="kw">private</span> <span class="ty">ServicioInscripcion</span> servicio;
+
+<span class="kw">@BeforeEach</span>
+<span class="kw">void</span> montar() {
+    servicio = <span class="kw">new</span> <span class="ty">ServicioInscripcion</span>(repoAlumnos, repoCursos, notificador);
+}</code></pre>
+  </div>
+
+  <div class="term">
+    <button class="copy" type="button" data-etiqueta="Copiar">Copiar</button>
+    <span class="lbl">con @InjectMocks — el @BeforeEach entero desaparece</span>
+<pre><code><span class="kw">@InjectMocks</span> <span class="kw">private</span> <span class="ty">ServicioInscripcion</span> servicio;</code></pre>
+  </div>
+
+  <div class="tw">
+    <table>
+      <thead><tr><th>Usa…</th><th>cuando…</th></tr></thead>
+      <tbody>
+        <tr><td><code>@InjectMocks</code></td><td>Las dependencias son pocas y de tipos distintos. Es lo normal, y es lo que hace este proyecto.</td></tr>
+        <tr><td><code>new</code> a mano</td><td>Hay muchas dependencias, o dos del mismo tipo. Aquí el <strong>compilador</strong> te obliga a pasarlas todas y en su sitio; <code>@InjectMocks</code> no dice nada si se le escapa una.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <p class="note key"><strong>La decisión que importa no es de Mockito, es de criterio.</strong> Los tres colaboradores van mockeados porque duelen. El <code>Curso</code> se construye con <code>new</code> porque cuesta microsegundos y, sobre todo, porque <strong>tiene dentro la regla que estás probando</strong>. En cuanto lo mockeas dejas de probar esa regla. La sección 09 lo demuestra con un experimento.</p>
+
+  <h3>El test que más vale de la clase</h3>
+
+  <div class="term">
+    <button class="copy" type="button" data-etiqueta="Copiar">Copiar</button>
+<pre><code><span class="kw">@Test</span>
+<span class="kw">@DisplayName</span>(<span class="st">"rechaza, avisa del rechazo y NO manda confirmacion"</span>)
+<span class="kw">void</span> rechazaSinConfirmar() {
+    when(repoAlumnos.buscar(<span class="st">"A01"</span>)).thenReturn(<span class="ty">Optional</span>.of(ANA));
+    when(repoCursos.buscar(<span class="st">"JAVA-101"</span>)).thenReturn(<span class="ty">Optional</span>.of(java101));
+
+    assertThrows(<span class="ty">CupoLlenoException</span>.<span class="kw">class</span>,
+            () -&gt; servicio.inscribir(<span class="st">"A01"</span>, <span class="st">"JAVA-101"</span>));
+
+    verify(notificador).enviarRechazo(ANA, java101, <span class="st">"cupo lleno"</span>);
+
+    <span class="cm">// Sin esta linea, un bug podria mandar "felicidades, ya estas</span>
+    <span class="cm">// inscrito" a alguien que se quedo fuera, y todo lo demas</span>
+    <span class="cm">// seguiria en verde.</span>
+    verify(notificador, never()).enviarConfirmacion(any(), any());
+}</code></pre>
+  </div>
+
+  <h3>Lo que un doble te deja hacer y la pieza real no</h3>
+
+  <div class="term">
+    <button class="copy" type="button" data-etiqueta="Copiar">Copiar</button>
+<pre><code><span class="kw">@Test</span>
+<span class="kw">void</span> laBaseTruena() {
+    when(repoAlumnos.buscar(<span class="st">"A01"</span>))
+            .thenThrow(<span class="kw">new</span> <span class="ty">IllegalStateException</span>(<span class="st">"conexion perdida"</span>));
+
+    assertThrows(<span class="ty">IllegalStateException</span>.<span class="kw">class</span>,
+            () -&gt; servicio.inscribir(<span class="st">"A01"</span>, <span class="st">"JAVA-101"</span>));
+
+    verifyNoInteractions(notificador);   <span class="cm">// si la base cae, nadie recibe correo</span>
+}</code></pre>
+  </div>
+
+  <p>Sin Mockito, para probar ese camino habría que apagar la base de datos a mitad de la suite.</p>
+
+  <div class="trap">
+    <span class="k">03</span>
+    <span><b><code>@InjectMocks</code> puede dejarte un <code>null</code> dentro sin decir nada</b>Empareja por tipo; si hay dos parámetros del mismo tipo, por nombre de campo. Si tampoco cuadran, no falla: inyecta <code>null</code>. En un servicio con muchas dependencias a veces es más honesto construirlo a mano con <code>new</code> — el compilador te obliga a no olvidarte de ninguna.</span>
+  </div>
+</section>
+
+<section id="captor">
+  <p class="rubric">El código</p>
+  <h2 class="sec"><span class="num">06</span> Con qué lo llamaron</h2>
+
+  <p><code>verify()</code> responde «se llamó, sí o no». <code>ArgumentCaptor</code> responde algo más fino: <strong>con qué</strong> lo llamaron. Atrapa el argumento real y te lo entrega.</p>
+
+  <div class="tw">
+    <table>
+      <thead><tr><th>Si el argumento…</th><th>Usa</th></tr></thead>
+      <tbody>
+        <tr><td>es simple y ya lo tienes</td><td><code>verify(mock).metodo(valorEsperado)</code></td></tr>
+        <tr><td><strong>lo construyó tu código</strong></td><td><code>ArgumentCaptor</code></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <p>El segundo caso es el que importa. Si tu servicio arma un objeto por dentro — un correo, un evento, un registro de auditoría — no tienes ninguna referencia con la que compararlo. El captor es la única forma de mirar lo que construyó.</p>
+
+  <div class="term">
+    <button class="copy" type="button" data-etiqueta="Copiar">Copiar</button>
+    <span class="lbl">CaptorTest.java — el motivo del rechazo lo escribe el servicio</span>
+<pre><code><span class="kw">@Captor</span> <span class="kw">private</span> <span class="ty">ArgumentCaptor</span>&lt;<span class="ty">String</span>&gt; motivoCapturado;
+
+<span class="kw">@Test</span>
+<span class="kw">void</span> conQueMotivo() {
+    <span class="cm">// … curso lleno, se intenta inscribir …</span>
+
+    verify(notificador).enviarRechazo(eq(ANA), eq(java101), motivoCapturado.capture());
+    <span class="cm">//                                                       ^ va DONDE iria el matcher</span>
+
+    assertEquals(<span class="st">"cupo lleno"</span>, motivoCapturado.getValue());
+}</code></pre>
+  </div>
+
+  <div class="trap">
+    <span class="k">04</span>
+    <span><b>Un captor NO filtra: captura lo que haya llegado</b>Si hubo tres llamadas y solo esperabas una, <code>getValue()</code> te devuelve la <strong>última</strong> sin quejarse. Acompáñalo siempre del <code>times(n)</code> correspondiente, y usa <code>getAllValues()</code> cuando de verdad quieras todas.</span>
+  </div>
+</section>
+
+<section id="espia">
+  <p class="rubric">La trampa</p>
+  <h2 class="sec"><span class="num">07</span> El espía y la trampa</h2>
+
+  <div class="veredicto">
+    <div class="ok"><b>mock</b>Un objeto <strong>vacío</strong>. Todo devuelve el valor por defecto hasta que lo programes.</div>
+    <div class="mid"><b>spy</b>Un objeto <strong>real</strong> envuelto. Todo funciona de verdad, salvo lo que decidas sustituir.</div>
+  </div>
+
+  <p class="note warn"><strong>Usa <code>@Spy</code> poco.</strong> Si necesitas espiar tu propia clase, casi siempre es la señal de que esa clase hace dos cosas y debería ser dos clases. El spy es un parche; el arreglo de verdad suele ser partir el código. Donde sí vale la pena: código heredado que todavía no puedes tocar.</p>
+
+  <h3>La trampa que da nombre a la sección</h3>
+
+  <p>El proyecto trae un repositorio real que <strong>cuenta cuántas veces lo consultan</strong>. Ese contador delata lo que pasa de verdad:</p>
+
+  <div class="term">
+    <button class="copy" type="button" data-etiqueta="Copiar">Copiar</button>
+    <span class="lbl">EspiaTest.java</span>
+<pre><code><span class="ty">RepositorioCursosEnMemoria</span> espia = spy(<span class="kw">new</span> <span class="ty">RepositorioCursosEnMemoria</span>());
+
+assertEquals(<span class="st">0</span>, espia.consultas());          <span class="cm">// todavia nadie ha consultado</span>
+
+when(espia.buscar(<span class="st">"JAVA-101"</span>)).thenReturn(<span class="ty">Optional</span>.empty());
+<span class="cm">//   ^^^^^^^^^^^^^^^^^^^^^^^ esto corrio DE VERDAD</span>
+
+assertEquals(<span class="st">1</span>, espia.consultas(),
+        <span class="st">"El contador subio SOLO por programar el doble. Nadie llamo al metodo."</span>);</code></pre>
+  </div>
+
+  <p><strong>El motivo es Java, no Mockito.</strong> Para poder llamar a <code>when(...)</code>, la máquina virtual tiene que evaluar primero su argumento — y evaluar <code>espia.buscar("JAVA-101")</code> significa ejecutarlo. Sobre un <em>mock</em> da igual, porque está vacío. Sobre un <em>spy</em>, corre el código real.</p>
+
+  <p class="note warn">En un repositorio que solo cuenta consultas, el daño es un número mal. En uno que <strong>borra registros, manda correos o cobra una tarjeta</strong>, el daño es que tu test hizo eso de verdad mientras «solo lo estaba programando».</p>
+
+  <div class="term">
+    <button class="copy" type="button" data-etiqueta="Copiar">Copiar</button>
+    <span class="lbl">la forma correcta</span>
+<pre><code>doReturn(<span class="ty">Optional</span>.empty()).when(espia).buscar(<span class="st">"JAVA-101"</span>);
+<span class="cm">//                                    ^ el metodo se nombra DESPUES,</span>
+<span class="cm">//                                      y para entonces ya esta interceptado</span>
+
+assertEquals(<span class="st">0</span>, espia.consultas());   <span class="cm">// el real nunca corrio</span></code></pre>
+  </div>
+
+  <div class="ver">
+    <b>La regla, en dos líneas</b>
+    <p>Sobre un <strong>mock</strong>: <code>when(...).thenReturn(...)</code> — se lee mejor.<br>
+    Sobre un <strong>spy</strong>: <code>doReturn(...).when(...)</code> — <strong>siempre</strong>.</p>
+    <p>Y lo mismo con <code>doThrow(...)</code> y <code>doNothing(...)</code>, que además son la única opción para métodos <code>void</code>: ahí no hay nada que meter dentro de <code>when()</code>.</p>
+  </div>
+</section>
+
+<section id="estrictez">
+  <p class="rubric">La ayuda que parece molestia</p>
+  <h2 class="sec"><span class="num">08</span> La estrictez te ayuda</h2>
+
+  <p>Con <code>MockitoExtension</code>, la estrictez por defecto es <code>STRICT_STUBS</code>: un <code>when(...)</code> que ningún código llega a usar <strong>no se ignora</strong>, rompe el test.</p>
+
+  <div class="term">
+    <button class="copy" type="button" data-etiqueta="Copiar">Copiar</button>
+<pre><code><span class="out bad">org.mockito.exceptions.misusing.UnnecessaryStubbingException:</span>
+<span class="out bad">Unnecessary stubbings detected.</span>
+<span class="out bad">Clean &amp; maintainable test code requires zero unnecessary code.</span></code></pre>
+  </div>
+
+  <p>A todo el mundo le parece una molestia el primer día. No lo es, y por dos motivos:</p>
+
+  <ul class="check">
+    <li><span class="box">1</span><span><b>Un stub sin usar suele significar que el test no recorre el camino que creías</b> El aviso te está diciendo «esto no pasa por ahí». Es un diagnóstico, no un capricho.</span></li>
+    <li><span class="box">2</span><span><b>Los stubs sobrantes se acumulan</b> En una suite vieja acabas con métodos de veinte líneas de <code>when()</code> de las que solo tres importan, y nadie se atreve a borrar ninguna.</span></li>
+  </ul>
+
+  <p class="note key"><strong>Es el mismo principio de la guía 01</strong>, visto desde otro ángulo: el problema no es lo que falla — es lo que sobra en verde.</p>
+
+  <p>La otra cara, que se agradece todavía más: si programas <code>buscar("A01")</code> y tu código llama a <code>buscar("A99")</code>, la estrictez te lo dice a la cara con los dos valores (<code>PotentialStubbingProblem</code>). Sin ella, el mock devolvería <code>Optional.empty()</code> en silencio y te pasarías media hora buscando por qué tu servicio «no encuentra al alumno».</p>
+
+  <div class="tw">
+    <table>
+      <thead><tr><th>Válvula de escape</th><th>Cuándo</th></tr></thead>
+      <tbody>
+        <tr><td><code>lenient().when(...)</code></td><td>Un stub concreto, típicamente un montaje común en <code>@BeforeEach</code> que solo algunos tests usan. Con moderación: cada uno apaga un trozo de la red.</td></tr>
+        <tr><td><code>@MockitoSettings(strictness = LENIENT)</code></td><td>La clase entera. Prácticamente nunca es lo correcto en código nuevo — su sitio es una migración con doscientas clases heredadas en rojo.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <p class="note"><strong>Una confesión útil:</strong> mientras se escribía <code>EspiaTest</code> para esta guía, la estrictez tumbó uno de sus tests — el stub del ejemplo de la trampa nunca llegaba a usarse. El arreglo mejoró el test: ahora demuestra <em>además</em> que, tras el <code>when()</code>, la llamada real ya no vuelve a ocurrir. La estrictez hizo exactamente su trabajo.</p>
+</section>
+
+<section id="mentira">
+  <p class="rubric">El experimento</p>
+  <h2 class="sec"><span class="num">09</span> Cuándo NO mockear</h2>
+
+  <p>Aquí es donde toda la guía cobra sentido. El proyecto trae <strong>dos clases de test que prueban exactamente lo mismo</strong>, las dos en verde, las dos razonables a primera vista. Se diferencian en una línea:</p>
+
+  <div class="term">
+    <button class="copy" type="button" data-etiqueta="Copiar">Copiar</button>
+<pre><code><span class="cm">// ServicioInscripcionTest</span>
+<span class="ty">Curso</span> java101 = <span class="kw">new</span> <span class="ty">Curso</span>(<span class="st">"JAVA-101"</span>, <span class="st">2</span>);   <span class="cm">// real</span>
+
+<span class="cm">// SobreMockeoTest</span>
+<span class="kw">@Mock</span> <span class="kw">private</span> <span class="ty">Curso</span> curso;                    <span class="cm">// mockeado</span></code></pre>
+  </div>
+
+  <p>Rompemos la regla del cupo dentro de <code>Curso</code> — un solo operador, <code>== 0</code> pasa a <code>&lt; 0</code> — y corremos las dos:</p>
+
+  <div class="term">
+    <button class="copy" type="button" data-etiqueta="Copiar">Copiar</button>
+    <span class="lbl">salida real de la-mentira.sh</span>
+<pre><code><span class="p">$</span> <span class="cmd">./scripts/la-mentira.sh</span>
+
+<span class="out">== 1. Las dos clases, con el codigo sano ==</span>
+<span class="out ok">   ServicioInscripcionTest    VERDE   Tests run: 6, Failures: 0</span>
+<span class="out ok">   SobreMockeoTest            VERDE   Tests run: 3, Failures: 0</span>
+
+<span class="out">== 2. Rompemos la regla: 'lugaresDisponibles() == 0' -&gt; '&lt; 0' ==</span>
+<span class="out">   40:        return lugaresDisponibles() &lt; 0;   // BUG INYECTADO</span>
+
+<span class="out">== 3. Las mismas dos clases, con el bug dentro ==</span>
+<span class="out bad">   ServicioInscripcionTest    ROJO    Tests run: 6, Failures: 2</span>
+<span class="out bad">        ServicioInscripcionTest.noSeCuela Expected CupoLlenoException to be thrown, but nothing was thrown.</span>
+<span class="out bad">        ServicioInscripcionTest.rechazaSinConfirmar Expected CupoLlenoException to be thrown, but nothing was thrown.</span>
+<span class="out ok">   SobreMockeoTest            VERDE   Tests run: 3, Failures: 0</span></code></pre>
+  </div>
+
+  <p class="note key"><strong><code>SobreMockeoTest</code> sigue en verde con el bug dentro.</strong> No es mala suerte: es la consecuencia exacta de haber escrito <code>@Mock</code> sobre <code>Curso</code>. Al mockearlo, <code>estaLleno()</code> ya no ejecuta la regla — devuelve lo que el propio test escribió en el <code>when()</code>. El test no comprueba «un curso lleno se rechaza»: comprueba «si yo digo que está lleno, se rechaza». <strong>Aprueba su propia respuesta.</strong></p>
+
+  <div class="ver">
+    <b>La regla del proyecto entero</b>
+    <p><strong>MOCKEA lo que DUELE</strong> — lento, externo, no repetible, no determinista. Los repositorios y el notificador: bien.</p>
+    <p><strong>NO MOCKEES lo que DECIDE</strong> — si tiene dentro la regla que estás probando, va real. <code>Curso</code>: mal.</p>
+  </div>
+
+  <p>Y el corolario incómodo, que es el mismo de la <a href="guia-01-anatomia-de-un-test.html">guía 01</a>: <strong>la cobertura no distingue estos dos casos.</strong> Las dos clases «cubren» <code>ServicioInscripcion</code> igual de bien. Solo una lo protege.</p>
+
+  <h3>Las tres señales de que estás mockeando de más</h3>
+
+  <div class="trap">
+    <span class="k">01</span>
+    <span><b>Mockeas una clase de tu propio dominio que no toca nada de fuera</b>Si es rápida, determinista y local, constrúyela con <code>new</code>. Un <code>record</code>, un objeto de valor, una entidad: nunca se mockean.</span>
+  </div>
+
+  <div class="trap">
+    <span class="k">02</span>
+    <span><b>El test se rompe al reordenar el código sin cambiar el comportamiento</b>Señal de que estás verificando <em>cómo</em> lo hace en vez de <em>qué</em> consigue. Eso acopla el test a la implementación y convierte cada refactor en una tarde de arreglar tests que no encontraron ningún bug.</span>
+  </div>
+
+  <div class="trap">
+    <span class="k">03</span>
+    <span><b>El montaje del test es más largo que el código que prueba</b>Diez líneas de <code>when()</code> para probar un método de cuatro. Casi siempre significa que la clase tiene demasiadas dependencias — y eso es un problema de diseño que Mockito solo está ayudándote a tolerar.</span>
+  </div>
+</section>
+
+<section id="trampas">
+  <p class="rubric">Referencia</p>
+  <h2 class="sec"><span class="num">10</span> Trampas y ejercicios</h2>
+
+  <div class="trap">
+    <span class="k">01</span>
+    <span><b><code>NullPointerException</code> en el primer test</b>Falta <code>@ExtendWith(MockitoExtension.class)</code>. Los <code>@Mock</code> se quedan en <code>null</code>.</span>
+  </div>
+
+  <div class="trap">
+    <span class="k">02</span>
+    <span><b><code>UnnecessaryStubbingException</code></b>Programaste algo que el código no usa. No lo silencies: pregúntate si el test recorre el camino que creías. Sección 08.</span>
+  </div>
+
+  <div class="trap">
+    <span class="k">03</span>
+    <span><b><code>InvalidUseOfMatchersException</code></b>Mezclaste un matcher con un valor literal. O todos matchers, o ninguno: envuelve el literal en <code>eq(...)</code>.</span>
+  </div>
+
+  <div class="trap">
+    <span class="k">04</span>
+    <span><b>Un <code>@Spy</code> hizo algo de verdad que no querías</b>Usaste <code>when(spy.metodo())</code>. Cambia a <code>doReturn(...).when(spy).metodo()</code>. Sección 07.</span>
+  </div>
+
+  <div class="trap">
+    <span class="k">05</span>
+    <span><b>«Mockito no puede mockear esta clase»</b>Con Mockito 5 casi todo se puede — el <em>inline mock maker</em> es el de fábrica y maneja clases <code>final</code>. Si aun así falla, suele ser un <code>record</code>, un <code>enum</code> o un tipo del JDK: y ninguno de los tres deberías estar mockeándolo.</span>
+  </div>
+
+  <div class="trap">
+    <span class="k">06</span>
+    <span><b>Un test pasa y no probaba nada</b>Un mock sin programar devuelve <code>null</code>, <code>0</code>, <code>false</code> u <code>Optional.empty()</code> sin avisar. Si tu aserción esperaba justo eso, el test pasa por casualidad.</span>
+  </div>
+
+  <h3>Ejercicios</h3>
+
+  <ul class="check">
+    <li><span class="box">1</span><span><b>Predice antes de correr</b> Antes de ejecutar <code>la-mentira.sh</code>, escribe qué tests crees que van a caer. Después córrelo.</span></li>
+    <li><span class="box">2</span><span><b>Arregla el mal ejemplo</b> Reescribe <code>SobreMockeoTest</code> quitando el <code>@Mock Curso</code> y usando uno real. Vuelve a correr <code>la-mentira.sh</code>: ahora deberían caer las dos clases. Eso es lo que querías desde el principio.</span></li>
+    <li><span class="box">3</span><span><b>El <code>never()</code> que falta</b> Añade al servicio una regla nueva: si el alumno ya estaba inscrito, no se manda confirmación. Escribe primero el test con <code>never()</code>, míralo fallar, y después impleméntalo.</span></li>
+    <li><span class="box">4</span><span><b>Provoca la trampa del spy</b> Escribe un <code>when(espia.buscar(...))</code> sobre un spy de <code>RepositorioAlumnosLento</code> y mide cuánto tarda el test. Los 300 ms que aparecen «sin llamar a nada» son la trampa de la sección 07, en el reloj.</span></li>
+    <li><span class="box">5</span><span><b>Captura lo que no puedes comparar</b> Haz que <code>enviarRechazo</code> reciba un objeto <code>Aviso</code> que el servicio construya por dentro, con fecha y motivo. Ahora la única forma de comprobarlo es un <code>ArgumentCaptor</code>. Escríbelo.</span></li>
+    <li><span class="box">6</span><span><b>Quita el <code>-javaagent</code></b> Borra la línea del <code>argLine</code> en el <code>pom</code> y corre la suite. Lee el aviso entero y vuelve a ponerla. Es el tipo de configuración que se copia sin entender — ahora ya sabes qué pasa sin ella.</span></li>
+    <li><span class="box">7</span><span><b>Un fake en vez de un mock</b> Escribe a mano un <code>RepositorioAlumnosFake</code> con un <code>Map</code> dentro y reescribe <code>ServicioInscripcionTest</code> con él. ¿Quedó más legible o menos? No hay respuesta única: argumenta.</span></li>
+  </ul>
+
+  <p class="note"><strong>Si trabajas en Windows.</strong> <code>mvnw.cmd test</code> en lugar de <code>./mvnw test</code>, y los <code>.sh</code> necesitan <strong>Git Bash</strong> o <strong>WSL</strong>.</p>
+
+  <p class="closing">Laboratorio 04 de 04 &middot; Serie <strong>JUnit</strong> &middot; Academia Monterrey. Cierra la serie. Vuelve a <a href="guia-00-por-que-se-prueba.html">Por qué se prueba</a>, <a href="guia-01-anatomia-de-un-test.html">Anatomía de un test</a>, <a href="guia-02-el-catalogo.html">El catálogo</a> o <a href="guia-03-un-test-muchos-datos.html">Un test, muchos datos</a>. Versiones y migración en el <a href="anexo-junit5-vs-junit6.html">anexo</a>.</p>
+</section>
+
+</main>
+</div>
+
+<script>
+document.querySelectorAll('.copy').forEach(function (btn) {
+  btn.addEventListener('click', function () {
+    var pre = btn.parentElement.querySelector('pre');
+    if (!pre) return;
+    var texto = pre.innerText;
+
+    function avisar(msg) {
+      var prev = btn.dataset.etiqueta || 'Copiar';
+      btn.textContent = msg;
+      setTimeout(function () { btn.textContent = prev; }, 1400);
+    }
+
+    // Plan B con execCommand. Hace falta de verdad: estas guias se abren
+    // con doble clic (file://) y en varios navegadores navigator.clipboard
+    // no esta disponible o rechaza ahi. Sin este respaldo, el boton se
+    // quedaria en "Error" y el alumno no podria copiar nada.
+    function copiarALaAntigua() {
+      var ta = document.createElement('textarea');
+      ta.value = texto;
+      ta.setAttribute('readonly', '');
+      ta.style.position = 'fixed';
+      ta.style.top = '-1000px';
+      document.body.appendChild(ta);
+      ta.select();
+      var ok = false;
+      try { ok = document.execCommand('copy'); } catch (e) { ok = false; }
+      document.body.removeChild(ta);
+      avisar(ok ? 'Copiado' : 'Selecciona y copia a mano');
+    }
+
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(texto)
+        .then(function () { avisar('Copiado'); })
+        .catch(copiarALaAntigua);
+    } else {
+      copiarALaAntigua();
+    }
+  });
+});
+(function () {
+  var links = Array.prototype.slice.call(document.querySelectorAll('.toc a[href^="#"]'));
+  var map = {};
+  links.forEach(function (a) {
+    var el = document.getElementById(a.getAttribute('href').slice(1));
+    if (el) map[el.id] = a;
+  });
+  var obs = new IntersectionObserver(function (entries) {
+    entries.forEach(function (e) {
+      if (!map[e.target.id]) return;
+      if (e.isIntersecting) {
+        links.forEach(function (a) { a.classList.remove('cur'); });
+        map[e.target.id].classList.add('cur');
+      }
+    });
+  }, { rootMargin: '-10% 0px -75% 0px', threshold: 0 });
+  Object.keys(map).forEach(function (id) { obs.observe(document.getElementById(id)); });
+})();
+
+// ---------------------------------------------------------------------
+//  Los enlaces entre guias son RELATIVOS en el HTML, a proposito: el
+//  alumno abre el archivo con doble clic y navegar tiene que funcionar
+//  sin internet y sin permisos.
+//
+//  Cuando la misma pagina corre publicada como artifact, un enlace
+//  relativo no resuelve a nada -- cada artifact vive en su propio
+//  origen. Por eso aqui se reescriben a su URL, y SOLO ahi.
+//
+//  Antes esto estaba al reves (URL fijas en el HTML) y rompia el caso
+//  que de verdad se usa: el archivo local.
+// ---------------------------------------------------------------------
+(function () {
+  var PUBLICADAS = {
+    'guia-00-por-que-se-prueba.html': 'dc6ceb37-bac9-4a8c-bbd0-89f91dbc7def',
+    'guia-01-anatomia-de-un-test.html': '6755acb6-a6c0-42ac-95dd-e2ffb84a3a71',
+    'guia-02-el-catalogo.html': 'b02ccd10-cb0b-4545-a130-a0dc29e6a26c',
+    'guia-03-un-test-muchos-datos.html': 'dec3fbf5-39f0-411c-8daa-02bb3dec3eb0',
+    'guia-04-dobles-de-prueba.html': '33074df8-6377-44cd-a3c6-68f766ff4b78',
+    'anexo-junit5-vs-junit6.html': '53f58e3c-f8ea-4c4c-a6a9-ae93e2b9ca9a'
+  };
+  if (!/claudeusercontent|claude\.ai/.test(location.hostname)) return;
+  document.querySelectorAll('a[href]').forEach(function (a) {
+    var id = PUBLICADAS[a.getAttribute('href')];
+    if (id) a.setAttribute('href', 'https://claude.ai/code/artifact/' + id);
+  });
+})();
+</script>

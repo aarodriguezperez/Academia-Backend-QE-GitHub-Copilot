@@ -1,0 +1,743 @@
+<meta charset="utf-8">
+<title>Por qué se prueba</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&family=Zilla+Slab:wght@600;700&display=swap">
+<style>
+:root{
+  --bg:#f4f6f5;
+  --surface:#ffffff;
+  --surface-2:#eaeeec;
+  --ink:#12181a;
+  --ink-2:#4a5559;
+  --ink-3:#78848a;
+  --rule:#dbe2df;
+  --accent:#0e6b63;
+  --accent-soft:#dcedea;
+
+  --warn:#8a5a10;      --warn-bg:#f7eeda;
+  --next:#2f7d3a;      --next-bg:#e2f0e4;
+  --error:#b23a2e;     --error-bg:#f8e6e3;
+  --complete:#1f5b96;  --complete-bg:#e3edf8;
+
+  --term-bg:#101619;
+  --term-ink:#dbe4e6;
+  --term-dim:#7b8a8e;
+  --term-prompt:#5fb8ac;
+  --term-out:#a3b0b3;
+  --term-rule:#232d31;
+
+  --step:clamp(1.9rem,1.4rem + 1.6vw,2.6rem);
+  --h2:clamp(1.45rem,1.2rem + 1vw,1.9rem);
+  --h3:1.1rem;
+  --body:1rem;
+  --small:.87rem;
+  --tiny:.76rem;
+  --radius:10px;
+  --maxw:1180px;
+}
+
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --bg:#0d1113;
+    --surface:#151b1e;
+    --surface-2:#1b2327;
+    --ink:#e6edee;
+    --ink-2:#9fadb0;
+    --ink-3:#78868a;
+    --rule:#242e32;
+    --accent:#5fc0b4;
+    --accent-soft:#122b29;
+
+    --warn:#dfa955;      --warn-bg:#2e2312;
+    --next:#69bf7a;      --next-bg:#152a1a;
+    --error:#e8908b;     --error-bg:#2f1a18;
+    --complete:#7fb0e8;  --complete-bg:#16243a;
+
+    --term-bg:#070a0c;
+    --term-ink:#dbe4e6;
+    --term-dim:#6c797d;
+    --term-prompt:#6fc9bc;
+    --term-out:#94a2a5;
+    --term-rule:#1d262a;
+  }
+}
+
+:root[data-theme="dark"]{
+  --bg:#0d1113;
+  --surface:#151b1e;
+  --surface-2:#1b2327;
+  --ink:#e6edee;
+  --ink-2:#9fadb0;
+  --ink-3:#78868a;
+  --rule:#242e32;
+  --accent:#5fc0b4;
+  --accent-soft:#122b29;
+
+  --warn:#dfa955;      --warn-bg:#2e2312;
+  --next:#69bf7a;      --next-bg:#152a1a;
+  --error:#e8908b;     --error-bg:#2f1a18;
+  --complete:#7fb0e8;  --complete-bg:#16243a;
+
+  --term-bg:#070a0c;
+  --term-ink:#dbe4e6;
+  --term-dim:#6c797d;
+  --term-prompt:#6fc9bc;
+  --term-out:#94a2a5;
+  --term-rule:#1d262a;
+}
+
+*{box-sizing:border-box}
+
+body{
+  margin:0;
+  background:var(--bg);
+  color:var(--ink);
+  font-family:"IBM Plex Sans",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  font-size:var(--body);
+  line-height:1.62;
+  -webkit-font-smoothing:antialiased;
+}
+
+.wrap{max-width:var(--maxw);margin:0 auto;padding:0 1.5rem}
+
+/* ---------- masthead ---------- */
+.masthead{
+  border-bottom:1px solid var(--rule);
+  background:var(--surface);
+  padding:3.2rem 0 2.4rem;
+}
+.eyebrow{
+  font-family:"JetBrains Mono",monospace;
+  font-size:var(--tiny);letter-spacing:.09em;text-transform:uppercase;
+  color:var(--ink-3);margin:0 0 1rem;
+}
+.masthead h1{
+  font-family:"Zilla Slab",Georgia,serif;font-weight:700;
+  font-size:clamp(2.4rem,1.7rem + 3.2vw,4rem);
+  line-height:1.04;letter-spacing:-.015em;
+  margin:0 0 1.1rem;max-width:16ch;text-wrap:balance;
+}
+.lede{
+  font-size:clamp(1.02rem,.98rem + .35vw,1.2rem);
+  color:var(--ink-2);max-width:62ch;margin:0 0 1.6rem;
+}
+.facts{
+  list-style:none;display:flex;flex-wrap:wrap;gap:.45rem;margin:0;padding:0;
+}
+.facts li{
+  font-family:"JetBrains Mono",monospace;font-size:var(--tiny);
+  color:var(--ink-2);background:var(--surface-2);
+  border:1px solid var(--rule);border-radius:99px;padding:.28rem .7rem;
+}
+
+/* ---------- shell ---------- */
+.shell{
+  display:grid;grid-template-columns:minmax(0,1fr);gap:2.4rem;
+  padding-top:2.6rem;padding-bottom:5rem;
+}
+@media (min-width:1000px){
+  .shell{grid-template-columns:216px minmax(0,1fr);gap:3.4rem}
+}
+
+.toc{font-size:var(--small);align-self:start}
+@media (min-width:1000px){
+  .toc{position:sticky;top:1.6rem;max-height:calc(100vh - 3.2rem);overflow-y:auto}
+}
+.toc h2{
+  font-family:"JetBrains Mono",monospace;font-size:var(--tiny);font-weight:700;
+  letter-spacing:.09em;text-transform:uppercase;color:var(--ink-3);
+  margin:0 0 .6rem;padding-bottom:.4rem;border-bottom:1px solid var(--rule);
+}
+.toc h2+*{margin-top:0}
+.toc ol,.toc ul{list-style:none;margin:0 0 1.6rem;padding:0;display:flex;flex-direction:column;gap:.08rem}
+.toc a{
+  display:flex;gap:.55rem;align-items:baseline;
+  color:var(--ink-2);text-decoration:none;
+  padding:.3rem .45rem;border-radius:6px;line-height:1.35;
+}
+.toc a:hover{color:var(--ink);background:var(--surface-2)}
+.toc a:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
+.toc .n{
+  font-family:"JetBrains Mono",monospace;font-size:.7rem;
+  color:var(--ink-3);flex:none;
+}
+.toc a.cur{color:var(--ink);font-weight:600;background:var(--surface-2)}
+
+main{min-width:0;max-width:70ch}
+
+/* ---------- secciones ---------- */
+section{
+  padding-top:2.2rem;margin-top:2.2rem;border-top:1px solid var(--rule);
+}
+section:first-child{padding-top:0;margin-top:0;border-top:0}
+.rubric{
+  font-family:"JetBrains Mono",monospace;font-size:var(--tiny);
+  letter-spacing:.09em;text-transform:uppercase;color:var(--accent);
+  margin:0 0 .35rem;
+}
+h2.sec{
+  font-family:"Zilla Slab",Georgia,serif;font-weight:700;
+  font-size:var(--h2);line-height:1.14;letter-spacing:-.01em;
+  margin:0 0 1.1rem;display:flex;gap:.75rem;align-items:baseline;text-wrap:balance;
+}
+h2.sec .num{
+  font-family:"JetBrains Mono",monospace;font-size:.8rem;font-weight:700;
+  color:var(--ink-3);flex:none;
+}
+h3{
+  font-family:"Zilla Slab",Georgia,serif;font-weight:600;font-size:var(--h3);
+  margin:2rem 0 .6rem;letter-spacing:-.005em;
+}
+p{margin:0 0 1rem;max-width:66ch}
+strong{font-weight:600}
+em{font-style:italic}
+a{color:var(--accent)}
+
+code{
+  font-family:"JetBrains Mono",monospace;font-size:.86em;
+  background:var(--surface-2);border:1px solid var(--rule);
+  border-radius:4px;padding:.08em .34em;
+}
+
+/* ---------- notas ---------- */
+.note{
+  background:var(--surface);border:1px solid var(--rule);
+  border-left:3px solid var(--accent);border-radius:var(--radius);
+  padding:.85rem 1.05rem;margin:0 0 1.2rem;font-size:var(--small);
+  color:var(--ink-2);max-width:66ch;
+}
+.note strong{color:var(--ink)}
+.note.warn{border-left-color:var(--warn);background:var(--warn-bg)}
+.note.warn strong{color:var(--ink)}
+.note.key{border-left-color:var(--accent);background:var(--accent-soft)}
+.note.key strong{color:var(--ink)}
+.note p:last-child{margin-bottom:0}
+
+/* ---------- analogía ---------- */
+.ana{
+  background:var(--surface);border:1px solid var(--rule);border-radius:var(--radius);
+  padding:1.1rem 1.2rem;margin:0 0 1.3rem;max-width:66ch;
+  position:relative;
+}
+.ana .tag{
+  font-family:"JetBrains Mono",monospace;font-size:.68rem;font-weight:700;
+  letter-spacing:.1em;text-transform:uppercase;color:var(--accent);
+  display:block;margin-bottom:.5rem;
+}
+.ana p:last-child{margin-bottom:0}
+.ana h4{
+  font-family:"Zilla Slab",Georgia,serif;font-weight:600;font-size:1.05rem;
+  margin:0 0 .5rem;
+}
+
+/* ---------- terminal / código ---------- */
+.term{
+  background:var(--term-bg);border:1px solid var(--term-rule);
+  border-radius:var(--radius);margin:0 0 1.2rem;position:relative;overflow:hidden;
+}
+.term pre{
+  margin:0;padding:1rem 1.1rem;overflow-x:auto;
+  font-family:"JetBrains Mono",monospace;font-size:.8rem;line-height:1.72;
+  color:var(--term-ink);
+}
+.term code{background:none;border:0;padding:0;font-size:inherit;color:inherit}
+.term .cm{color:var(--term-dim)}
+.term .p{color:var(--term-prompt);user-select:none}
+.term .kw{color:#c99bd8}
+.term .ty{color:#7fc3e8}
+.term .st{color:#c8d98a}
+.term .out{color:var(--term-out)}
+.term .bad{color:#e8908b}
+.term .ok{color:#8ed49a}
+.term .lbl{
+  font-family:"JetBrains Mono",monospace;font-size:.66rem;font-weight:700;
+  letter-spacing:.1em;text-transform:uppercase;color:var(--term-dim);
+  padding:.55rem 1.1rem .1rem;display:block;
+}
+.copy{
+  position:absolute;top:.5rem;right:.5rem;z-index:2;
+  font-family:"JetBrains Mono",monospace;font-size:.66rem;
+  color:var(--term-dim);background:transparent;
+  border:1px solid var(--term-rule);border-radius:5px;
+  padding:.2rem .5rem;cursor:pointer;
+}
+.copy:hover{color:var(--term-ink);border-color:var(--term-dim)}
+.copy:focus-visible{outline:2px solid var(--term-prompt);outline-offset:1px}
+
+/* ---------- figuras ---------- */
+figure.flow{
+  background:var(--surface);border:1px solid var(--rule);border-radius:var(--radius);
+  padding:1.15rem 1.15rem .9rem;margin:0 0 1.4rem;overflow-x:auto;
+}
+figure.flow svg{display:block;width:100%;height:auto;color:var(--ink-2)}
+figure.flow figcaption{
+  font-family:"JetBrains Mono",monospace;font-size:var(--tiny);
+  color:var(--ink-3);line-height:1.55;margin-top:.85rem;
+}
+figure.flow figcaption strong{color:var(--ink-2)}
+
+figure.mapa{
+  background:var(--surface);border:1px solid var(--rule);border-radius:var(--radius);
+  padding:.85rem;margin:0 0 1.4rem;
+}
+figure.mapa img{display:block;width:100%;height:auto;border-radius:6px}
+figure.mapa figcaption{
+  font-family:"JetBrains Mono",monospace;font-size:var(--tiny);
+  color:var(--ink-3);line-height:1.55;margin-top:.8rem;
+}
+
+/* ---------- tablas ---------- */
+.tw{overflow-x:auto;margin:0 0 1.3rem;border:1px solid var(--rule);border-radius:var(--radius)}
+table{border-collapse:collapse;width:100%;font-size:var(--small);background:var(--surface)}
+th,td{text-align:left;padding:.6rem .8rem;border-bottom:1px solid var(--rule);vertical-align:top}
+thead th{
+  font-family:"JetBrains Mono",monospace;font-size:.7rem;font-weight:700;
+  letter-spacing:.06em;text-transform:uppercase;color:var(--ink-3);
+  background:var(--surface-2);white-space:nowrap;
+}
+tbody tr:last-child td{border-bottom:0}
+td code{font-size:.8rem}
+
+/* ---------- señales ---------- */
+.sig{
+  font-family:"JetBrains Mono",monospace;font-size:.72rem;font-weight:700;
+  padding:.16rem .45rem;border-radius:5px;white-space:nowrap;
+}
+.sig.n{color:var(--next);background:var(--next-bg)}
+.sig.e{color:var(--error);background:var(--error-bg)}
+.sig.c{color:var(--complete);background:var(--complete-bg)}
+
+/* ---------- listas ---------- */
+ul.plain,ol.plain{margin:0 0 1.2rem;padding-left:1.15rem;max-width:66ch}
+ul.plain li,ol.plain li{margin-bottom:.45rem}
+
+ul.check{list-style:none;margin:0 0 1.3rem;padding:0;display:flex;flex-direction:column;gap:.4rem;max-width:66ch}
+ul.check li{
+  display:grid;grid-template-columns:auto minmax(0,1fr);gap:.6rem;align-items:start;
+  background:var(--surface);border:1px solid var(--rule);border-radius:8px;
+  padding:.6rem .8rem;font-size:var(--small);
+}
+ul.check .box{font-family:"JetBrains Mono",monospace;color:var(--ink-3);flex:none}
+ul.check b{display:block;margin-bottom:.1rem;font-size:.95rem;color:var(--ink)}
+
+/* ---------- trampa ---------- */
+.trap{
+  display:grid;grid-template-columns:auto minmax(0,1fr);gap:.85rem;align-items:start;
+  background:var(--surface);border:1px solid var(--rule);border-radius:var(--radius);
+  padding:.85rem 1rem;margin-bottom:.55rem;font-size:var(--small);max-width:66ch;
+}
+.trap .k{
+  font-family:"JetBrains Mono",monospace;font-size:.72rem;font-weight:700;
+  color:var(--error);background:var(--error-bg);
+  border-radius:5px;padding:.22rem .5rem;white-space:nowrap;
+}
+.trap b{display:block;margin-bottom:.15rem;font-size:.95rem;color:var(--ink)}
+
+/* ---------- glosario ---------- */
+dl.glos{margin:0 0 1.3rem;max-width:66ch}
+dl.glos dt{
+  font-family:"JetBrains Mono",monospace;font-size:.8rem;font-weight:700;
+  color:var(--accent);margin-top:.9rem;
+}
+dl.glos dd{margin:.15rem 0 0;font-size:var(--small);color:var(--ink-2)}
+
+/* ---------- cierre ---------- */
+.closing{
+  border-top:1px solid var(--rule);margin-top:3rem;padding-top:1.6rem;
+  font-size:var(--small);color:var(--ink-3);
+}
+.closing a{color:var(--ink-2)}
+
+@media (prefers-reduced-motion:reduce){
+  *{animation:none !important;transition:none !important;scroll-behavior:auto !important}
+}
+html{scroll-behavior:smooth}
+
+/* ---------- añadidos de la serie JUnit ----------
+   Estas clases se usaban ya en las guías de springWebFlux pero no
+   llegaron a definirse en su hoja de estilo: .arch, .cmd, .dir, .hi, .ver.
+   Se definen aquí, más .veredicto, propia de esta serie.                */
+
+.term .cmd{color:var(--term-ink);font-weight:500}
+.term .hi{color:#f0d48a}
+.term .dir{color:#7fc3e8;font-weight:500}
+.term .num{color:#e0a86a}
+
+.arch{
+  font-family:"JetBrains Mono",monospace;font-size:var(--small);
+  background:var(--term-bg);color:var(--term-ink);
+  border-radius:var(--radius);padding:1.15rem 1.25rem;margin:0 0 1.3rem;
+  overflow-x:auto;line-height:1.75;white-space:pre;
+}
+.arch .dir{color:#7fc3e8;font-weight:500}
+.arch .hi{color:#f0d48a}
+.arch .cm{color:var(--term-dim)}
+
+.ver{
+  border:1px solid var(--rule);border-left:3px solid var(--next);
+  background:var(--next-bg);border-radius:var(--radius);
+  padding:.9rem 1.15rem;margin:0 0 1.3rem;font-size:var(--small);
+}
+.ver b{display:block;color:var(--ink);margin-bottom:.2rem}
+.ver p:last-child{margin-bottom:0}
+
+.veredicto{
+  display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
+  gap:.75rem;margin:0 0 1.4rem;
+}
+.veredicto div{
+  border:1px solid var(--rule);border-radius:var(--radius);
+  background:var(--surface);padding:.9rem 1rem;font-size:var(--small);
+}
+.veredicto b{display:block;font-family:"JetBrains Mono",monospace;
+  font-size:var(--tiny);letter-spacing:.07em;text-transform:uppercase;
+  margin-bottom:.35rem;}
+.veredicto .ok b{color:var(--next)}
+.veredicto .bad b{color:var(--error)}
+.veredicto .mid b{color:var(--warn)}
+/* ---------- ligaduras: fuera, y no es cosmetica ----------
+   JetBrains Mono dibuja  <!--  como una flecha,  -->  como otra, y  >=  como
+   un solo glifo. En una guia de codigo eso deja de ser bonito y pasa a ser
+   un error: el alumno no puede ver la sintaxis literal que tiene que teclear.
+   Y en esta serie es critico -- toda la seccion 07 de la guia 01 trata sobre
+   la diferencia entre  >=  y  >.  Se apagan en TODO contexto de codigo.       */
+.term pre, .term code, .arch, code, pre, kbd, samp{
+  font-variant-ligatures:none;
+  font-feature-settings:"liga" 0,"clig" 0,"calt" 0;
+}
+
+</style>
+
+<header class="masthead">
+  <div class="wrap">
+    <p class="eyebrow">JUnit 6 &middot; Java 21 &middot; Conceptos &middot; 00 de 05</p>
+    <h1>Por qué se prueba</h1>
+    <p class="lede">Antes de escribir una sola línea de JUnit conviene saber qué es un test, qué no es, y por qué la mitad de las suites que existen no protegen nada. Esta guía no lleva código: son las ideas que hacen que las otras tres se entiendan.</p>
+    <ul class="facts">
+      <li>sin código</li>
+      <li>lectura: 15 min</li>
+      <li>requisito de la 01</li>
+      <li>Academia Monterrey</li>
+    </ul>
+  </div>
+</header>
+
+<div class="wrap shell">
+
+<nav class="toc" aria-label="Contenido">
+  <h2>La ruta</h2>
+  <ol>
+    <li><a href="#definicion"><span class="n">00</span> Qué es un test</a></li>
+    <li><a href="#ideas"><span class="n">01</span> Las cuatro ideas</a></li>
+    <li><a href="#noes"><span class="n">02</span> Lo que no es</a></li>
+    <li><a href="#tipos"><span class="n">03</span> Unitario, integración, punta a punta</a></li>
+    <li><a href="#junit"><span class="n">04</span> Qué es JUnit por dentro</a></li>
+    <li><a href="#leer"><span class="n">05</span> Cómo se lee un fallo</a></li>
+    <li><a href="#glosario"><span class="n">06</span> El vocabulario</a></li>
+  </ol>
+
+  <h2>La serie</h2>
+  <ul>
+    <li><a href="#definicion" class="cur"><span class="n">00</span> Por qué se prueba</a></li>
+    <li><a href="guia-01-anatomia-de-un-test.html"><span class="n">01</span> Anatomía de un test</a></li>
+    <li><a href="guia-02-el-catalogo.html"><span class="n">02</span> El catálogo</a></li>
+    <li><a href="guia-03-un-test-muchos-datos.html"><span class="n">03</span> Un test, muchos datos</a></li>
+    <li><a href="guia-04-dobles-de-prueba.html"><span class="n">04</span> Dobles de prueba</a></li>
+    <li><a href="anexo-junit5-vs-junit6.html"><span class="n">··</span> JUnit 5 contra 6</a></li>
+  </ul>
+</nav>
+
+<main>
+
+<section id="definicion">
+  <p class="rubric">La definición</p>
+  <h2 class="sec"><span class="num">00</span> Qué es un test</h2>
+
+  <p>Un test automatizado es <strong>una afirmación sobre tu código, escrita en código, que una máquina puede comprobar</strong>. Nada más que eso. No es una herramienta especial ni un lenguaje aparte: es un método de Java como los que ya escribes, con una frase al final que dice qué esperabas.</p>
+
+  <p>Y esa frase es lo único que lo distingue de un <code>main</code>. Un <code>main</code> que imprime cosas te obliga a mirar la salida y decidir tú si está bien. Un test decide solo, y por eso puede correr mil veces sin que nadie lo mire.</p>
+
+  <div class="ana">
+    <span class="tag">La analogía</span>
+    <h4>El acta de una calificación</h4>
+    <p>Cuando entregas calificaciones, no basta con hacer las cuentas: firmas un acta. El acta no calcula nada — solo <em>afirma</em> que Ana sacó 88 y que eso es correcto. Si alguien cambia la nota después, el acta y la base de datos ya no coinciden, y esa discrepancia salta sola.</p>
+    <p>Un test es esa acta. No hace el trabajo: <strong>declara cuál debe ser el resultado</strong>. Y salta el día que deja de coincidir.</p>
+  </div>
+
+  <p class="note key"><strong>Por qué importa que sea código y no una lista de pasos en un documento.</strong> Un documento con instrucciones de prueba envejece: nadie lo relee, nadie lo actualiza, y a los seis meses describe una pantalla que ya no existe. Un test envejece de otra forma — <em>se pone en rojo</em>. Un test desactualizado es un test que falla, y un test que falla se arregla. Esa es toda la diferencia.</p>
+</section>
+
+<section id="ideas">
+  <p class="rubric">El núcleo</p>
+  <h2 class="sec"><span class="num">01</span> Las cuatro ideas</h2>
+
+  <p>Si de esta serie te llevas cuatro cosas, que sean estas. El resto — anotaciones, aserciones, parámetros — es mecánica que se aprende en una tarde.</p>
+
+  <h3>Primera: el valor está en el fallo, no en el verde</h3>
+
+  <p>Suena al revés y no lo es. Una suite en verde te dice exactamente una cosa: <em>los casos que se te ocurrieron funcionan</em>. No dice que el código esté bien. No dice que no haya bugs. Dice que los que buscaste, no están.</p>
+
+  <p>El único momento en que un test hace su trabajo es cuando <strong>se pone en rojo por algo que tú no habías visto</strong>. Todo lo demás — escribirlo, mantenerlo, esperarlo en cada build — es la prima que pagas por ese momento.</p>
+
+  <p class="note warn"><strong>El corolario incómodo:</strong> un test que nunca has visto fallar no sabes si funciona. Puede estar afirmando algo trivialmente cierto, comparando una variable consigo misma, o probando una rama que nunca se ejecuta. En verde se ve igual que uno bueno. En la guía 01 vas a romper el código a propósito para verlo caer — es la única forma de saber que sirve.</p>
+
+  <h3>Segunda: prueba los límites, no los ejemplos</h3>
+
+  <p>Casi todo bug real vive en una frontera. El <code>&gt;=</code> escrito como <code>&gt;</code>. El arreglo de tamaño cero. El último elemento. El mes 13. El <code>null</code> que llegó donde no se esperaba.</p>
+
+  <p>Probar que un alumno con 90 aprueba no cuesta trabajo y no protege casi nada: 90 está lejos de cualquier frontera. Lo que protege es probar <strong>el 70 exacto, el 69 y el 71</strong>. Ahí es donde el código decide, y donde se equivoca.</p>
+
+  <div class="veredicto">
+    <div class="bad"><b>Casi inútil</b>Probar 90 y 50 en una regla que corta en 70. Los dos casos están lejos del punto donde el código decide.</div>
+    <div class="ok"><b>Lo que vale</b>Probar 69, 70 y 71. Tres números pegados a la frontera, y entre ellos está el bug.</div>
+    <div class="mid"><b>Lo que se olvida</b>El vacío y el nulo. Ninguna boleta, ningún alumno, cadena en blanco. Es el segundo nido de bugs.</div>
+  </div>
+
+  <h3>Tercera: un test independiente o no es un test</h3>
+
+  <p>Cada test debe poder correr solo, en cualquier orden, sin que le importe qué corrió antes. En cuanto dos tests comparten estado, dejas de tener dos tests: tienes un guion frágil donde el fallo de uno arrastra al otro y ya no sabes cuál se rompió.</p>
+
+  <p>JUnit se toma esto tan en serio que <strong>crea una instancia nueva de tu clase de test por cada método</strong>, para que ni siquiera puedas pasarte datos por un campo. No es un detalle de implementación: es una decisión de diseño con la que te vas a topar en la guía 01.</p>
+
+  <h3>Cuarta: verde no significa probado</h3>
+
+  <p>Un build verde puede esconder tests apagados con <code>@Disabled</code>, tests abortados por una condición que no se cumplió, y tests que pasan sin comprobar nada. Los tres cuentan como “no falló”, y ninguno de los tres probó una línea de código.</p>
+
+  <p class="note"><strong>Y la cobertura no lo arregla.</strong> Que una línea se haya <em>ejecutado</em> durante la suite no dice que alguien haya <em>afirmado</em> algo sobre lo que hace. Un test sin una sola aserción puede dar 100 % de cobertura. La cobertura mide qué código tocaste, no qué comportamiento protegiste — es un buen detector de zonas <em>sin</em> probar, y una pésima medida de calidad.</p>
+</section>
+
+<section id="noes">
+  <p class="rubric">Deslindar</p>
+  <h2 class="sec"><span class="num">02</span> Lo que no es</h2>
+
+  <p>Cuatro confusiones que salen en cada curso, y que conviene resolver antes de escribir el primer <code>@Test</code>.</p>
+
+  <div class="trap">
+    <span class="k">01</span>
+    <span><b>No sustituye a pensar el diseño</b>Un test no arregla una clase que hace ocho cosas: la deja congelada. De hecho, si una clase es difícil de probar, casi siempre es porque está mal repartida — demasiadas responsabilidades, demasiadas dependencias escondidas. <strong>La dificultad para probar es un síntoma de diseño</strong>, y es una de las cosas más útiles que da el testing.</span>
+  </div>
+
+  <div class="trap">
+    <span class="k">02</span>
+    <span><b>No es probar “que funcione”</b>Ejecutar la aplicación y ver que arranca no es un test. Es una demostración. Un test afirma un resultado concreto y falla solo cuando deja de cumplirse — sin que nadie esté mirando.</span>
+  </div>
+
+  <div class="trap">
+    <span class="k">03</span>
+    <span><b>No es escribir tests para todo</b>Probar un <code>record</code> que solo guarda datos, o un <em>getter</em>, es gastar mantenimiento a cambio de nada: ese código no decide nada, luego no puede equivocarse. <strong>Se prueba el código que decide</strong>: el que compara, el que valida, el que calcula, el que rechaza.</span>
+  </div>
+
+  <div class="trap">
+    <span class="k">04</span>
+    <span><b>No es una fase al final</b>Los tests escritos tres semanas después, por alguien que ya no recuerda el porqué, terminan afirmando lo que el código <em>hace</em> en vez de lo que <em>debería hacer</em>. Y entonces un bug queda bendecido por un test en verde, que es la peor de las situaciones: el error ahora está protegido.</span>
+  </div>
+
+  <p class="note key"><strong>Esa última frase merece releerse.</strong> Quien escribe el código tiende a testear lo que el código hace, no lo que debería hacer. Es un sesgo, no un descuido, y no se cura con disciplina. Se cura escribiendo el test <em>desde el requisito</em> — “el reglamento dice que se aprueba con 70 o más” — y no desde la implementación que tienes delante.</p>
+</section>
+
+<section id="tipos">
+  <p class="rubric">El mapa</p>
+  <h2 class="sec"><span class="num">03</span> Unitario, integración, punta a punta</h2>
+
+  <p>Los tres nombres describen <strong>cuánto sistema entra en el test</strong>, y cada escalón cuesta más y da menos precisión.</p>
+
+  <div class="tw">
+    <table>
+      <thead>
+        <tr><th>Tipo</th><th>Qué entra</th><th>Tarda</th><th>Cuando falla, sabes…</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Unitario</strong></td>
+          <td>Una clase. Nada más — sin base de datos, sin red, sin Spring.</td>
+          <td>milisegundos</td>
+          <td>…exactamente qué método y qué línea. Es lo que vas a escribir en esta serie.</td>
+        </tr>
+        <tr>
+          <td><strong>Integración</strong></td>
+          <td>Varias piezas juntas: tu clase más la base de datos real, o el contexto de Spring.</td>
+          <td>segundos</td>
+          <td>…que algo entre dos piezas no encaja. Cuál de las dos, ya lo averiguas tú.</td>
+        </tr>
+        <tr>
+          <td><strong>Punta a punta</strong></td>
+          <td>El sistema completo, entrando por donde entra un usuario.</td>
+          <td>minutos</td>
+          <td>…que el usuario tiene un problema. Poco más.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <p>La forma habitual de repartirlos es la <em>pirámide</em>: muchos unitarios, bastantes menos de integración, unos pocos punta a punta. No por dogma, sino por aritmética — los de arriba son lentos y frágiles, y una suite que tarda veinte minutos deja de correrse.</p>
+
+  <p class="note"><strong>Dónde encaja JUnit en todo esto:</strong> en los tres. JUnit es quien <em>ejecuta</em> los tests, no quien decide su alcance. El mismo <code>@Test</code> vale para una clase suelta y para un <code>@SpringBootTest</code> que levanta media aplicación. Lo que cambia es lo que metes dentro.</p>
+</section>
+
+<section id="junit">
+  <p class="rubric">La herramienta</p>
+  <h2 class="sec"><span class="num">04</span> Qué es JUnit por dentro</h2>
+
+  <p>JUnit no es una librería: son tres piezas con trabajos distintos. Saberlo ahorra mucha confusión al leer un <code>pom.xml</code> ajeno.</p>
+
+  <dl class="glos">
+    <dt>JUnit Platform</dt>
+    <dd>El motor de arranque. Es quien descubre los tests y los ejecuta, y con quien hablan Maven, Gradle, Eclipse e IntelliJ. No sabe nada de <code>@Test</code>: solo sabe pedirle tests a un <em>engine</em>.</dd>
+
+    <dt>JUnit Jupiter</dt>
+    <dd>El engine moderno y la API que vas a escribir: <code>@Test</code>, <code>@BeforeEach</code>, <code>Assertions</code>, <code>@ParameterizedTest</code>. Cuando alguien dice “JUnit 5” casi siempre quiere decir Jupiter.</dd>
+
+    <dt>JUnit Vintage</dt>
+    <dd>Un engine que ejecuta tests de JUnit 4 sobre la plataforma nueva. Existe para migraciones: te deja convivir con el código viejo sin reescribirlo de golpe.</dd>
+  </dl>
+
+  <p>Por eso el <code>pom.xml</code> de la guía 01 pide un solo artefacto — <code>junit-jupiter</code> — que trae la API que escribes, el engine que la ejecuta y el módulo de tests parametrizados. Y por eso hace falta <strong>Surefire 3.x</strong>: las versiones 2.x hablaban directamente con JUnit 4 y no saben pedirle nada a la plataforma.</p>
+
+  <p class="note warn"><strong>Aviso de versiones, y no es menor.</strong> Este material se llama “JUnit” a secas a propósito: el artefacto actual es la <strong>versión 6</strong>, no la 5. Casi todo lo que encuentres escrito en internet dice “JUnit 5”, y sigue siendo válido — los paquetes y las anotaciones no cambiaron. Pero tu <code>pom.xml</code> dirá 6, y conviene saber por qué. Está explicado entero en el <a href="anexo-junit5-vs-junit6.html">anexo de JUnit 5 contra 6</a>.</p>
+</section>
+
+<section id="leer">
+  <p class="rubric">La práctica</p>
+  <h2 class="sec"><span class="num">05</span> Cómo se lee un fallo</h2>
+
+  <p>Vas a pasar más tiempo leyendo fallos que escribiendo tests. Un fallo de JUnit tiene tres partes y las tres importan.</p>
+
+  <div class="term">
+    <button class="copy" type="button" data-etiqueta="Copiar">Copiar</button>
+    <span class="lbl">salida de Surefire</span>
+<pre><code><span class="out bad">[ERROR] BoletaTest.elLimiteExacto:83 70 es aprobatorio: el reglamento dice '70 o mas' ==&gt; expected: &lt;true&gt; but was: &lt;false&gt;</span></code></pre>
+  </div>
+
+  <ul class="check">
+    <li><span class="box">1</span><span><b>Quién falló</b> <code>BoletaTest.elLimiteExacto:83</code> — la clase, el método y la línea. Por eso el nombre del método es documentación: es lo primero que se lee, y a menudo lo único.</span></li>
+    <li><span class="box">2</span><span><b>Tu mensaje</b> <code>70 es aprobatorio: el reglamento dice '70 o mas'</code> — lo escribiste tú al hacer la aserción. Es el hueco donde explicas <em>qué regla se rompió</em>, y es lo que separa un fallo útil de uno mudo.</span></li>
+    <li><span class="box">3</span><span><b>Los valores</b> <code>expected: &lt;true&gt; but was: &lt;false&gt;</code> — lo que pediste contra lo que hubo. Si aparecen al revés, invertiste los argumentos de la aserción: el esperado va <strong>primero</strong>.</span></li>
+  </ul>
+
+  <p class="note key"><strong>La regla que sale de aquí:</strong> escribe el nombre del test y el mensaje de la aserción pensando en el día que se ponga en rojo — a las once de la noche, en el servidor de integración, leído por alguien que no eres tú. Es la parte del test que menos cuesta y más rinde.</p>
+</section>
+
+<section id="glosario">
+  <p class="rubric">Referencia</p>
+  <h2 class="sec"><span class="num">06</span> El vocabulario</h2>
+
+  <dl class="glos">
+    <dt>aserción</dt>
+    <dd>La frase que afirma algo y hace fallar el test si no se cumple. <code>assertEquals</code>, <code>assertTrue</code>, <code>assertThrows</code>.</dd>
+
+    <dt>fixture</dt>
+    <dd>El escenario que un test necesita montado antes de empezar. En JUnit se monta en <code>@BeforeEach</code>.</dd>
+
+    <dt>código bajo prueba</dt>
+    <dd>La clase que el test examina. En esta serie: <code>Boleta</code>, <code>Curso</code>, <code>ValidadorCurp</code>.</dd>
+
+    <dt>caso límite</dt>
+    <dd>Un valor pegado a una frontera de decisión: el 70 exacto, el arreglo vacío, el último elemento, el <code>null</code>. Donde viven los bugs.</dd>
+
+    <dt>test inestable (<em>flaky</em>)</dt>
+    <dd>El que a veces pasa y a veces no, sin que el código cambie. No es un test malo: es la señal de un bug real — casi siempre una condición de carrera, una dependencia del reloj o del orden. Repetirlo hasta que pase es esconderlo.</dd>
+
+    <dt>cobertura</dt>
+    <dd>El porcentaje de líneas ejecutadas durante la suite. Útil para encontrar zonas sin probar; inútil como medida de calidad.</dd>
+
+    <dt>regresión</dt>
+    <dd>Algo que funcionaba y dejó de funcionar. Evitarlas es la razón número uno por la que existe una suite de tests.</dd>
+
+    <dt>doble de prueba</dt>
+    <dd>Un objeto falso que sustituye a una dependencia real — una base de datos, un servicio de red. Es el tema de Mockito, fuera del alcance de esta serie.</dd>
+  </dl>
+
+  <p class="closing">Guía 00 de 05 &middot; Serie <strong>JUnit</strong> &middot; Academia Monterrey. Sigue en <a href="guia-01-anatomia-de-un-test.html"><strong>Anatomía de un test</strong></a>, donde se escribe el primero y se rompe el código a propósito para verlo caer.</p>
+</section>
+
+</main>
+</div>
+
+<script>
+document.querySelectorAll('.copy').forEach(function (btn) {
+  btn.addEventListener('click', function () {
+    var pre = btn.parentElement.querySelector('pre');
+    if (!pre) return;
+    var texto = pre.innerText;
+
+    function avisar(msg) {
+      var prev = btn.dataset.etiqueta || 'Copiar';
+      btn.textContent = msg;
+      setTimeout(function () { btn.textContent = prev; }, 1400);
+    }
+
+    // Plan B con execCommand. Hace falta de verdad: estas guias se abren
+    // con doble clic (file://) y en varios navegadores navigator.clipboard
+    // no esta disponible o rechaza ahi. Sin este respaldo, el boton se
+    // quedaria en "Error" y el alumno no podria copiar nada.
+    function copiarALaAntigua() {
+      var ta = document.createElement('textarea');
+      ta.value = texto;
+      ta.setAttribute('readonly', '');
+      ta.style.position = 'fixed';
+      ta.style.top = '-1000px';
+      document.body.appendChild(ta);
+      ta.select();
+      var ok = false;
+      try { ok = document.execCommand('copy'); } catch (e) { ok = false; }
+      document.body.removeChild(ta);
+      avisar(ok ? 'Copiado' : 'Selecciona y copia a mano');
+    }
+
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(texto)
+        .then(function () { avisar('Copiado'); })
+        .catch(copiarALaAntigua);
+    } else {
+      copiarALaAntigua();
+    }
+  });
+});
+(function () {
+  var links = Array.prototype.slice.call(document.querySelectorAll('.toc a[href^="#"]'));
+  var map = {};
+  links.forEach(function (a) {
+    var el = document.getElementById(a.getAttribute('href').slice(1));
+    if (el) map[el.id] = a;
+  });
+  var obs = new IntersectionObserver(function (entries) {
+    entries.forEach(function (e) {
+      if (!map[e.target.id]) return;
+      if (e.isIntersecting) {
+        links.forEach(function (a) { a.classList.remove('cur'); });
+        map[e.target.id].classList.add('cur');
+      }
+    });
+  }, { rootMargin: '-10% 0px -75% 0px', threshold: 0 });
+  Object.keys(map).forEach(function (id) { obs.observe(document.getElementById(id)); });
+})();
+
+// ---------------------------------------------------------------------
+//  Los enlaces entre guias son RELATIVOS en el HTML, a proposito: el
+//  alumno abre el archivo con doble clic y navegar tiene que funcionar
+//  sin internet y sin permisos.
+//
+//  Cuando la misma pagina corre publicada como artifact, un enlace
+//  relativo no resuelve a nada -- cada artifact vive en su propio
+//  origen. Por eso aqui se reescriben a su URL, y SOLO ahi.
+//
+//  Antes esto estaba al reves (URL fijas en el HTML) y rompia el caso
+//  que de verdad se usa: el archivo local.
+// ---------------------------------------------------------------------
+(function () {
+  var PUBLICADAS = {
+    'guia-00-por-que-se-prueba.html': 'dc6ceb37-bac9-4a8c-bbd0-89f91dbc7def',
+    'guia-01-anatomia-de-un-test.html': '6755acb6-a6c0-42ac-95dd-e2ffb84a3a71',
+    'guia-02-el-catalogo.html': 'b02ccd10-cb0b-4545-a130-a0dc29e6a26c',
+    'guia-03-un-test-muchos-datos.html': 'dec3fbf5-39f0-411c-8daa-02bb3dec3eb0',
+    'guia-04-dobles-de-prueba.html': '33074df8-6377-44cd-a3c6-68f766ff4b78',
+    'anexo-junit5-vs-junit6.html': '53f58e3c-f8ea-4c4c-a6a9-ae93e2b9ca9a'
+  };
+  if (!/claudeusercontent|claude\.ai/.test(location.hostname)) return;
+  document.querySelectorAll('a[href]').forEach(function (a) {
+    var id = PUBLICADAS[a.getAttribute('href')];
+    if (id) a.setAttribute('href', 'https://claude.ai/code/artifact/' + id);
+  });
+})();
+</script>

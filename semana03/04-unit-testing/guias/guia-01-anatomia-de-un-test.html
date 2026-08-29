@@ -1,0 +1,1037 @@
+<meta charset="utf-8">
+<title>Anatomía de un test</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&family=Zilla+Slab:wght@600;700&display=swap">
+<style>
+:root{
+  --bg:#f4f6f5;
+  --surface:#ffffff;
+  --surface-2:#eaeeec;
+  --ink:#12181a;
+  --ink-2:#4a5559;
+  --ink-3:#78848a;
+  --rule:#dbe2df;
+  --accent:#0e6b63;
+  --accent-soft:#dcedea;
+
+  --warn:#8a5a10;      --warn-bg:#f7eeda;
+  --next:#2f7d3a;      --next-bg:#e2f0e4;
+  --error:#b23a2e;     --error-bg:#f8e6e3;
+  --complete:#1f5b96;  --complete-bg:#e3edf8;
+
+  --term-bg:#101619;
+  --term-ink:#dbe4e6;
+  --term-dim:#7b8a8e;
+  --term-prompt:#5fb8ac;
+  --term-out:#a3b0b3;
+  --term-rule:#232d31;
+
+  --step:clamp(1.9rem,1.4rem + 1.6vw,2.6rem);
+  --h2:clamp(1.45rem,1.2rem + 1vw,1.9rem);
+  --h3:1.1rem;
+  --body:1rem;
+  --small:.87rem;
+  --tiny:.76rem;
+  --radius:10px;
+  --maxw:1180px;
+}
+
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --bg:#0d1113;
+    --surface:#151b1e;
+    --surface-2:#1b2327;
+    --ink:#e6edee;
+    --ink-2:#9fadb0;
+    --ink-3:#78868a;
+    --rule:#242e32;
+    --accent:#5fc0b4;
+    --accent-soft:#122b29;
+
+    --warn:#dfa955;      --warn-bg:#2e2312;
+    --next:#69bf7a;      --next-bg:#152a1a;
+    --error:#e8908b;     --error-bg:#2f1a18;
+    --complete:#7fb0e8;  --complete-bg:#16243a;
+
+    --term-bg:#070a0c;
+    --term-ink:#dbe4e6;
+    --term-dim:#6c797d;
+    --term-prompt:#6fc9bc;
+    --term-out:#94a2a5;
+    --term-rule:#1d262a;
+  }
+}
+
+:root[data-theme="dark"]{
+  --bg:#0d1113;
+  --surface:#151b1e;
+  --surface-2:#1b2327;
+  --ink:#e6edee;
+  --ink-2:#9fadb0;
+  --ink-3:#78868a;
+  --rule:#242e32;
+  --accent:#5fc0b4;
+  --accent-soft:#122b29;
+
+  --warn:#dfa955;      --warn-bg:#2e2312;
+  --next:#69bf7a;      --next-bg:#152a1a;
+  --error:#e8908b;     --error-bg:#2f1a18;
+  --complete:#7fb0e8;  --complete-bg:#16243a;
+
+  --term-bg:#070a0c;
+  --term-ink:#dbe4e6;
+  --term-dim:#6c797d;
+  --term-prompt:#6fc9bc;
+  --term-out:#94a2a5;
+  --term-rule:#1d262a;
+}
+
+*{box-sizing:border-box}
+
+body{
+  margin:0;
+  background:var(--bg);
+  color:var(--ink);
+  font-family:"IBM Plex Sans",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  font-size:var(--body);
+  line-height:1.62;
+  -webkit-font-smoothing:antialiased;
+}
+
+.wrap{max-width:var(--maxw);margin:0 auto;padding:0 1.5rem}
+
+/* ---------- masthead ---------- */
+.masthead{
+  border-bottom:1px solid var(--rule);
+  background:var(--surface);
+  padding:3.2rem 0 2.4rem;
+}
+.eyebrow{
+  font-family:"JetBrains Mono",monospace;
+  font-size:var(--tiny);letter-spacing:.09em;text-transform:uppercase;
+  color:var(--ink-3);margin:0 0 1rem;
+}
+.masthead h1{
+  font-family:"Zilla Slab",Georgia,serif;font-weight:700;
+  font-size:clamp(2.4rem,1.7rem + 3.2vw,4rem);
+  line-height:1.04;letter-spacing:-.015em;
+  margin:0 0 1.1rem;max-width:16ch;text-wrap:balance;
+}
+.lede{
+  font-size:clamp(1.02rem,.98rem + .35vw,1.2rem);
+  color:var(--ink-2);max-width:62ch;margin:0 0 1.6rem;
+}
+.facts{
+  list-style:none;display:flex;flex-wrap:wrap;gap:.45rem;margin:0;padding:0;
+}
+.facts li{
+  font-family:"JetBrains Mono",monospace;font-size:var(--tiny);
+  color:var(--ink-2);background:var(--surface-2);
+  border:1px solid var(--rule);border-radius:99px;padding:.28rem .7rem;
+}
+
+/* ---------- shell ---------- */
+.shell{
+  display:grid;grid-template-columns:minmax(0,1fr);gap:2.4rem;
+  padding-top:2.6rem;padding-bottom:5rem;
+}
+@media (min-width:1000px){
+  .shell{grid-template-columns:216px minmax(0,1fr);gap:3.4rem}
+}
+
+.toc{font-size:var(--small);align-self:start}
+@media (min-width:1000px){
+  .toc{position:sticky;top:1.6rem;max-height:calc(100vh - 3.2rem);overflow-y:auto}
+}
+.toc h2{
+  font-family:"JetBrains Mono",monospace;font-size:var(--tiny);font-weight:700;
+  letter-spacing:.09em;text-transform:uppercase;color:var(--ink-3);
+  margin:0 0 .6rem;padding-bottom:.4rem;border-bottom:1px solid var(--rule);
+}
+.toc h2+*{margin-top:0}
+.toc ol,.toc ul{list-style:none;margin:0 0 1.6rem;padding:0;display:flex;flex-direction:column;gap:.08rem}
+.toc a{
+  display:flex;gap:.55rem;align-items:baseline;
+  color:var(--ink-2);text-decoration:none;
+  padding:.3rem .45rem;border-radius:6px;line-height:1.35;
+}
+.toc a:hover{color:var(--ink);background:var(--surface-2)}
+.toc a:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
+.toc .n{
+  font-family:"JetBrains Mono",monospace;font-size:.7rem;
+  color:var(--ink-3);flex:none;
+}
+.toc a.cur{color:var(--ink);font-weight:600;background:var(--surface-2)}
+
+main{min-width:0;max-width:70ch}
+
+/* ---------- secciones ---------- */
+section{
+  padding-top:2.2rem;margin-top:2.2rem;border-top:1px solid var(--rule);
+}
+section:first-child{padding-top:0;margin-top:0;border-top:0}
+.rubric{
+  font-family:"JetBrains Mono",monospace;font-size:var(--tiny);
+  letter-spacing:.09em;text-transform:uppercase;color:var(--accent);
+  margin:0 0 .35rem;
+}
+h2.sec{
+  font-family:"Zilla Slab",Georgia,serif;font-weight:700;
+  font-size:var(--h2);line-height:1.14;letter-spacing:-.01em;
+  margin:0 0 1.1rem;display:flex;gap:.75rem;align-items:baseline;text-wrap:balance;
+}
+h2.sec .num{
+  font-family:"JetBrains Mono",monospace;font-size:.8rem;font-weight:700;
+  color:var(--ink-3);flex:none;
+}
+h3{
+  font-family:"Zilla Slab",Georgia,serif;font-weight:600;font-size:var(--h3);
+  margin:2rem 0 .6rem;letter-spacing:-.005em;
+}
+p{margin:0 0 1rem;max-width:66ch}
+strong{font-weight:600}
+em{font-style:italic}
+a{color:var(--accent)}
+
+code{
+  font-family:"JetBrains Mono",monospace;font-size:.86em;
+  background:var(--surface-2);border:1px solid var(--rule);
+  border-radius:4px;padding:.08em .34em;
+}
+
+/* ---------- notas ---------- */
+.note{
+  background:var(--surface);border:1px solid var(--rule);
+  border-left:3px solid var(--accent);border-radius:var(--radius);
+  padding:.85rem 1.05rem;margin:0 0 1.2rem;font-size:var(--small);
+  color:var(--ink-2);max-width:66ch;
+}
+.note strong{color:var(--ink)}
+.note.warn{border-left-color:var(--warn);background:var(--warn-bg)}
+.note.warn strong{color:var(--ink)}
+.note.key{border-left-color:var(--accent);background:var(--accent-soft)}
+.note.key strong{color:var(--ink)}
+.note p:last-child{margin-bottom:0}
+
+/* ---------- analogía ---------- */
+.ana{
+  background:var(--surface);border:1px solid var(--rule);border-radius:var(--radius);
+  padding:1.1rem 1.2rem;margin:0 0 1.3rem;max-width:66ch;
+  position:relative;
+}
+.ana .tag{
+  font-family:"JetBrains Mono",monospace;font-size:.68rem;font-weight:700;
+  letter-spacing:.1em;text-transform:uppercase;color:var(--accent);
+  display:block;margin-bottom:.5rem;
+}
+.ana p:last-child{margin-bottom:0}
+.ana h4{
+  font-family:"Zilla Slab",Georgia,serif;font-weight:600;font-size:1.05rem;
+  margin:0 0 .5rem;
+}
+
+/* ---------- terminal / código ---------- */
+.term{
+  background:var(--term-bg);border:1px solid var(--term-rule);
+  border-radius:var(--radius);margin:0 0 1.2rem;position:relative;overflow:hidden;
+}
+.term pre{
+  margin:0;padding:1rem 1.1rem;overflow-x:auto;
+  font-family:"JetBrains Mono",monospace;font-size:.8rem;line-height:1.72;
+  color:var(--term-ink);
+}
+.term code{background:none;border:0;padding:0;font-size:inherit;color:inherit}
+.term .cm{color:var(--term-dim)}
+.term .p{color:var(--term-prompt);user-select:none}
+.term .kw{color:#c99bd8}
+.term .ty{color:#7fc3e8}
+.term .st{color:#c8d98a}
+.term .out{color:var(--term-out)}
+.term .bad{color:#e8908b}
+.term .ok{color:#8ed49a}
+.term .lbl{
+  font-family:"JetBrains Mono",monospace;font-size:.66rem;font-weight:700;
+  letter-spacing:.1em;text-transform:uppercase;color:var(--term-dim);
+  padding:.55rem 1.1rem .1rem;display:block;
+}
+.copy{
+  position:absolute;top:.5rem;right:.5rem;z-index:2;
+  font-family:"JetBrains Mono",monospace;font-size:.66rem;
+  color:var(--term-dim);background:transparent;
+  border:1px solid var(--term-rule);border-radius:5px;
+  padding:.2rem .5rem;cursor:pointer;
+}
+.copy:hover{color:var(--term-ink);border-color:var(--term-dim)}
+.copy:focus-visible{outline:2px solid var(--term-prompt);outline-offset:1px}
+
+/* ---------- figuras ---------- */
+figure.flow{
+  background:var(--surface);border:1px solid var(--rule);border-radius:var(--radius);
+  padding:1.15rem 1.15rem .9rem;margin:0 0 1.4rem;overflow-x:auto;
+}
+figure.flow svg{display:block;width:100%;height:auto;color:var(--ink-2)}
+figure.flow figcaption{
+  font-family:"JetBrains Mono",monospace;font-size:var(--tiny);
+  color:var(--ink-3);line-height:1.55;margin-top:.85rem;
+}
+figure.flow figcaption strong{color:var(--ink-2)}
+
+figure.mapa{
+  background:var(--surface);border:1px solid var(--rule);border-radius:var(--radius);
+  padding:.85rem;margin:0 0 1.4rem;
+}
+figure.mapa img{display:block;width:100%;height:auto;border-radius:6px}
+figure.mapa figcaption{
+  font-family:"JetBrains Mono",monospace;font-size:var(--tiny);
+  color:var(--ink-3);line-height:1.55;margin-top:.8rem;
+}
+
+/* ---------- tablas ---------- */
+.tw{overflow-x:auto;margin:0 0 1.3rem;border:1px solid var(--rule);border-radius:var(--radius)}
+table{border-collapse:collapse;width:100%;font-size:var(--small);background:var(--surface)}
+th,td{text-align:left;padding:.6rem .8rem;border-bottom:1px solid var(--rule);vertical-align:top}
+thead th{
+  font-family:"JetBrains Mono",monospace;font-size:.7rem;font-weight:700;
+  letter-spacing:.06em;text-transform:uppercase;color:var(--ink-3);
+  background:var(--surface-2);white-space:nowrap;
+}
+tbody tr:last-child td{border-bottom:0}
+td code{font-size:.8rem}
+
+/* ---------- señales ---------- */
+.sig{
+  font-family:"JetBrains Mono",monospace;font-size:.72rem;font-weight:700;
+  padding:.16rem .45rem;border-radius:5px;white-space:nowrap;
+}
+.sig.n{color:var(--next);background:var(--next-bg)}
+.sig.e{color:var(--error);background:var(--error-bg)}
+.sig.c{color:var(--complete);background:var(--complete-bg)}
+
+/* ---------- listas ---------- */
+ul.plain,ol.plain{margin:0 0 1.2rem;padding-left:1.15rem;max-width:66ch}
+ul.plain li,ol.plain li{margin-bottom:.45rem}
+
+ul.check{list-style:none;margin:0 0 1.3rem;padding:0;display:flex;flex-direction:column;gap:.4rem;max-width:66ch}
+ul.check li{
+  display:grid;grid-template-columns:auto minmax(0,1fr);gap:.6rem;align-items:start;
+  background:var(--surface);border:1px solid var(--rule);border-radius:8px;
+  padding:.6rem .8rem;font-size:var(--small);
+}
+ul.check .box{font-family:"JetBrains Mono",monospace;color:var(--ink-3);flex:none}
+ul.check b{display:block;margin-bottom:.1rem;font-size:.95rem;color:var(--ink)}
+
+/* ---------- trampa ---------- */
+.trap{
+  display:grid;grid-template-columns:auto minmax(0,1fr);gap:.85rem;align-items:start;
+  background:var(--surface);border:1px solid var(--rule);border-radius:var(--radius);
+  padding:.85rem 1rem;margin-bottom:.55rem;font-size:var(--small);max-width:66ch;
+}
+.trap .k{
+  font-family:"JetBrains Mono",monospace;font-size:.72rem;font-weight:700;
+  color:var(--error);background:var(--error-bg);
+  border-radius:5px;padding:.22rem .5rem;white-space:nowrap;
+}
+.trap b{display:block;margin-bottom:.15rem;font-size:.95rem;color:var(--ink)}
+
+/* ---------- glosario ---------- */
+dl.glos{margin:0 0 1.3rem;max-width:66ch}
+dl.glos dt{
+  font-family:"JetBrains Mono",monospace;font-size:.8rem;font-weight:700;
+  color:var(--accent);margin-top:.9rem;
+}
+dl.glos dd{margin:.15rem 0 0;font-size:var(--small);color:var(--ink-2)}
+
+/* ---------- cierre ---------- */
+.closing{
+  border-top:1px solid var(--rule);margin-top:3rem;padding-top:1.6rem;
+  font-size:var(--small);color:var(--ink-3);
+}
+.closing a{color:var(--ink-2)}
+
+@media (prefers-reduced-motion:reduce){
+  *{animation:none !important;transition:none !important;scroll-behavior:auto !important}
+}
+html{scroll-behavior:smooth}
+
+/* ---------- añadidos de la serie JUnit ----------
+   Estas clases se usaban ya en las guías de springWebFlux pero no
+   llegaron a definirse en su hoja de estilo: .arch, .cmd, .dir, .hi, .ver.
+   Se definen aquí, más .veredicto, propia de esta serie.                */
+
+.term .cmd{color:var(--term-ink);font-weight:500}
+.term .hi{color:#f0d48a}
+.term .dir{color:#7fc3e8;font-weight:500}
+.term .num{color:#e0a86a}
+
+.arch{
+  font-family:"JetBrains Mono",monospace;font-size:var(--small);
+  background:var(--term-bg);color:var(--term-ink);
+  border-radius:var(--radius);padding:1.15rem 1.25rem;margin:0 0 1.3rem;
+  overflow-x:auto;line-height:1.75;white-space:pre;
+}
+.arch .dir{color:#7fc3e8;font-weight:500}
+.arch .hi{color:#f0d48a}
+.arch .cm{color:var(--term-dim)}
+
+.ver{
+  border:1px solid var(--rule);border-left:3px solid var(--next);
+  background:var(--next-bg);border-radius:var(--radius);
+  padding:.9rem 1.15rem;margin:0 0 1.3rem;font-size:var(--small);
+}
+.ver b{display:block;color:var(--ink);margin-bottom:.2rem}
+.ver p:last-child{margin-bottom:0}
+
+.veredicto{
+  display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
+  gap:.75rem;margin:0 0 1.4rem;
+}
+.veredicto div{
+  border:1px solid var(--rule);border-radius:var(--radius);
+  background:var(--surface);padding:.9rem 1rem;font-size:var(--small);
+}
+.veredicto b{display:block;font-family:"JetBrains Mono",monospace;
+  font-size:var(--tiny);letter-spacing:.07em;text-transform:uppercase;
+  margin-bottom:.35rem;}
+.veredicto .ok b{color:var(--next)}
+.veredicto .bad b{color:var(--error)}
+.veredicto .mid b{color:var(--warn)}
+/* ---------- ligaduras: fuera, y no es cosmetica ----------
+   JetBrains Mono dibuja  <!--  como una flecha,  -->  como otra, y  >=  como
+   un solo glifo. En una guia de codigo eso deja de ser bonito y pasa a ser
+   un error: el alumno no puede ver la sintaxis literal que tiene que teclear.
+   Y en esta serie es critico -- toda la seccion 07 de la guia 01 trata sobre
+   la diferencia entre  >=  y  >.  Se apagan en TODO contexto de codigo.       */
+.term pre, .term code, .arch, code, pre, kbd, samp{
+  font-variant-ligatures:none;
+  font-feature-settings:"liga" 0,"clig" 0,"calt" 0;
+}
+
+</style>
+
+<header class="masthead">
+  <div class="wrap">
+    <p class="eyebrow">JUnit 6.1.3 &middot; Java 21 &middot; Laboratorio &middot; 01 de 04</p>
+    <h1>Anatomía de un test</h1>
+    <p class="lede">Vas a escribir tus primeros veintidós tests sobre la boleta de un alumno. Y al final vas a romper el código a propósito, con un solo carácter, para descubrir que veinte de esos veintidós no sirvieron de nada.</p>
+    <ul class="facts">
+      <li>22 tests</li>
+      <li>5 clases de test</li>
+      <li>sin base de datos</li>
+      <li>90 min</li>
+    </ul>
+  </div>
+</header>
+
+<div class="wrap shell">
+
+<nav class="toc" aria-label="Contenido">
+  <h2>La ruta</h2>
+  <ol>
+    <li><a href="#empezar"><span class="n">00</span> Poner en marcha</a></li>
+    <li><a href="#pom"><span class="n">01</span> El <code>pom.xml</code>, línea a línea</a></li>
+    <li><a href="#dominio"><span class="n">02</span> El código bajo prueba</a></li>
+    <li><a href="#primero"><span class="n">03</span> Tu primer test</a></li>
+    <li><a href="#ciclo"><span class="n">04</span> El ciclo de vida</a></li>
+    <li><a href="#aserciones"><span class="n">05</span> Las aserciones</a></li>
+    <li><a href="#decimales"><span class="n">06</span> La trampa de los decimales</a></li>
+    <li><a href="#bug"><span class="n">07</span> El test que atrapa el bug</a></li>
+    <li><a href="#trampas"><span class="n">08</span> Trampas y ejercicios</a></li>
+  </ol>
+
+  <h2>La serie</h2>
+  <ul>
+    <li><a href="guia-00-por-que-se-prueba.html"><span class="n">00</span> Por qué se prueba</a></li>
+    <li><a href="#empezar" class="cur"><span class="n">01</span> Anatomía de un test</a></li>
+    <li><a href="guia-02-el-catalogo.html"><span class="n">02</span> El catálogo</a></li>
+    <li><a href="guia-03-un-test-muchos-datos.html"><span class="n">03</span> Un test, muchos datos</a></li>
+    <li><a href="guia-04-dobles-de-prueba.html"><span class="n">04</span> Dobles de prueba</a></li>
+    <li><a href="anexo-junit5-vs-junit6.html"><span class="n">··</span> JUnit 5 contra 6</a></li>
+  </ul>
+</nav>
+
+<main>
+
+<section id="empezar">
+  <p class="rubric">Antes de empezar</p>
+  <h2 class="sec"><span class="num">00</span> Poner en marcha</h2>
+
+  <ul class="check">
+    <li><span class="box">[ ]</span><span><b>Java 21 o superior</b> <code>java -version</code> debe decir <code>21</code> o más. JUnit 6 exige 17 como mínimo.</span></li>
+    <li><span class="box">[ ]</span><span><b>Haber leído la guía 00</b> — <a href="guia-00-por-que-se-prueba.html">Por qué se prueba</a>. Aquí se da por sabido qué es una aserción, qué es un caso límite y por qué verde no significa probado.</span></li>
+    <li><span class="box">[ ]</span><span><b>Nada más</b> No hay Docker, ni MySQL, ni Mongo, ni contraseñas. Todo el proyecto son cinco clases y un <code>Map</code> en memoria.</span></li>
+  </ul>
+
+  <div class="term">
+    <button class="copy" type="button" data-etiqueta="Copiar">Copiar</button>
+<pre><code><span class="p">$</span> <span class="cmd">cd testing/proyectos/01-junit-fundamentos</span>
+<span class="p">$</span> <span class="cmd">./mvnw test</span>
+
+<span class="out">[INFO] Running com.academymty.academia.BoletaTest</span>
+<span class="out">[INFO] Tests run: 7, Failures: 0, Errors: 0, Skipped: 0</span>
+<span class="out">...</span>
+<span class="out ok">[INFO] Tests run: 22, Failures: 0, Errors: 0, Skipped: 0</span>
+<span class="out ok">[INFO] BUILD SUCCESS</span></code></pre>
+  </div>
+
+  <p class="note"><strong>Si sale en verde a la primera, no celebres todavía.</strong> Esa es exactamente la sensación que la sección 07 se va a encargar de estropear — y ese es el punto de toda la guía.</p>
+
+  <div class="arch"><span class="dir">01-junit-fundamentos/</span>
+├── pom.xml
+├── <span class="dir">scripts/</span>
+│   └── <span class="hi">ver-fallar.sh</span>        <span class="cm">← el experimento de la §07</span>
+├── <span class="dir">src/main/java/com/academymty/academia/</span>
+│   ├── <span class="hi">Alumno.java</span>          <span class="cm">record: no se prueba, no decide nada</span>
+│   └── <span class="hi">Boleta.java</span>          <span class="cm">el código bajo prueba</span>
+└── <span class="dir">src/test/java/com/academymty/academia/</span>
+    ├── <span class="hi">PrimerTest.java</span>      <span class="cm">§03  la anatomía</span>
+    ├── <span class="hi">CicloDeVidaTest.java</span> <span class="cm">§04  @BeforeEach y compañía</span>
+    ├── <span class="hi">AsercionesTest.java</span>  <span class="cm">§05  el catálogo</span>
+    ├── <span class="hi">DecimalesTest.java</span>   <span class="cm">§06  la trampa del double</span>
+    └── <span class="hi">BoletaTest.java</span>      <span class="cm">§07  el que atrapa el bug</span></div>
+</section>
+
+<section id="pom">
+  <p class="rubric">El andamiaje</p>
+  <h2 class="sec"><span class="num">01</span> El <code>pom.xml</code>, línea a línea</h2>
+
+  <p>Todo el JUnit que necesitas cabe en una dependencia y un plugin. Merece la pena entender los cuatro bloques, porque es el mismo <code>pom</code> de los otros dos proyectos.</p>
+
+  <div class="term">
+    <button class="copy" type="button" data-etiqueta="Copiar">Copiar</button>
+    <span class="lbl">pom.xml — lo que importa</span>
+<pre><code><span class="cm">&lt;!-- 1. El BOM fija la version de TODOS los artefactos de JUnit a la vez --&gt;</span>
+&lt;<span class="ty">dependencyManagement</span>&gt;
+  &lt;dependencies&gt;
+    &lt;dependency&gt;
+      &lt;groupId&gt;<span class="st">org.junit</span>&lt;/groupId&gt;
+      &lt;artifactId&gt;<span class="st">junit-bom</span>&lt;/artifactId&gt;
+      &lt;version&gt;<span class="st">6.1.3</span>&lt;/version&gt;
+      &lt;type&gt;<span class="st">pom</span>&lt;/type&gt;  &lt;scope&gt;<span class="st">import</span>&lt;/scope&gt;
+    &lt;/dependency&gt;
+  &lt;/dependencies&gt;
+&lt;/<span class="ty">dependencyManagement</span>&gt;
+
+<span class="cm">&lt;!-- 2. Un solo artefacto agregador. Trae tres cosas dentro:      --&gt;</span>
+<span class="cm">&lt;!--    junit-jupiter-api    -&gt; lo que ESCRIBES (@Test, Assertions) --&gt;</span>
+<span class="cm">&lt;!--    junit-jupiter-params -&gt; @ParameterizedTest (guia 03)        --&gt;</span>
+<span class="cm">&lt;!--    junit-jupiter-engine -&gt; lo que EJECUTA tus tests            --&gt;</span>
+&lt;<span class="ty">dependency</span>&gt;
+  &lt;groupId&gt;<span class="st">org.junit.jupiter</span>&lt;/groupId&gt;
+  &lt;artifactId&gt;<span class="st">junit-jupiter</span>&lt;/artifactId&gt;
+  &lt;scope&gt;<span class="st">test</span>&lt;/scope&gt;      <span class="cm">&lt;!-- 3. no viaja al jar de produccion --&gt;</span>
+&lt;/<span class="ty">dependency</span>&gt;
+
+<span class="cm">&lt;!-- 4. Surefire 3.x: quien corre los tests en `mvn test` --&gt;</span>
+&lt;<span class="ty">plugin</span>&gt;
+  &lt;artifactId&gt;<span class="st">maven-surefire-plugin</span>&lt;/artifactId&gt;
+  &lt;version&gt;<span class="st">3.5.6</span>&lt;/version&gt;
+&lt;/<span class="ty">plugin</span>&gt;</code></pre>
+  </div>
+
+  <div class="trap">
+    <span class="k">ojo</span>
+    <span><b>Surefire 2.x no vale</b>Las versiones 2.x hablaban directamente con JUnit 4 y no saben pedirle tests a la JUnit Platform. El síntoma es desconcertante: <code>mvn test</code> termina en <code>BUILD SUCCESS</code> con <code>Tests run: 0</code>. No falla — <strong>no encuentra nada</strong>. Si algún día tu suite “pasa” sospechosamente rápido, mira la versión de Surefire antes que nada.</span>
+  </div>
+
+  <p class="note"><strong>Sin <code>&lt;version&gt;</code> en la dependencia.</strong> No es un olvido: la hereda del BOM. Así, el día que subas a 6.2 cambias un número en un sitio y todos los artefactos de JUnit suben coordinados. Mezclar una <code>api</code> 6.1 con un <code>engine</code> 6.0 es una fuente clásica de errores raros en tiempo de ejecución.</p>
+
+  <p class="note key"><strong>¿Por qué dice 6.1.3 si el tutorial que estás leyendo se llama “JUnit 5”?</strong> Porque JUnit 5 dejó de ser la versión actual. Los paquetes siguen siendo <code>org.junit.jupiter.api</code> y las anotaciones son las mismas — no hay nada que reaprender. La historia completa, con la tabla de equivalencias, está en el <a href="anexo-junit5-vs-junit6.html">anexo</a>.</p>
+</section>
+
+<section id="dominio">
+  <p class="rubric">El dominio</p>
+  <h2 class="sec"><span class="num">02</span> El código bajo prueba</h2>
+
+  <p>Dos clases. Una tiene comportamiento y se prueba entera; la otra no tiene ninguno y no se prueba nunca. Esa asimetría ya es una lección.</p>
+
+  <div class="term">
+    <button class="copy" type="button" data-etiqueta="Copiar">Copiar</button>
+    <span class="lbl">Alumno.java — el que NO se prueba</span>
+<pre><code><span class="kw">public record</span> <span class="ty">Alumno</span>(<span class="ty">String</span> matricula, <span class="ty">String</span> nombre) {
+
+    <span class="kw">public</span> <span class="ty">Alumno</span> {
+        <span class="kw">if</span> (matricula == <span class="kw">null</span> || matricula.isBlank()) {
+            <span class="kw">throw new</span> <span class="ty">IllegalArgumentException</span>(<span class="st">"La matricula no puede venir vacia"</span>);
+        }
+    }
+}</code></pre>
+  </div>
+
+  <p class="note"><strong>Un <code>record</code> no necesita tests propios.</strong> No decide nada: guarda dos cadenas y le pide a Java el <code>equals()</code>, el <code>hashCode()</code> y el <code>toString()</code>. Probar eso es probar el compilador. Lo único con criterio propio es la validación del constructor compacto — y esa la cubre <code>BoletaTest</code> de paso. <strong>Se prueba el código que decide.</strong></p>
+
+  <div class="term">
+    <button class="copy" type="button" data-etiqueta="Copiar">Copiar</button>
+    <span class="lbl">Boleta.java — las tres reglas</span>
+<pre><code><span class="kw">public static final</span> <span class="kw">double</span> MINIMA_APROBATORIA = <span class="st">70.0</span>;
+
+<span class="cm">// Regla 1: una calificacion valida va de 0 a 100</span>
+<span class="kw">public void</span> registrar(<span class="ty">String</span> materia, <span class="kw">int</span> calificacion) {
+    <span class="kw">if</span> (calificacion &lt; <span class="st">0</span> || calificacion &gt; <span class="st">100</span>) {
+        <span class="kw">throw new</span> <span class="ty">IllegalArgumentException</span>(<span class="st">"Calificacion fuera de rango: "</span> + calificacion);
+    }
+    calificaciones.put(materia, calificacion);
+}
+
+<span class="cm">// Regla 2: el promedio es la media. Una boleta vacia promedia 0.</span>
+<span class="kw">public double</span> promedio() {
+    <span class="kw">if</span> (calificaciones.isEmpty()) <span class="kw">return</span> <span class="st">0.0</span>;
+    <span class="kw">double</span> suma = <span class="st">0</span>;
+    <span class="kw">for</span> (<span class="kw">int</span> c : calificaciones.values()) suma += c;
+    <span class="kw">return</span> suma / calificaciones.size();
+}
+
+<span class="cm">// Regla 3: se aprueba con 70 O MAS. Borrar el '=' de ese &gt;=</span>
+<span class="cm">// es UN SOLO caracter, y es todo el tema de la seccion 07.</span>
+<span class="kw">public boolean</span> aprobado() {
+    <span class="kw">return</span> promedio() &gt;= MINIMA_APROBATORIA;
+}</code></pre>
+  </div>
+
+  <p class="note key"><strong>Guarda esa tercera regla.</strong> «Se aprueba con 70 <em>o más</em>» sale del reglamento de la academia, no del código. Un test que se escribe desde el reglamento comprueba el 70. Un test que se escribe mirando el código ya escrito comprueba lo que el código haga — y si el código dice <code>&gt;</code>, el test lo bendice.</p>
+</section>
+
+<section id="primero">
+  <p class="rubric">El código</p>
+  <h2 class="sec"><span class="num">03</span> Tu primer test</h2>
+
+  <p>Un test es un método de Java con tres características y ni una más: lleva <code>@Test</code> encima, no devuelve nada, y termina en una aserción.</p>
+
+  <div class="term">
+    <button class="copy" type="button" data-etiqueta="Copiar">Copiar</button>
+    <span class="lbl">PrimerTest.java</span>
+<pre><code><span class="kw">import</span> org.junit.jupiter.api.Test;
+<span class="kw">import static</span> org.junit.jupiter.api.Assertions.assertEquals;
+
+<span class="kw">class</span> <span class="ty">PrimerTest</span> {                          <span class="cm">// ni public, ni "extends" nada</span>
+
+    <span class="kw">@Test</span>
+    <span class="kw">void</span> unaBoletaRecienCreadaPromediaCero() {
+
+        <span class="cm">// 1. PREPARAR: monta el escenario</span>
+        <span class="ty">Alumno</span> ana = <span class="kw">new</span> <span class="ty">Alumno</span>(<span class="st">"A01"</span>, <span class="st">"Ana Torres"</span>);
+        <span class="ty">Boleta</span> boleta = <span class="kw">new</span> <span class="ty">Boleta</span>(ana);
+
+        <span class="cm">// 2. ACTUAR: ejecuta lo que quieres probar</span>
+        <span class="kw">double</span> promedio = boleta.promedio();
+
+        <span class="cm">// 3. COMPROBAR: una sola pregunta, con respuesta si o no</span>
+        assertEquals(<span class="st">0.0</span>, promedio);
+    }
+}</code></pre>
+  </div>
+
+  <p>Ese comentario en tres pasos —<strong>preparar, actuar, comprobar</strong>— no es decoración. Es la estructura de prácticamente todo test que vas a escribir en tu vida, y cuando un test no cabe en esos tres bloques suele ser señal de que está probando dos cosas a la vez.</p>
+
+  <h3>Tres detalles que sorprenden</h3>
+
+  <div class="trap">
+    <span class="k">01</span>
+    <span><b>Ni la clase ni el método son <code>public</code></b>JUnit 4 lo exigía. Jupiter no: le basta con acceso de paquete, y es lo idiomático. Si vienes de tutoriales viejos, verás <code>public</code> por todas partes — no está mal, sobra.</span>
+  </div>
+
+  <div class="trap">
+    <span class="k">02</span>
+    <span><b>El nombre del método es documentación</b>Cuando el test falle, lo primero que verás en la consola es ese nombre. <code>unaBoletaRecienCreadaPromediaCero</code> se lee como una frase; <code>test1</code> no dice nada a las once de la noche.</span>
+  </div>
+
+  <div class="trap">
+    <span class="k">03</span>
+    <span><b>El esperado va PRIMERO</b><code>assertEquals(esperado, real)</code>. Al revés compila igual y el test pasa igual — solo se nota el día que falla, y entonces el mensaje te miente al derecho: dirá <code>expected: &lt;90&gt;</code> cuando 90 era el resultado. Error caro y silencioso.</span>
+  </div>
+
+  <h3><code>@DisplayName</code> y el tercer parámetro</h3>
+
+  <div class="term">
+    <button class="copy" type="button" data-etiqueta="Copiar">Copiar</button>
+<pre><code><span class="kw">@Test</span>
+<span class="kw">@DisplayName</span>(<span class="st">"Con 90 de promedio, el alumno aprueba"</span>)
+<span class="kw">void</span> aprobarConNoventa() {
+    <span class="ty">Boleta</span> boleta = <span class="kw">new</span> <span class="ty">Boleta</span>(<span class="kw">new</span> <span class="ty">Alumno</span>(<span class="st">"A01"</span>, <span class="st">"Ana Torres"</span>));
+    boleta.registrar(<span class="st">"Java"</span>, <span class="st">90</span>);
+
+    assertTrue(boleta.aprobado(), <span class="st">"Con 90 de promedio deberia aprobar"</span>);
+    <span class="cm">//                              ^ esto NO se lee cuando el test pasa.</span>
+    <span class="cm">//                                Se lee el dia que se pone en rojo.</span>
+}</code></pre>
+  </div>
+
+  <p><code>@DisplayName</code> sirve para lo que el nombre del método no puede: espacios, acentos, dos puntos. Regla práctica: <strong>el nombre del método para quien lee el código, el <code>@DisplayName</code> para quien lee el reporte.</strong></p>
+
+  <p>Y el tercer parámetro de la aserción es el mensaje de fallo. Compara lo que vería alguien depurando de madrugada:</p>
+
+  <div class="veredicto">
+    <div class="bad"><b>Sin mensaje</b><code>expected: &lt;true&gt; but was: &lt;false&gt;</code> — cierto, e inútil. ¿Qué regla se rompió?</div>
+    <div class="ok"><b>Con mensaje</b><code>Con 90 de promedio deberia aprobar</code> — ahí está la regla del negocio, en el reporte.</div>
+  </div>
+</section>
+
+<section id="ciclo">
+  <p class="rubric">La mecánica</p>
+  <h2 class="sec"><span class="num">04</span> El ciclo de vida</h2>
+
+  <p>Cuatro anotaciones controlan qué corre antes y después de cada test. Corre <code>CicloDeVidaTest</code> y mira el orden en la consola:</p>
+
+  <div class="term">
+    <button class="copy" type="button" data-etiqueta="Copiar">Copiar</button>
+<pre><code><span class="p">$</span> <span class="cmd">./mvnw test -Dtest=CicloDeVidaTest</span>
+
+<span class="out">== @BeforeAll  -- una sola vez, antes de todo</span>
+<span class="out">   -&gt; @BeforeEach -- boleta nueva y limpia</span>
+<span class="out">   &lt;- @AfterEach  -- llevamos 1 test(s)</span>
+<span class="out">   -&gt; @BeforeEach -- boleta nueva y limpia</span>
+<span class="out">   &lt;- @AfterEach  -- llevamos 2 test(s)</span>
+<span class="out">   -&gt; @BeforeEach -- boleta nueva y limpia</span>
+<span class="out">   &lt;- @AfterEach  -- llevamos 3 test(s)</span>
+<span class="out">== @AfterAll   -- una sola vez, al final. Corrieron 3 tests</span></code></pre>
+  </div>
+
+  <div class="tw">
+    <table>
+      <thead><tr><th>Anotación</th><th>Cuándo corre</th><th>Para qué</th></tr></thead>
+      <tbody>
+        <tr><td><code>@BeforeAll</code></td><td>Una vez, antes del primer test. <strong>Debe ser <code>static</code></strong>.</td><td>Montaje caro y compartido: abrir una conexión, levantar un contenedor.</td></tr>
+        <tr><td><code>@BeforeEach</code></td><td>Antes de <em>cada</em> test.</td><td>El escenario limpio. Es la que vas a usar el 90 % de las veces.</td></tr>
+        <tr><td><code>@AfterEach</code></td><td>Después de cada test, aunque falle.</td><td>Limpiar lo que el test ensució.</td></tr>
+        <tr><td><code>@AfterAll</code></td><td>Una vez, al final. <strong><code>static</code></strong>.</td><td>Cerrar lo que abrió <code>@BeforeAll</code>.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>Por qué <code>@BeforeAll</code> tiene que ser <code>static</code></h3>
+
+  <p>No es un capricho de la API. Es la consecuencia de una decisión de diseño que conviene entender bien, porque explica media docena de comportamientos:</p>
+
+  <p class="note key"><strong>JUnit crea una instancia nueva de tu clase de test por cada <code>@Test</code>.</strong> No una por clase: una por método. Si <code>@BeforeAll</code> no fuera <code>static</code>, no habría ninguna instancia a la que pertenecer cuando corre — todavía no existe ninguna.</p>
+
+  <p>Y esa misma decisión es la que impide que te pases datos entre tests por un campo. El proyecto lo demuestra con un test que se comprueba a sí mismo:</p>
+
+  <div class="term">
+    <button class="copy" type="button" data-etiqueta="Copiar">Copiar</button>
+    <span class="lbl">CicloDeVidaTest.java — la demostración</span>
+<pre><code><span class="kw">private int</span> contadorDeInstancia = <span class="st">0</span>;      <span class="cm">// NO es static</span>
+
+<span class="kw">@Test</span>
+<span class="kw">@DisplayName</span>(<span class="st">"Cada test corre sobre una INSTANCIA NUEVA de la clase"</span>)
+<span class="kw">void</span> cadaTestEsUnaInstanciaNueva() {
+    contadorDeInstancia++;
+    assertEquals(<span class="st">1</span>, contadorDeInstancia,
+            <span class="st">"Si esto fuera 2, JUnit habria reutilizado la instancia"</span>);
+}</code></pre>
+  </div>
+
+  <p>Por muchas veces que corras la clase, el contador vale 1. De ahí sale la regla práctica más importante de esta sección: <strong>no uses campos de instancia para pasar datos entre tests</strong>. No funciona — y el día que parezca funcionar, será porque el orden de ejecución te dio la razón por accidente.</p>
+
+  <p class="note"><strong>Esa decisión se puede desactivar</strong> con <code>@TestInstance(PER_CLASS)</code>, y hay un caso en que vale la pena. Está en la <a href="guia-02-el-catalogo.html">guía 02</a>, con el aviso correspondiente.</p>
+</section>
+
+<section id="aserciones">
+  <p class="rubric">El catálogo</p>
+  <h2 class="sec"><span class="num">05</span> Las aserciones</h2>
+
+  <p>Todas viven en la misma clase — <code>org.junit.jupiter.api.Assertions</code> — y todas son <code>static</code>. De ahí el <code>import static</code>.</p>
+
+  <div class="tw">
+    <table>
+      <thead><tr><th>Aserción</th><th>Comprueba</th><th>Nota</th></tr></thead>
+      <tbody>
+        <tr><td><code>assertEquals</code></td><td>Igualdad con <code>equals()</code></td><td>Para <code>double</code> lleva un tercer parámetro: la tolerancia. Ver §06.</td></tr>
+        <tr><td><code>assertTrue</code> / <code>assertFalse</code></td><td>Un booleano</td><td>Sin mensaje, su fallo es el menos informativo de todos. Ponlo siempre.</td></tr>
+        <tr><td><code>assertNull</code> / <code>assertNotNull</code></td><td>Referencias nulas</td><td></td></tr>
+        <tr><td><code>assertSame</code> / <code>assertNotSame</code></td><td>Identidad con <code>==</code></td><td>Distinto de <code>assertEquals</code>: dos <code>record</code> con los mismos datos son <em>equals</em> pero no <em>same</em>.</td></tr>
+        <tr><td><code>assertArrayEquals</code></td><td>Arreglos, posición a posición</td><td><code>assertEquals</code> sobre arreglos compara referencias y siempre fallaría.</td></tr>
+        <tr><td><code>assertIterableEquals</code></td><td>Colecciones: mismos elementos, mismo orden</td><td>El tipo de colección no importa.</td></tr>
+        <tr><td><code>assertLinesMatch</code></td><td>Texto línea a línea, admitiendo expresiones regulares</td><td>Para salidas donde una parte es variable.</td></tr>
+        <tr><td><code>assertThrows</code></td><td>Que algo lance una excepción</td><td>Tema completo en la <a href="guia-02-el-catalogo.html">guía 02</a>.</td></tr>
+        <tr><td><code>assertAll</code></td><td>Varias aserciones de golpe</td><td>La más importante de la lista. Sigue leyendo.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3><code>assertAll</code>: no enterarse de un fallo a la vez</h3>
+
+  <p>Cuatro aserciones seguidas se comportan como un cortocircuito: en cuanto la primera falla, <strong>las demás ni se ejecutan</strong>. Arreglas esa, corres otra vez, y descubres que la segunda también fallaba. Tres iteraciones después sigues ahí.</p>
+
+  <div class="term">
+    <button class="copy" type="button" data-etiqueta="Copiar">Copiar</button>
+<pre><code><span class="kw">@Test</span>
+<span class="kw">void</span> todasLasAsercionesDeUnGolpe() {
+    assertAll(<span class="st">"estado completo de la boleta"</span>,
+            () -&gt; assertEquals(<span class="st">"A01"</span>, boleta.alumno().matricula()),
+            () -&gt; assertEquals(<span class="st">"Ana Torres"</span>, boleta.alumno().nombre()),
+            () -&gt; assertEquals(<span class="st">2</span>, boleta.totalMaterias()),
+            () -&gt; assertEquals(<span class="st">80.0</span>, boleta.promedio()),
+            () -&gt; assertTrue(boleta.aprobado()));
+}</code></pre>
+  </div>
+
+  <p>Las ejecuta todas y reporta juntas las que fallaron. Una sola corrida, la foto completa del daño. <strong>Regla: si las aserciones describen el mismo objeto desde varios ángulos, van dentro de un <code>assertAll</code>.</strong></p>
+
+  <h3>El mensaje perezoso</h3>
+
+  <div class="term">
+    <button class="copy" type="button" data-etiqueta="Copiar">Copiar</button>
+<pre><code><span class="cm">// El String se construye SIEMPRE, aunque el test pase:</span>
+assertTrue(boleta.aprobado(), <span class="st">"Fallo con promedio "</span> + boleta.promedio());
+
+<span class="cm">// El Supplier solo se construye si el test FALLA:</span>
+assertTrue(boleta.aprobado(), () -&gt; <span class="st">"Fallo con promedio "</span> + boleta.promedio());</code></pre>
+  </div>
+
+  <p>En un test suelto da igual. En una suite de cuatro mil tests que concatenan cadenas en cada aserción, deja de dar igual.</p>
+</section>
+
+<section id="decimales">
+  <p class="rubric">La primera sorpresa</p>
+  <h2 class="sec"><span class="num">06</span> La trampa de los decimales</h2>
+
+  <p>El promedio de 70, 80 y 85 es 235 entre 3. Abre <code>DecimalesTest</code> y descomenta la línea marcada:</p>
+
+  <div class="term">
+    <button class="copy" type="button" data-etiqueta="Copiar">Copiar</button>
+<pre><code><span class="cm">// assertEquals(78.33, promedio);   // &lt;-- DESCOMENTA ESTO</span></code></pre>
+  </div>
+
+  <div class="term">
+    <button class="copy" type="button" data-etiqueta="Copiar">Copiar</button>
+<pre><code><span class="p">$</span> <span class="cmd">./mvnw test -Dtest=DecimalesTest</span>
+
+<span class="out bad">[ERROR] DecimalesTest.laTrampa:64 expected: &lt;78.33&gt; but was: &lt;78.33333333333333&gt;</span></code></pre>
+  </div>
+
+  <p class="note warn"><strong>El test no está mal escrito y el código no está roto.</strong> Pediste una igualdad exacta sobre un número que no es exacto. Un <code>double</code> no puede guardar 78.3333…: guarda el más cercano que sabe representar. No es un fallo de Java ni de JUnit — es el punto flotante (IEEE 754) funcionando como funciona en todos los lenguajes. Por eso <code>0.1 + 0.2</code> tampoco da <code>0.3</code>.</p>
+
+  <p>La solución es el tercer parámetro de <code>assertEquals</code> para <code>double</code>: la <strong>tolerancia</strong>.</p>
+
+  <div class="term">
+    <button class="copy" type="button" data-etiqueta="Copiar">Copiar</button>
+<pre><code>assertEquals(<span class="st">78.33</span>, boleta.promedio(), <span class="st">0.01</span>);
+<span class="cm">//                                    ^ "acepto cualquier valor que no</span>
+<span class="cm">//                                       se aleje mas de una centesima"</span></code></pre>
+  </div>
+
+  <p>No es hacer trampa: es <strong>declarar con cuánta precisión te importa el resultado</strong>, que es una decisión de negocio, no de programación. Para calificaciones, dos decimales sobran.</p>
+
+  <div class="tw">
+    <table>
+      <thead><tr><th>Si el valor es…</th><th>Usa</th></tr></thead>
+      <tbody>
+        <tr><td><code>int</code>, <code>long</code>, <code>String</code>, <code>boolean</code>, <code>enum</code>, <code>record</code></td><td><code>assertEquals</code> sin tolerancia</td></tr>
+        <tr><td><code>double</code>, <code>float</code></td><td><code>assertEquals</code> con tolerancia</td></tr>
+        <tr><td>dinero</td><td>Ni <code>double</code> ni <code>float</code>: <code>BigDecimal</code></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <p class="note"><strong>Esa última fila no es un detalle de tests.</strong> Es la razón por la que ningún sistema bancario guarda pesos en un <code>double</code>.</p>
+</section>
+
+<section id="bug">
+  <p class="rubric">El experimento</p>
+  <h2 class="sec"><span class="num">07</span> El test que atrapa el bug</h2>
+
+  <p>Aquí es donde toda la guía cobra sentido. Vamos a meter un bug de un solo carácter en <code>Boleta.aprobado()</code> y a ver qué hace la suite.</p>
+
+  <div class="term">
+    <button class="copy" type="button" data-etiqueta="Copiar">Copiar</button>
+<pre><code><span class="p">$</span> <span class="cmd">./scripts/ver-fallar.sh</span></code></pre>
+  </div>
+
+  <p>El script hace cuatro cosas: corre la suite tal cual, cambia el <code>&gt;=</code> por <code>&gt;</code>, vuelve a correrla, y deja el código como estaba. Esto es lo que sale:</p>
+
+  <div class="term">
+    <button class="copy" type="button" data-etiqueta="Copiar">Copiar</button>
+    <span class="lbl">salida real de ver-fallar.sh</span>
+<pre><code><span class="out">== 1. La suite tal y como esta en el repositorio ==</span>
+<span class="out ok">   BUILD SUCCESS -- los 22 tests en verde.</span>
+
+<span class="out">== 2. Metemos el bug: 'promedio() &gt;= 70' pasa a 'promedio() &gt; 70' ==</span>
+<span class="out">   74:        return promedio() &gt; MINIMA_APROBATORIA;   // BUG INYECTADO</span>
+<span class="out">   Un caracter. El alumno que saca exactamente 70 ahora reprueba.</span>
+
+<span class="out">== 3. La suite con el bug dentro ==</span>
+<span class="out bad">   [ERROR] BoletaTest.elLimiteAlcanzadoPorPromedio:109 El promedio es 70 clavado: aprueba ==&gt; expected: &lt;true&gt; but was: &lt;false&gt;</span>
+<span class="out bad">   [ERROR] BoletaTest.elLimiteExacto:83 70 es aprobatorio: el reglamento dice '70 o mas' ==&gt; expected: &lt;true&gt; but was: &lt;false&gt;</span>
+
+<span class="out bad">   [ERROR] Tests run: 22, Failures: 2, Errors: 0, Skipped: 0</span></code></pre>
+  </div>
+
+  <p class="note key"><strong>Veinte de veintidós tests siguieron en verde con el bug dentro.</strong> Los que probaban «90 aprueba» y «50 reprueba» no se enteraron de nada: estaban lejos de la frontera, y el bug solo vive <em>en</em> la frontera. De los veintidós tests que escribiste, dos hicieron todo el trabajo.</p>
+
+  <p>Y estos son los dos:</p>
+
+  <div class="term">
+    <button class="copy" type="button" data-etiqueta="Copiar">Copiar</button>
+    <span class="lbl">BoletaTest.java — el test que importa</span>
+<pre><code><span class="kw">@Test</span>
+<span class="kw">@DisplayName</span>(<span class="st">"EL LIMITE: con exactamente 70 se aprueba, con 69 no"</span>)
+<span class="kw">void</span> elLimiteExacto() {
+    <span class="ty">Boleta</span> justo = <span class="kw">new</span> <span class="ty">Boleta</span>(<span class="kw">new</span> <span class="ty">Alumno</span>(<span class="st">"A02"</span>, <span class="st">"Beto Ruiz"</span>));
+    justo.registrar(<span class="st">"Java"</span>, <span class="st">70</span>);
+    assertTrue(justo.aprobado(),
+            <span class="st">"70 es aprobatorio: el reglamento dice '70 o mas'"</span>);
+
+    <span class="cm">// el limite menos uno</span>
+    <span class="ty">Boleta</span> porDebajo = <span class="kw">new</span> <span class="ty">Boleta</span>(<span class="kw">new</span> <span class="ty">Alumno</span>(<span class="st">"A03"</span>, <span class="st">"Carla Diaz"</span>));
+    porDebajo.registrar(<span class="st">"Java"</span>, <span class="st">69</span>);
+    assertFalse(porDebajo.aprobado(), <span class="st">"69 no alcanza"</span>);
+
+    <span class="cm">// el limite mas uno</span>
+    <span class="ty">Boleta</span> porEncima = <span class="kw">new</span> <span class="ty">Boleta</span>(<span class="kw">new</span> <span class="ty">Alumno</span>(<span class="st">"A04"</span>, <span class="st">"Dario Luna"</span>));
+    porEncima.registrar(<span class="st">"Java"</span>, <span class="st">71</span>);
+    assertTrue(porEncima.aprobado(), <span class="st">"71 aprueba de sobra"</span>);
+}</code></pre>
+  </div>
+
+  <p>El segundo es más sutil: dos materias que <em>promedian</em> 70 sin que ninguna valga 70. Si alguien «arregla» el bug comparando calificaciones sueltas en lugar del promedio, ese lo caza.</p>
+
+  <div class="ver">
+    <b>Lo que acabas de comprobar</b>
+    <p>No todos los tests valen lo mismo. La cobertura de <code>aprobado()</code> era del 100 % antes y después de meter el bug — y aun así el bug pasó por delante de veinte tests sin que ninguno se moviera. <strong>Cobertura alta no es lo mismo que estar protegido.</strong></p>
+  </div>
+
+  <p class="note key"><strong>La receta, entonces.</strong> Para cada regla que tenga una frontera, escribe tres casos: <strong>el límite, el límite menos uno y el límite más uno</strong>. Y añade siempre <strong>el vacío y el nulo</strong>. Cinco casos por regla, y habrás cubierto donde vive prácticamente todo bug real.</p>
+</section>
+
+<section id="trampas">
+  <p class="rubric">Referencia</p>
+  <h2 class="sec"><span class="num">08</span> Trampas y ejercicios</h2>
+
+  <h3>Lo que te vas a encontrar</h3>
+
+  <div class="trap">
+    <span class="k">01</span>
+    <span><b><code>Tests run: 0</code> y <code>BUILD SUCCESS</code></b>No falló: no encontró nada. Causas: Surefire 2.x, la clase no termina en <code>Test</code>, o el archivo está en <code>src/main/java</code> en vez de <code>src/test/java</code>.</span>
+  </div>
+
+  <div class="trap">
+    <span class="k">02</span>
+    <span><b><code>@BeforeAll</code> no compila</b>Falta el <code>static</code>. El mensaje de JUnit lo dice, pero se lee tarde porque llega en ejecución, no al compilar.</span>
+  </div>
+
+  <div class="trap">
+    <span class="k">03</span>
+    <span><b><code>expected: &lt;78.33&gt; but was: &lt;78.33333333333333&gt;</code></b>Falta la tolerancia en un <code>assertEquals</code> sobre <code>double</code>. Sección 06.</span>
+  </div>
+
+  <div class="trap">
+    <span class="k">04</span>
+    <span><b>El segundo test ve datos del primero</b>Estás usando un campo de instancia como si sobreviviera, o un <code>static</code> que sí sobrevive. Monta el escenario en <code>@BeforeEach</code>.</span>
+  </div>
+
+  <div class="trap">
+    <span class="k">05</span>
+    <span><b><code>expected</code> y <code>actual</code> parecen invertidos</b>Lo están: <code>assertEquals(esperado, real)</code>, en ese orden.</span>
+  </div>
+
+  <div class="trap">
+    <span class="k">06</span>
+    <span><b>El test pasa pero no comprueba nada</b>¿Hay alguna aserción? Un método con <code>@Test</code> y sin <code>assert</code> siempre pasa, y cuenta en el reporte como un test más.</span>
+  </div>
+
+  <h3>Ejercicios</h3>
+
+  <ul class="check">
+    <li><span class="box">1</span><span><b>Predice antes de correr</b> Antes de ejecutar <code>ver-fallar.sh</code>, escribe en un papel cuáles de los 22 tests crees que van a fallar. Después córrelo. ¿Cuadró?</span></li>
+    <li><span class="box">2</span><span><b>Otro bug de un carácter</b> Cambia en <code>registrar()</code> el <code>&gt; 100</code> por <code>&gt;= 100</code>. ¿Qué test lo caza? Si ninguno, escríbelo — y fíjate en qué valor tuviste que elegir.</span></li>
+    <li><span class="box">3</span><span><b>El límite que falta</b> <code>promedio()</code> devuelve 0 para una boleta vacía. ¿Es correcto que una boleta sin materias «promedie cero» y por tanto repruebe? Escribe el test que documente la decisión que tomes, con su mensaje explicando por qué.</span></li>
+    <li><span class="box">4</span><span><b>Rompe un test a propósito</b> Cambia un <code>assertEquals(80.0, …)</code> por <code>assertEquals(81.0, …)</code> y lee el fallo entero. Identifica las tres partes de la sección 05 de la guía 00.</span></li>
+    <li><span class="box">5</span><span><b>Convierte a <code>assertAll</code></b> En <code>BoletaTest.extremosDelRango</code> hay dos aserciones sueltas. Rompe las dos a la vez y observa que solo te enteras de una. Ahora envuélvelas en <code>assertAll</code> y repite.</span></li>
+    <li><span class="box">6</span><span><b>El test que no debería existir</b> Escribe un test para <code>Alumno.nombre()</code>. Míralo. ¿Qué te protege exactamente? Ese es el tipo de test que infla el número del reporte y no protege nada.</span></li>
+  </ul>
+
+  <p class="note"><strong>Si trabajas en Windows.</strong> Usa <code>mvnw.cmd test</code> en lugar de <code>./mvnw test</code>. El script <code>ver-fallar.sh</code> necesita <strong>Git Bash</strong> o <strong>WSL</strong>; en PowerShell no corre.</p>
+
+  <p class="closing">Laboratorio 01 de 04 &middot; Serie <strong>JUnit</strong> &middot; Academia Monterrey. Sigue en <a href="guia-02-el-catalogo.html"><strong>El catálogo</strong></a>: probar que algo truena, probar el tiempo, y los tres estados de un test que casi nadie distingue. Conceptos en <a href="guia-00-por-que-se-prueba.html">Por qué se prueba</a>.</p>
+</section>
+
+</main>
+</div>
+
+<script>
+document.querySelectorAll('.copy').forEach(function (btn) {
+  btn.addEventListener('click', function () {
+    var pre = btn.parentElement.querySelector('pre');
+    if (!pre) return;
+    var texto = pre.innerText;
+
+    function avisar(msg) {
+      var prev = btn.dataset.etiqueta || 'Copiar';
+      btn.textContent = msg;
+      setTimeout(function () { btn.textContent = prev; }, 1400);
+    }
+
+    // Plan B con execCommand. Hace falta de verdad: estas guias se abren
+    // con doble clic (file://) y en varios navegadores navigator.clipboard
+    // no esta disponible o rechaza ahi. Sin este respaldo, el boton se
+    // quedaria en "Error" y el alumno no podria copiar nada.
+    function copiarALaAntigua() {
+      var ta = document.createElement('textarea');
+      ta.value = texto;
+      ta.setAttribute('readonly', '');
+      ta.style.position = 'fixed';
+      ta.style.top = '-1000px';
+      document.body.appendChild(ta);
+      ta.select();
+      var ok = false;
+      try { ok = document.execCommand('copy'); } catch (e) { ok = false; }
+      document.body.removeChild(ta);
+      avisar(ok ? 'Copiado' : 'Selecciona y copia a mano');
+    }
+
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(texto)
+        .then(function () { avisar('Copiado'); })
+        .catch(copiarALaAntigua);
+    } else {
+      copiarALaAntigua();
+    }
+  });
+});
+(function () {
+  var links = Array.prototype.slice.call(document.querySelectorAll('.toc a[href^="#"]'));
+  var map = {};
+  links.forEach(function (a) {
+    var el = document.getElementById(a.getAttribute('href').slice(1));
+    if (el) map[el.id] = a;
+  });
+  var obs = new IntersectionObserver(function (entries) {
+    entries.forEach(function (e) {
+      if (!map[e.target.id]) return;
+      if (e.isIntersecting) {
+        links.forEach(function (a) { a.classList.remove('cur'); });
+        map[e.target.id].classList.add('cur');
+      }
+    });
+  }, { rootMargin: '-10% 0px -75% 0px', threshold: 0 });
+  Object.keys(map).forEach(function (id) { obs.observe(document.getElementById(id)); });
+})();
+
+// ---------------------------------------------------------------------
+//  Los enlaces entre guias son RELATIVOS en el HTML, a proposito: el
+//  alumno abre el archivo con doble clic y navegar tiene que funcionar
+//  sin internet y sin permisos.
+//
+//  Cuando la misma pagina corre publicada como artifact, un enlace
+//  relativo no resuelve a nada -- cada artifact vive en su propio
+//  origen. Por eso aqui se reescriben a su URL, y SOLO ahi.
+//
+//  Antes esto estaba al reves (URL fijas en el HTML) y rompia el caso
+//  que de verdad se usa: el archivo local.
+// ---------------------------------------------------------------------
+(function () {
+  var PUBLICADAS = {
+    'guia-00-por-que-se-prueba.html': 'dc6ceb37-bac9-4a8c-bbd0-89f91dbc7def',
+    'guia-01-anatomia-de-un-test.html': '6755acb6-a6c0-42ac-95dd-e2ffb84a3a71',
+    'guia-02-el-catalogo.html': 'b02ccd10-cb0b-4545-a130-a0dc29e6a26c',
+    'guia-03-un-test-muchos-datos.html': 'dec3fbf5-39f0-411c-8daa-02bb3dec3eb0',
+    'guia-04-dobles-de-prueba.html': '33074df8-6377-44cd-a3c6-68f766ff4b78',
+    'anexo-junit5-vs-junit6.html': '53f58e3c-f8ea-4c4c-a6a9-ae93e2b9ca9a'
+  };
+  if (!/claudeusercontent|claude\.ai/.test(location.hostname)) return;
+  document.querySelectorAll('a[href]').forEach(function (a) {
+    var id = PUBLICADAS[a.getAttribute('href')];
+    if (id) a.setAttribute('href', 'https://claude.ai/code/artifact/' + id);
+  });
+})();
+</script>

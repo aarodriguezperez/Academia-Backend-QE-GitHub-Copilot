@@ -1,0 +1,1084 @@
+<meta charset="utf-8">
+<title>El catálogo de JUnit</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&family=Zilla+Slab:wght@600;700&display=swap">
+<style>
+:root{
+  --bg:#f4f6f5;
+  --surface:#ffffff;
+  --surface-2:#eaeeec;
+  --ink:#12181a;
+  --ink-2:#4a5559;
+  --ink-3:#78848a;
+  --rule:#dbe2df;
+  --accent:#0e6b63;
+  --accent-soft:#dcedea;
+
+  --warn:#8a5a10;      --warn-bg:#f7eeda;
+  --next:#2f7d3a;      --next-bg:#e2f0e4;
+  --error:#b23a2e;     --error-bg:#f8e6e3;
+  --complete:#1f5b96;  --complete-bg:#e3edf8;
+
+  --term-bg:#101619;
+  --term-ink:#dbe4e6;
+  --term-dim:#7b8a8e;
+  --term-prompt:#5fb8ac;
+  --term-out:#a3b0b3;
+  --term-rule:#232d31;
+
+  --step:clamp(1.9rem,1.4rem + 1.6vw,2.6rem);
+  --h2:clamp(1.45rem,1.2rem + 1vw,1.9rem);
+  --h3:1.1rem;
+  --body:1rem;
+  --small:.87rem;
+  --tiny:.76rem;
+  --radius:10px;
+  --maxw:1180px;
+}
+
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --bg:#0d1113;
+    --surface:#151b1e;
+    --surface-2:#1b2327;
+    --ink:#e6edee;
+    --ink-2:#9fadb0;
+    --ink-3:#78868a;
+    --rule:#242e32;
+    --accent:#5fc0b4;
+    --accent-soft:#122b29;
+
+    --warn:#dfa955;      --warn-bg:#2e2312;
+    --next:#69bf7a;      --next-bg:#152a1a;
+    --error:#e8908b;     --error-bg:#2f1a18;
+    --complete:#7fb0e8;  --complete-bg:#16243a;
+
+    --term-bg:#070a0c;
+    --term-ink:#dbe4e6;
+    --term-dim:#6c797d;
+    --term-prompt:#6fc9bc;
+    --term-out:#94a2a5;
+    --term-rule:#1d262a;
+  }
+}
+
+:root[data-theme="dark"]{
+  --bg:#0d1113;
+  --surface:#151b1e;
+  --surface-2:#1b2327;
+  --ink:#e6edee;
+  --ink-2:#9fadb0;
+  --ink-3:#78868a;
+  --rule:#242e32;
+  --accent:#5fc0b4;
+  --accent-soft:#122b29;
+
+  --warn:#dfa955;      --warn-bg:#2e2312;
+  --next:#69bf7a;      --next-bg:#152a1a;
+  --error:#e8908b;     --error-bg:#2f1a18;
+  --complete:#7fb0e8;  --complete-bg:#16243a;
+
+  --term-bg:#070a0c;
+  --term-ink:#dbe4e6;
+  --term-dim:#6c797d;
+  --term-prompt:#6fc9bc;
+  --term-out:#94a2a5;
+  --term-rule:#1d262a;
+}
+
+*{box-sizing:border-box}
+
+body{
+  margin:0;
+  background:var(--bg);
+  color:var(--ink);
+  font-family:"IBM Plex Sans",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  font-size:var(--body);
+  line-height:1.62;
+  -webkit-font-smoothing:antialiased;
+}
+
+.wrap{max-width:var(--maxw);margin:0 auto;padding:0 1.5rem}
+
+/* ---------- masthead ---------- */
+.masthead{
+  border-bottom:1px solid var(--rule);
+  background:var(--surface);
+  padding:3.2rem 0 2.4rem;
+}
+.eyebrow{
+  font-family:"JetBrains Mono",monospace;
+  font-size:var(--tiny);letter-spacing:.09em;text-transform:uppercase;
+  color:var(--ink-3);margin:0 0 1rem;
+}
+.masthead h1{
+  font-family:"Zilla Slab",Georgia,serif;font-weight:700;
+  font-size:clamp(2.4rem,1.7rem + 3.2vw,4rem);
+  line-height:1.04;letter-spacing:-.015em;
+  margin:0 0 1.1rem;max-width:16ch;text-wrap:balance;
+}
+.lede{
+  font-size:clamp(1.02rem,.98rem + .35vw,1.2rem);
+  color:var(--ink-2);max-width:62ch;margin:0 0 1.6rem;
+}
+.facts{
+  list-style:none;display:flex;flex-wrap:wrap;gap:.45rem;margin:0;padding:0;
+}
+.facts li{
+  font-family:"JetBrains Mono",monospace;font-size:var(--tiny);
+  color:var(--ink-2);background:var(--surface-2);
+  border:1px solid var(--rule);border-radius:99px;padding:.28rem .7rem;
+}
+
+/* ---------- shell ---------- */
+.shell{
+  display:grid;grid-template-columns:minmax(0,1fr);gap:2.4rem;
+  padding-top:2.6rem;padding-bottom:5rem;
+}
+@media (min-width:1000px){
+  .shell{grid-template-columns:216px minmax(0,1fr);gap:3.4rem}
+}
+
+.toc{font-size:var(--small);align-self:start}
+@media (min-width:1000px){
+  .toc{position:sticky;top:1.6rem;max-height:calc(100vh - 3.2rem);overflow-y:auto}
+}
+.toc h2{
+  font-family:"JetBrains Mono",monospace;font-size:var(--tiny);font-weight:700;
+  letter-spacing:.09em;text-transform:uppercase;color:var(--ink-3);
+  margin:0 0 .6rem;padding-bottom:.4rem;border-bottom:1px solid var(--rule);
+}
+.toc h2+*{margin-top:0}
+.toc ol,.toc ul{list-style:none;margin:0 0 1.6rem;padding:0;display:flex;flex-direction:column;gap:.08rem}
+.toc a{
+  display:flex;gap:.55rem;align-items:baseline;
+  color:var(--ink-2);text-decoration:none;
+  padding:.3rem .45rem;border-radius:6px;line-height:1.35;
+}
+.toc a:hover{color:var(--ink);background:var(--surface-2)}
+.toc a:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
+.toc .n{
+  font-family:"JetBrains Mono",monospace;font-size:.7rem;
+  color:var(--ink-3);flex:none;
+}
+.toc a.cur{color:var(--ink);font-weight:600;background:var(--surface-2)}
+
+main{min-width:0;max-width:70ch}
+
+/* ---------- secciones ---------- */
+section{
+  padding-top:2.2rem;margin-top:2.2rem;border-top:1px solid var(--rule);
+}
+section:first-child{padding-top:0;margin-top:0;border-top:0}
+.rubric{
+  font-family:"JetBrains Mono",monospace;font-size:var(--tiny);
+  letter-spacing:.09em;text-transform:uppercase;color:var(--accent);
+  margin:0 0 .35rem;
+}
+h2.sec{
+  font-family:"Zilla Slab",Georgia,serif;font-weight:700;
+  font-size:var(--h2);line-height:1.14;letter-spacing:-.01em;
+  margin:0 0 1.1rem;display:flex;gap:.75rem;align-items:baseline;text-wrap:balance;
+}
+h2.sec .num{
+  font-family:"JetBrains Mono",monospace;font-size:.8rem;font-weight:700;
+  color:var(--ink-3);flex:none;
+}
+h3{
+  font-family:"Zilla Slab",Georgia,serif;font-weight:600;font-size:var(--h3);
+  margin:2rem 0 .6rem;letter-spacing:-.005em;
+}
+p{margin:0 0 1rem;max-width:66ch}
+strong{font-weight:600}
+em{font-style:italic}
+a{color:var(--accent)}
+
+code{
+  font-family:"JetBrains Mono",monospace;font-size:.86em;
+  background:var(--surface-2);border:1px solid var(--rule);
+  border-radius:4px;padding:.08em .34em;
+}
+
+/* ---------- notas ---------- */
+.note{
+  background:var(--surface);border:1px solid var(--rule);
+  border-left:3px solid var(--accent);border-radius:var(--radius);
+  padding:.85rem 1.05rem;margin:0 0 1.2rem;font-size:var(--small);
+  color:var(--ink-2);max-width:66ch;
+}
+.note strong{color:var(--ink)}
+.note.warn{border-left-color:var(--warn);background:var(--warn-bg)}
+.note.warn strong{color:var(--ink)}
+.note.key{border-left-color:var(--accent);background:var(--accent-soft)}
+.note.key strong{color:var(--ink)}
+.note p:last-child{margin-bottom:0}
+
+/* ---------- analogía ---------- */
+.ana{
+  background:var(--surface);border:1px solid var(--rule);border-radius:var(--radius);
+  padding:1.1rem 1.2rem;margin:0 0 1.3rem;max-width:66ch;
+  position:relative;
+}
+.ana .tag{
+  font-family:"JetBrains Mono",monospace;font-size:.68rem;font-weight:700;
+  letter-spacing:.1em;text-transform:uppercase;color:var(--accent);
+  display:block;margin-bottom:.5rem;
+}
+.ana p:last-child{margin-bottom:0}
+.ana h4{
+  font-family:"Zilla Slab",Georgia,serif;font-weight:600;font-size:1.05rem;
+  margin:0 0 .5rem;
+}
+
+/* ---------- terminal / código ---------- */
+.term{
+  background:var(--term-bg);border:1px solid var(--term-rule);
+  border-radius:var(--radius);margin:0 0 1.2rem;position:relative;overflow:hidden;
+}
+.term pre{
+  margin:0;padding:1rem 1.1rem;overflow-x:auto;
+  font-family:"JetBrains Mono",monospace;font-size:.8rem;line-height:1.72;
+  color:var(--term-ink);
+}
+.term code{background:none;border:0;padding:0;font-size:inherit;color:inherit}
+.term .cm{color:var(--term-dim)}
+.term .p{color:var(--term-prompt);user-select:none}
+.term .kw{color:#c99bd8}
+.term .ty{color:#7fc3e8}
+.term .st{color:#c8d98a}
+.term .out{color:var(--term-out)}
+.term .bad{color:#e8908b}
+.term .ok{color:#8ed49a}
+.term .lbl{
+  font-family:"JetBrains Mono",monospace;font-size:.66rem;font-weight:700;
+  letter-spacing:.1em;text-transform:uppercase;color:var(--term-dim);
+  padding:.55rem 1.1rem .1rem;display:block;
+}
+.copy{
+  position:absolute;top:.5rem;right:.5rem;z-index:2;
+  font-family:"JetBrains Mono",monospace;font-size:.66rem;
+  color:var(--term-dim);background:transparent;
+  border:1px solid var(--term-rule);border-radius:5px;
+  padding:.2rem .5rem;cursor:pointer;
+}
+.copy:hover{color:var(--term-ink);border-color:var(--term-dim)}
+.copy:focus-visible{outline:2px solid var(--term-prompt);outline-offset:1px}
+
+/* ---------- figuras ---------- */
+figure.flow{
+  background:var(--surface);border:1px solid var(--rule);border-radius:var(--radius);
+  padding:1.15rem 1.15rem .9rem;margin:0 0 1.4rem;overflow-x:auto;
+}
+figure.flow svg{display:block;width:100%;height:auto;color:var(--ink-2)}
+figure.flow figcaption{
+  font-family:"JetBrains Mono",monospace;font-size:var(--tiny);
+  color:var(--ink-3);line-height:1.55;margin-top:.85rem;
+}
+figure.flow figcaption strong{color:var(--ink-2)}
+
+figure.mapa{
+  background:var(--surface);border:1px solid var(--rule);border-radius:var(--radius);
+  padding:.85rem;margin:0 0 1.4rem;
+}
+figure.mapa img{display:block;width:100%;height:auto;border-radius:6px}
+figure.mapa figcaption{
+  font-family:"JetBrains Mono",monospace;font-size:var(--tiny);
+  color:var(--ink-3);line-height:1.55;margin-top:.8rem;
+}
+
+/* ---------- tablas ---------- */
+.tw{overflow-x:auto;margin:0 0 1.3rem;border:1px solid var(--rule);border-radius:var(--radius)}
+table{border-collapse:collapse;width:100%;font-size:var(--small);background:var(--surface)}
+th,td{text-align:left;padding:.6rem .8rem;border-bottom:1px solid var(--rule);vertical-align:top}
+thead th{
+  font-family:"JetBrains Mono",monospace;font-size:.7rem;font-weight:700;
+  letter-spacing:.06em;text-transform:uppercase;color:var(--ink-3);
+  background:var(--surface-2);white-space:nowrap;
+}
+tbody tr:last-child td{border-bottom:0}
+td code{font-size:.8rem}
+
+/* ---------- señales ---------- */
+.sig{
+  font-family:"JetBrains Mono",monospace;font-size:.72rem;font-weight:700;
+  padding:.16rem .45rem;border-radius:5px;white-space:nowrap;
+}
+.sig.n{color:var(--next);background:var(--next-bg)}
+.sig.e{color:var(--error);background:var(--error-bg)}
+.sig.c{color:var(--complete);background:var(--complete-bg)}
+
+/* ---------- listas ---------- */
+ul.plain,ol.plain{margin:0 0 1.2rem;padding-left:1.15rem;max-width:66ch}
+ul.plain li,ol.plain li{margin-bottom:.45rem}
+
+ul.check{list-style:none;margin:0 0 1.3rem;padding:0;display:flex;flex-direction:column;gap:.4rem;max-width:66ch}
+ul.check li{
+  display:grid;grid-template-columns:auto minmax(0,1fr);gap:.6rem;align-items:start;
+  background:var(--surface);border:1px solid var(--rule);border-radius:8px;
+  padding:.6rem .8rem;font-size:var(--small);
+}
+ul.check .box{font-family:"JetBrains Mono",monospace;color:var(--ink-3);flex:none}
+ul.check b{display:block;margin-bottom:.1rem;font-size:.95rem;color:var(--ink)}
+
+/* ---------- trampa ---------- */
+.trap{
+  display:grid;grid-template-columns:auto minmax(0,1fr);gap:.85rem;align-items:start;
+  background:var(--surface);border:1px solid var(--rule);border-radius:var(--radius);
+  padding:.85rem 1rem;margin-bottom:.55rem;font-size:var(--small);max-width:66ch;
+}
+.trap .k{
+  font-family:"JetBrains Mono",monospace;font-size:.72rem;font-weight:700;
+  color:var(--error);background:var(--error-bg);
+  border-radius:5px;padding:.22rem .5rem;white-space:nowrap;
+}
+.trap b{display:block;margin-bottom:.15rem;font-size:.95rem;color:var(--ink)}
+
+/* ---------- glosario ---------- */
+dl.glos{margin:0 0 1.3rem;max-width:66ch}
+dl.glos dt{
+  font-family:"JetBrains Mono",monospace;font-size:.8rem;font-weight:700;
+  color:var(--accent);margin-top:.9rem;
+}
+dl.glos dd{margin:.15rem 0 0;font-size:var(--small);color:var(--ink-2)}
+
+/* ---------- cierre ---------- */
+.closing{
+  border-top:1px solid var(--rule);margin-top:3rem;padding-top:1.6rem;
+  font-size:var(--small);color:var(--ink-3);
+}
+.closing a{color:var(--ink-2)}
+
+@media (prefers-reduced-motion:reduce){
+  *{animation:none !important;transition:none !important;scroll-behavior:auto !important}
+}
+html{scroll-behavior:smooth}
+
+/* ---------- añadidos de la serie JUnit ----------
+   Estas clases se usaban ya en las guías de springWebFlux pero no
+   llegaron a definirse en su hoja de estilo: .arch, .cmd, .dir, .hi, .ver.
+   Se definen aquí, más .veredicto, propia de esta serie.                */
+
+.term .cmd{color:var(--term-ink);font-weight:500}
+.term .hi{color:#f0d48a}
+.term .dir{color:#7fc3e8;font-weight:500}
+.term .num{color:#e0a86a}
+
+.arch{
+  font-family:"JetBrains Mono",monospace;font-size:var(--small);
+  background:var(--term-bg);color:var(--term-ink);
+  border-radius:var(--radius);padding:1.15rem 1.25rem;margin:0 0 1.3rem;
+  overflow-x:auto;line-height:1.75;white-space:pre;
+}
+.arch .dir{color:#7fc3e8;font-weight:500}
+.arch .hi{color:#f0d48a}
+.arch .cm{color:var(--term-dim)}
+
+.ver{
+  border:1px solid var(--rule);border-left:3px solid var(--next);
+  background:var(--next-bg);border-radius:var(--radius);
+  padding:.9rem 1.15rem;margin:0 0 1.3rem;font-size:var(--small);
+}
+.ver b{display:block;color:var(--ink);margin-bottom:.2rem}
+.ver p:last-child{margin-bottom:0}
+
+.veredicto{
+  display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
+  gap:.75rem;margin:0 0 1.4rem;
+}
+.veredicto div{
+  border:1px solid var(--rule);border-radius:var(--radius);
+  background:var(--surface);padding:.9rem 1rem;font-size:var(--small);
+}
+.veredicto b{display:block;font-family:"JetBrains Mono",monospace;
+  font-size:var(--tiny);letter-spacing:.07em;text-transform:uppercase;
+  margin-bottom:.35rem;}
+.veredicto .ok b{color:var(--next)}
+.veredicto .bad b{color:var(--error)}
+.veredicto .mid b{color:var(--warn)}
+/* ---------- ligaduras: fuera, y no es cosmetica ----------
+   JetBrains Mono dibuja  <!--  como una flecha,  -->  como otra, y  >=  como
+   un solo glifo. En una guia de codigo eso deja de ser bonito y pasa a ser
+   un error: el alumno no puede ver la sintaxis literal que tiene que teclear.
+   Y en esta serie es critico -- toda la seccion 07 de la guia 01 trata sobre
+   la diferencia entre  >=  y  >.  Se apagan en TODO contexto de codigo.       */
+.term pre, .term code, .arch, code, pre, kbd, samp{
+  font-variant-ligatures:none;
+  font-feature-settings:"liga" 0,"clig" 0,"calt" 0;
+}
+
+</style>
+
+<header class="masthead">
+  <div class="wrap">
+    <p class="eyebrow">JUnit 6.1.3 &middot; Java 21 &middot; Laboratorio &middot; 02 de 04</p>
+    <h1>El catálogo</h1>
+    <p class="lede">La mitad del valor de una clase está en lo que <em>rechaza</em>. Este laboratorio va de probar rechazos, plazos y condiciones — y de los tres estados de un test que casi nadie distingue, que es por donde se cuelan las suites que mienten.</p>
+    <ul class="facts">
+      <li>37 tests</li>
+      <li>4 de ellos abortados a propósito</li>
+      <li>7 clases de test + 1 suite</li>
+      <li>110 min</li>
+    </ul>
+  </div>
+</header>
+
+<div class="wrap shell">
+
+<nav class="toc" aria-label="Contenido">
+  <h2>La ruta</h2>
+  <ol>
+    <li><a href="#empezar"><span class="n">00</span> Poner en marcha</a></li>
+    <li><a href="#truena"><span class="n">01</span> Probar que algo truena</a></li>
+    <li><a href="#tiempo"><span class="n">02</span> Probar el tiempo</a></li>
+    <li><a href="#estados"><span class="n">03</span> Los tres estados</a></li>
+    <li><a href="#nested"><span class="n">04</span> Agrupar por situación</a></li>
+    <li><a href="#tags"><span class="n">05</span> Partir la suite en dos velocidades</a></li>
+    <li><a href="#inyeccion"><span class="n">06</span> Lo que JUnit te inyecta</a></li>
+    <li><a href="#orden"><span class="n">07</span> El orden, y por qué es un error</a></li>
+    <li><a href="#suite"><span class="n">08</span> Suites y configuración global</a></li>
+    <li><a href="#trampas"><span class="n">09</span> Trampas y ejercicios</a></li>
+  </ol>
+
+  <h2>La serie</h2>
+  <ul>
+    <li><a href="guia-00-por-que-se-prueba.html"><span class="n">00</span> Por qué se prueba</a></li>
+    <li><a href="guia-01-anatomia-de-un-test.html"><span class="n">01</span> Anatomía de un test</a></li>
+    <li><a href="#empezar" class="cur"><span class="n">02</span> El catálogo</a></li>
+    <li><a href="guia-03-un-test-muchos-datos.html"><span class="n">03</span> Un test, muchos datos</a></li>
+    <li><a href="guia-04-dobles-de-prueba.html"><span class="n">04</span> Dobles de prueba</a></li>
+    <li><a href="anexo-junit5-vs-junit6.html"><span class="n">··</span> JUnit 5 contra 6</a></li>
+  </ul>
+</nav>
+
+<main>
+
+<section id="empezar">
+  <p class="rubric">Antes de empezar</p>
+  <h2 class="sec"><span class="num">00</span> Poner en marcha</h2>
+
+  <ul class="check">
+    <li><span class="box">[ ]</span><span><b>Haber hecho la guía 01</b> Aquí se dan por sabidos <code>@Test</code>, el ciclo de vida y las aserciones básicas.</span></li>
+    <li><span class="box">[ ]</span><span><b>Java 21</b> y nada más. Sigue sin haber base de datos.</span></li>
+  </ul>
+
+  <div class="term">
+    <button class="copy" type="button" data-etiqueta="Copiar">Copiar</button>
+<pre><code><span class="p">$</span> <span class="cmd">cd testing/proyectos/02-junit-catalogo</span>
+<span class="p">$</span> <span class="cmd">./mvnw test</span>
+
+<span class="out ok">[INFO] Tests run: 37, Failures: 0, Errors: 0, Skipped: 4</span>
+<span class="out ok">[INFO] BUILD SUCCESS</span></code></pre>
+  </div>
+
+  <p class="note warn"><strong>Fíjate ya en el <code>Skipped: 4</code>.</strong> El build salió verde con cuatro tests que <em>ni siquiera corrieron</em>. No fallaron: se abortaron. Esos cuatro son el tema de la sección 03, y son la razón por la que un build verde no significa lo que parece.</p>
+
+  <div class="arch"><span class="dir">02-junit-catalogo/</span>
+├── <span class="dir">scripts/</span>
+│   └── <span class="hi">filtrar.sh</span>              <span class="cm">← el experimento de la §05</span>
+├── <span class="dir">src/main/java/…/academia/</span>
+│   ├── <span class="hi">Curso.java</span>              <span class="cm">cupo, cierre, acta lenta</span>
+│   └── <span class="hi">CupoLlenoException.java</span> <span class="cm">excepción con datos dentro</span>
+├── <span class="dir">src/test/resources/</span>
+│   └── <span class="hi">junit-platform.properties</span> <span class="cm">§08 configuración global</span>
+└── <span class="dir">src/test/java/…/academia/</span>
+    ├── <span class="hi">ExcepcionesTest.java</span>    <span class="cm">§01</span>
+    ├── <span class="hi">TiempoTest.java</span>         <span class="cm">§02</span>
+    ├── <span class="hi">CondicionesTest.java</span>    <span class="cm">§03  ← los 4 abortados</span>
+    ├── <span class="hi">CursoNestedTest.java</span>    <span class="cm">§04</span>
+    ├── <span class="hi">EtiquetasTest.java</span>      <span class="cm">§05</span>
+    ├── <span class="hi">InyeccionTest.java</span>      <span class="cm">§06</span>
+    ├── <span class="hi">OrdenTest.java</span>          <span class="cm">§07</span>
+    └── <span class="hi">SuiteDelCurso.java</span>      <span class="cm">§08  sin un solo @Test</span></div>
+
+  <p>El código bajo prueba es un <code>Curso</code> con cupo. Está elegido a propósito: casi todo lo que hace es <strong>rechazar</strong> cosas, de tres maneras distintas.</p>
+
+  <div class="term">
+    <button class="copy" type="button" data-etiqueta="Copiar">Copiar</button>
+    <span class="lbl">Curso.java — los tres rechazos</span>
+<pre><code><span class="kw">public void</span> inscribir(<span class="ty">String</span> matricula) {
+    <span class="kw">if</span> (!abierto) {
+        <span class="kw">throw new</span> <span class="ty">IllegalStateException</span>(<span class="st">"El curso "</span> + clave + <span class="st">" ya cerro inscripciones"</span>);
+    }
+    <span class="kw">if</span> (inscritos.size() &gt;= cupo) {
+        <span class="kw">throw new</span> <span class="ty">CupoLlenoException</span>(clave, cupo);
+    }
+    <span class="kw">if</span> (!inscritos.add(matricula)) {
+        <span class="kw">throw new</span> <span class="ty">IllegalArgumentException</span>(<span class="st">"La matricula "</span> + matricula + <span class="st">" ya estaba inscrita"</span>);
+    }
+}</code></pre>
+  </div>
+</section>
+
+<section id="truena">
+  <p class="rubric">El código</p>
+  <h2 class="sec"><span class="num">01</span> Probar que algo truena</h2>
+
+  <p>Un test normal comprueba que el código hace lo que debe. Este comprueba lo contrario: que se <strong>niega</strong> a hacer lo que no debe.</p>
+
+  <div class="term">
+    <button class="copy" type="button" data-etiqueta="Copiar">Copiar</button>
+<pre><code>assertThrows(<span class="ty">CupoLlenoException</span>.<span class="kw">class</span>, () -&gt; java101.inscribir(<span class="st">"A03"</span>));
+<span class="cm">//           ^ tipo esperado             ^ lambda: NO se ejecuta hasta</span>
+<span class="cm">//                                          que assertThrows la llama</span></code></pre>
+  </div>
+
+  <p class="note key"><strong>La lambda no es adorno, es el mecanismo.</strong> Si escribieras <code>assertThrows(CupoLlenoException.class, java101.inscribir("A03"))</code>, el método correría <em>antes</em> de entrar en <code>assertThrows</code> y la excepción tumbaría el test. La lambda es código empaquetado, todavía sin ejecutar — por eso funciona.</p>
+
+  <h3><code>assertThrows</code> devuelve la excepción</h3>
+
+  <p>Y eso cambia todo: dejas de comprobar solo el tipo y pasas a comprobar el contenido.</p>
+
+  <div class="term">
+    <button class="copy" type="button" data-etiqueta="Copiar">Copiar</button>
+<pre><code><span class="ty">CupoLlenoException</span> ex = assertThrows(<span class="ty">CupoLlenoException</span>.<span class="kw">class</span>,
+        () -&gt; java101.inscribir(<span class="st">"A03"</span>));
+
+assertAll(<span class="st">"lo que trae la excepcion dentro"</span>,
+        () -&gt; assertEquals(<span class="st">"JAVA-101"</span>, ex.claveCurso()),
+        () -&gt; assertEquals(<span class="st">2</span>, ex.cupo()),
+        () -&gt; assertTrue(ex.getMessage().contains(<span class="st">"JAVA-101"</span>),
+                <span class="st">"El mensaje deberia nombrar el curso, para el log"</span>));</code></pre>
+  </div>
+
+  <p>Esta es la razón por la que el dominio tiene su propia <code>CupoLlenoException</code> con campos dentro, en lugar de lanzar un <code>RuntimeException</code> genérico: <strong>los campos se pueden afirmar; el texto del mensaje no debería</strong>. Un test que compara mensajes se rompe el día que alguien corrige una tilde, sin que nada esté mal.</p>
+
+  <h3>La trampa: <code>assertThrows</code> acepta subclases</h3>
+
+  <div class="trap">
+    <span class="k">ojo</span>
+    <span><b><code>assertThrows(RuntimeException.class, …)</code> casi siempre pasa</b>Acepta el tipo pedido <strong>y todas sus subclases</strong>. Un <code>NullPointerException</code> también es <code>RuntimeException</code> — así que ese test daría por bueno precisamente el bug que querías evitar. Habrías escrito un test que aprueba el fallo. Pide siempre el tipo concreto que el contrato promete.</span>
+  </div>
+
+  <p>Si lo que quieres probar <em>es</em> la jerarquía, hazlo explícito con <code>assertInstanceOf</code>:</p>
+
+  <div class="term">
+    <button class="copy" type="button" data-etiqueta="Copiar">Copiar</button>
+<pre><code><span class="ty">RuntimeException</span> ex = assertThrows(<span class="ty">RuntimeException</span>.<span class="kw">class</span>, () -&gt; java101.inscribir(<span class="st">"A03"</span>));
+assertInstanceOf(<span class="ty">CupoLlenoException</span>.<span class="kw">class</span>, ex,
+        <span class="st">"Pediste RuntimeException y te dieron algo mas concreto"</span>);</code></pre>
+  </div>
+
+  <p class="note"><strong>Y el reverso, <code>assertDoesNotThrow</code>, con cuidado.</strong> Cualquier test que pase ya demuestra que no hubo excepción — si la hubiera, estaría en rojo. Solo vale la pena cuando lo que quieres documentar <em>es</em> la ausencia del fallo: «el último lugar todavía se puede ocupar, no se cae por uno de más».</p>
+</section>
+
+<section id="tiempo">
+  <p class="rubric">El código</p>
+  <h2 class="sec"><span class="num">02</span> Probar el tiempo</h2>
+
+  <p><code>Curso.actaDeInscripcion()</code> tarda 40 ms por alumno. Es una simulación, pero el problema que representa es real: un reporte que crece con los datos y un día deja de caber en la ventana de respuesta.</p>
+
+  <p>Hay <strong>dos familias</strong> de timeout, y la diferencia entre ellas es la que confunde a todo el mundo.</p>
+
+  <div class="tw">
+    <table>
+      <thead><tr><th></th><th><code>assertTimeout</code></th><th><code>assertTimeoutPreemptively</code></th></tr></thead>
+      <tbody>
+        <tr><td>¿Interrumpe?</td><td class="no">No. Espera a que termine y <em>después</em> compara.</td><td class="si">Sí. Aborta al cumplirse el plazo.</td></tr>
+        <tr><td>¿Qué hilo?</td><td class="si">El del test. Lo normal y lo seguro.</td><td class="no">Otro hilo.</td></tr>
+        <tr><td>Si tarda 10 min…</td><td>…el test tarda 10 min y luego se pone en rojo.</td><td>…el test corta en el plazo que pusiste.</td></tr>
+        <tr><td>Cuándo usarla</td><td><strong>Por defecto.</strong></td><td>Solo si el riesgo real es que el código se cuelgue para siempre.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <p class="note warn"><strong>La letra pequeña de <code>assertTimeoutPreemptively</code>,</strong> la que cuesta una tarde de depuración: ese «otro hilo» significa que <strong>todo lo que viva en un <code>ThreadLocal</code> deja de estar ahí</strong>. Transacciones de Spring, <code>SecurityContext</code>, MDC de logs, <code>EntityManager</code>. Código que funciona perfectamente puede fallar solo por estar dentro de un <code>assertTimeoutPreemptively</code>, y el fallo no se parece en nada a un problema de tiempo.</p>
+
+  <p>El proyecto lo demuestra sin contarlo:</p>
+
+  <div class="term">
+    <button class="copy" type="button" data-etiqueta="Copiar">Copiar</button>
+<pre><code><span class="ty">String</span> hiloDelTest = <span class="ty">Thread</span>.currentThread().getName();
+
+<span class="ty">String</span> hiloDeDentro = assertTimeoutPreemptively(<span class="ty">Duration</span>.ofSeconds(<span class="st">2</span>),
+        () -&gt; <span class="ty">Thread</span>.currentThread().getName());
+
+assertTrue(!hiloDelTest.equals(hiloDeDentro));   <span class="cm">// pasa: son distintos</span></code></pre>
+  </div>
+
+  <h3>El mensaje de fallo, que es de lo mejor que da JUnit</h3>
+
+  <p>Descomenta la línea marcada en <code>TiempoTest.plazoImposible()</code> — pide 120 ms de trabajo en 50 ms:</p>
+
+  <div class="term">
+    <button class="copy" type="button" data-etiqueta="Copiar">Copiar</button>
+<pre><code><span class="out bad">execution exceeded timeout of 50 ms by 91 ms</span>
+<span class="cm"># el exceso exacto varia en cada maquina; el plazo, no</span></code></pre>
+  </div>
+
+  <p>Te dice el plazo <strong>y por cuánto te pasaste</strong>. Con eso ya sabes si te falta afinar el código o mover la expectativa.</p>
+
+  <h3><code>@Timeout</code>: el plazo en la anotación</h3>
+
+  <div class="term">
+    <button class="copy" type="button" data-etiqueta="Copiar">Copiar</button>
+<pre><code><span class="kw">@Test</span>
+<span class="kw">@Timeout</span>(value = <span class="st">3</span>, unit = <span class="ty">TimeUnit</span>.SECONDS)
+<span class="kw">void</span> plazoEnLaAnotacion() {
+    assertNotNull(java101.actaDeInscripcion());
+}</code></pre>
+  </div>
+
+  <p>Cubre el método <strong>completo</strong>, no un bloque concreto. Se puede poner en la clase entera o en un <code>@BeforeEach</code>. En un servidor de integración, un <code>@Timeout</code> a nivel de clase es la red de seguridad barata contra el test que se cuelga y para el build. La versión global está en la sección 08.</p>
+</section>
+
+<section id="estados">
+  <p class="rubric">La idea importante</p>
+  <h2 class="sec"><span class="num">03</span> Los tres estados</h2>
+
+  <p>Hay tres, no dos. Y confundirlos es la causa número uno de suites que mienten.</p>
+
+  <div class="veredicto">
+    <div class="ok"><b>PASSED</b>El test corrió y la afirmación se cumplió.</div>
+    <div class="bad"><b>FAILED</b>El test corrió y la afirmación no se cumplió. <strong>Hay un bug.</strong></div>
+    <div class="mid"><b>ABORTED</b>El test <strong>ni siquiera corrió</strong>. No se sabe nada.</div>
+  </div>
+
+  <div class="term">
+    <button class="copy" type="button" data-etiqueta="Copiar">Copiar</button>
+<pre><code>assertTrue(<span class="kw">false</span>)   <span class="cm">// -&gt; FAILED   "esto esta mal"</span>
+assumeTrue(<span class="kw">false</span>)   <span class="cm">// -&gt; ABORTED  "aqui no aplica, ni lo intento"</span></code></pre>
+  </div>
+
+  <p class="note warn"><strong>Por qué importa la diferencia:</strong> un build con 300 tests abortados sale <strong>verde</strong>. Y verde, para quien lo mira de lejos, significa «todo probado». En este proyecto son 4 de 37 — mira otra vez el <code>Skipped: 4</code> de la sección 00 y pregúntate qué rutas del código no se comprobaron.</p>
+
+  <h3>Una <em>assumption</em> es un requisito del entorno</h3>
+
+  <p>No es una afirmación sobre tu código. Se lee: «esto solo tiene sentido si…».</p>
+
+  <div class="term">
+    <button class="copy" type="button" data-etiqueta="Copiar">Copiar</button>
+<pre><code><span class="kw">@Test</span>
+<span class="kw">void</span> soloEnElEntornoDeIntegracion() {
+    assumeTrue(<span class="st">"integracion"</span>.equals(<span class="ty">System</span>.getenv(<span class="st">"ACADEMY_ENV"</span>)),
+            <span class="st">"No estamos en el entorno de integracion: no aplica"</span>);
+
+    <span class="cm">// todo lo de abajo solo corre si la assumption se cumplio</span>
+}</code></pre>
+  </div>
+
+  <h3><code>assumingThat</code> es otra cosa</h3>
+
+  <p>Y casi nadie lo usa bien. La diferencia es de alcance:</p>
+
+  <div class="tw">
+    <table>
+      <thead><tr><th></th><th>Qué hace si la condición es falsa</th></tr></thead>
+      <tbody>
+        <tr><td><code>assumeTrue</code></td><td>Aborta <strong>el test entero</strong>.</td></tr>
+        <tr><td><code>assumingThat</code></td><td>Se salta <strong>solo ese bloque</strong>. El resto del test sigue corriendo.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <p>Sirve para: «estas comprobaciones valen en todas partes; <em>esta otra</em> solo cuando estoy en la máquina de desarrollo».</p>
+
+  <h3><code>@Disabled</code> es deuda</h3>
+
+  <div class="term">
+    <button class="copy" type="button" data-etiqueta="Copiar">Copiar</button>
+<pre><code><span class="kw">@Test</span>
+<span class="kw">@Disabled</span>(<span class="st">"2026-08-26 (mike): pendiente de la regla de lista de espera, ticket ACAD-142"</span>)
+<span class="kw">void</span> listaDeEspera() { }</code></pre>
+  </div>
+
+  <p class="note key"><strong>El texto no es opcional en la práctica.</strong> Es la única pista que tendrá quien lo encuentre dentro de seis meses — por eso lleva fecha, persona y ticket. Y la regla dura: <strong>un <code>@Disabled</code> es deuda, con fecha y con dueño.</strong> Si no piensas volver, borra el test; uno apagado para siempre solo sirve para inflar el número de tests del reporte.</p>
+
+  <h3>Las condiciones declarativas</h3>
+
+  <p>Mismo efecto que una <em>assumption</em>, pero a la vista en la firma en vez de escondidas en la primera línea del cuerpo.</p>
+
+  <div class="term">
+    <button class="copy" type="button" data-etiqueta="Copiar">Copiar</button>
+<pre><code><span class="kw">@EnabledOnOs</span>({ <span class="ty">OS</span>.MAC, <span class="ty">OS</span>.LINUX })
+<span class="kw">@EnabledIfSystemProperty</span>(named = <span class="st">"academy.lento"</span>, matches = <span class="st">"true"</span>)
+<span class="kw">@EnabledIfEnvironmentVariable</span>(named = <span class="st">"ACADEMY_ENV"</span>, matches = <span class="st">"integracion"</span>)
+
+<span class="cm">// existen tambien: @DisabledOnOs, @EnabledOnJre, @EnabledForJreRange,</span>
+<span class="cm">// @DisabledIfSystemProperty y @EnabledIf (con un metodo propio)</span></code></pre>
+  </div>
+</section>
+
+<section id="nested">
+  <p class="rubric">Organizar</p>
+  <h2 class="sec"><span class="num">04</span> Agrupar por situación</h2>
+
+  <p>El error común al organizar tests es hacer <strong>una clase por método</strong>: <code>InscribirTest</code>, <code>CerrarTest</code>, <code>LugaresDisponiblesTest</code>. Suena ordenado y no lo es — <code>inscribir()</code> se comporta de tres maneras distintas según cómo esté el curso, y en una sola clase esas tres se mezclan.</p>
+
+  <p><code>@Nested</code> agrupa por <strong>situación</strong>. Cada clase interna monta un estado y ahí dentro prueba todo lo que aplica a ese estado.</p>
+
+  <div class="term">
+    <button class="copy" type="button" data-etiqueta="Copiar">Copiar</button>
+    <span class="lbl">CursoNestedTest.java — la estructura</span>
+<pre><code><span class="kw">@DisplayName</span>(<span class="st">"Un curso"</span>)
+<span class="kw">class</span> <span class="ty">CursoNestedTest</span> {
+
+    <span class="kw">private</span> <span class="ty">Curso</span> curso;
+
+    <span class="kw">@BeforeEach</span>                          <span class="cm">// corre ANTES que el de dentro</span>
+    <span class="kw">void</span> crearCurso() { curso = <span class="kw">new</span> <span class="ty">Curso</span>(<span class="st">"JAVA-101"</span>, <span class="st">2</span>); }
+
+    <span class="kw">@Nested</span>
+    <span class="kw">@DisplayName</span>(<span class="st">"Cuando ya esta lleno"</span>)
+    <span class="kw">class</span> <span class="ty">Lleno</span> {                          <span class="cm">// NO puede ser static</span>
+
+        <span class="kw">@BeforeEach</span>                      <span class="cm">// corre DESPUES del de fuera</span>
+        <span class="kw">void</span> llenarlo() {
+            curso.inscribir(<span class="st">"A01"</span>);        <span class="cm">// 'curso' ya existe: lo monto el de fuera</span>
+            curso.inscribir(<span class="st">"A02"</span>);
+        }
+
+        <span class="kw">@Test</span> <span class="kw">@DisplayName</span>(<span class="st">"rechaza al siguiente con CupoLlenoException"</span>)
+        <span class="kw">void</span> rechazaAlTercero() {
+            assertThrows(<span class="ty">CupoLlenoException</span>.<span class="kw">class</span>, () -&gt; curso.inscribir(<span class="st">"A03"</span>));
+        }
+
+        <span class="kw">@Test</span> <span class="kw">@DisplayName</span>(<span class="st">"sigue abierto: lleno y cerrado no son lo mismo"</span>)
+        <span class="kw">void</span> llenoNoEsCerrado() {
+            assertTrue(curso.estaAbierto());
+        }
+    }
+}</code></pre>
+  </div>
+
+  <p>El resultado en el reporte se lee casi como una frase en español:</p>
+
+  <div class="term">
+    <button class="copy" type="button" data-etiqueta="Copiar">Copiar</button>
+<pre><code><span class="out">Un curso</span>
+<span class="out">  Cuando acaba de crearse</span>
+<span class="out ok">    ✓ tiene todos sus lugares libres</span>
+<span class="out ok">    ✓ acepta al primer inscrito</span>
+<span class="out">  Cuando ya esta lleno</span>
+<span class="out ok">    ✓ rechaza al siguiente con CupoLlenoException</span>
+<span class="out ok">    ✓ sigue abierto: lleno y cerrado no son lo mismo</span>
+<span class="out">  Cuando ya cerro inscripciones</span>
+<span class="out ok">    ✓ rechaza a cualquiera, aunque queden lugares</span></code></pre>
+  </div>
+
+  <div class="trap">
+    <span class="k">ojo</span>
+    <span><b>Las clases internas NO pueden ser <code>static</code></b><code>@Nested</code> necesita una instancia interna ligada a la externa — y es justo eso lo que hace que hereden el <code>@BeforeEach</code> de fuera. Si le pones <code>static</code>, JUnit deja de reconocerla y sus tests desaparecen del reporte sin error.</span>
+  </div>
+
+  <p class="note key"><strong>El beneficio que no se ve al principio.</strong> Fíjate en <code>llenoNoEsCerrado</code>: ese test solo tiene sentido dentro del grupo «cuando ya está lleno». En una clase plana, mezclado con otros veinte, nadie lo escribiría — no se le ocurre a nadie. La estructura no solo <em>ordena</em> los tests que ya tenías: <strong>te hace ver los que faltaban</strong>.</p>
+</section>
+
+<section id="tags">
+  <p class="rubric">El experimento</p>
+  <h2 class="sec"><span class="num">05</span> Partir la suite en dos velocidades</h2>
+
+  <p>El problema aparece solo, sin que nadie lo busque: la suite empieza en dos segundos, crece, y un día tarda once minutos. Entonces la gente deja de correrla antes de subir código. Y <strong>una suite que nadie corre no protege nada</strong>.</p>
+
+  <p>La salida no es tener menos tests: es poder correr una parte.</p>
+
+  <div class="term">
+    <button class="copy" type="button" data-etiqueta="Copiar">Copiar</button>
+    <span class="lbl">una corrida de ejemplo &mdash; tus segundos serán otros, la proporción no</span>
+<pre><code><span class="p">$</span> <span class="cmd">./scripts/filtrar.sh</span>
+
+<span class="out">== La misma suite, tres filtros ==</span>
+<span class="out">   mvn test                 Tests run: 37, Failures: 0, Skipped: 4    1.119s de tests</span>
+<span class="out">   -DexcludedGroups=lento   Tests run: 34, Failures: 0, Skipped: 4    0.533s de tests</span>
+<span class="out ok">   -Dgroups=rapido          Tests run:  3, Failures: 0, Skipped: 0    0.018s de tests</span></code></pre>
+  </div>
+
+  <p>Los tests con <code>@Tag("lento")</code> son <strong>3 de 37</strong> — un 8 % de la suite — y se llevan <strong>más de la mitad</strong> del tiempo de ejecución. Ese desequilibrio es la regla, no la excepción: en cualquier proyecto real un puñado de tests que tocan disco, red o base de datos acaba pesando más que los cientos que no tocan nada.</p>
+
+  <p class="note"><strong>Un matiz honesto sobre esos números.</strong> Si cronometras las tres corridas con un reloj de pared vas a ver casi lo mismo (~2 s cada una): en un proyecto de este tamaño Maven tarda más en arrancar que en correr nada. Lo que compara el script es el tiempo que suma Surefire por clase — que es lo único que crece cuando tu suite crece.</p>
+
+  <div class="term">
+    <button class="copy" type="button" data-etiqueta="Copiar">Copiar</button>
+<pre><code><span class="kw">@Test</span>
+<span class="kw">@Tag</span>(<span class="st">"lento"</span>)
+<span class="kw">@Tag</span>(<span class="st">"acta"</span>)                              <span class="cm">// se pueden apilar</span>
+<span class="kw">@DisplayName</span>(<span class="st">"[lento] El acta lista a los diez inscritos"</span>)
+<span class="kw">void</span> actaCompleta() { … }</code></pre>
+  </div>
+
+  <div class="tw">
+    <table>
+      <thead><tr><th>Comando</th><th>Cuándo</th></tr></thead>
+      <tbody>
+        <tr><td><code>mvn test -Dgroups=rapido</code></td><td>Antes de cada <em>commit</em>.</td></tr>
+        <tr><td><code>mvn test -DexcludedGroups=lento</code></td><td>Antes de subir la rama.</td></tr>
+        <tr><td><code>mvn test</code></td><td>En el servidor de integración.</td></tr>
+        <tr><td><code>mvn test -Dgroups="rapido | acta"</code></td><td>Expresiones con <code>|</code>, <code>&amp;</code> y <code>!</code>.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <p class="note"><strong>Convención sana:</strong> pocas etiquetas y con significado operativo — <code>rapido</code>/<code>lento</code>, <code>unitario</code>/<code>integracion</code>. Diez etiquetas distintas no las recuerda nadie y acaban sin usarse. Las etiquetas también van en la <strong>clase entera</strong>, que es lo habitual para una clase de integración completa.</p>
+</section>
+
+<section id="inyeccion">
+  <p class="rubric">El mecanismo</p>
+  <h2 class="sec"><span class="num">06</span> Lo que JUnit te inyecta</h2>
+
+  <p>En la guía 01 dijimos que un test «no recibe parámetros». Era una mentira didáctica. La verdad es esta: <strong>JUnit resuelve los parámetros del método por tipo</strong>, igual que un contenedor de inyección de dependencias. Si pides un <code>TestInfo</code>, te lo da.</p>
+
+  <p class="note key"><strong>Y esto no es un truco cerrado.</strong> Es el mismo mecanismo — <code>ParameterResolver</code> — con el que Spring te inyecta el <code>ApplicationContext</code> en un <code>@SpringBootTest</code>. Entenderlo aquí, con tres clases y sin framework, hace que aquello se entienda solo. Funciona en <code>@Test</code>, en <code>@BeforeEach</code>, en <code>@AfterEach</code> y en el constructor.</p>
+
+  <div class="tw">
+    <table>
+      <thead><tr><th>Pides</th><th>Recibes</th><th>Para</th></tr></thead>
+      <tbody>
+        <tr><td><code>TestInfo</code></td><td>Nombre del método, <code>@DisplayName</code>, clase y etiquetas del test que corre ahora.</td><td>Logs que dicen qué test está a punto de correr.</td></tr>
+        <tr><td><code>TestReporter</code></td><td>Un canal para publicar datos <strong>en el reporte</strong>, no en la consola.</td><td>Dejar rastro atado al test que lo produjo.</td></tr>
+        <tr><td><code>@TempDir Path</code></td><td>Un directorio real, vacío, que JUnit <strong>borra entero</strong> al terminar — pase o falle.</td><td>Todo lo que escriba en disco.</td></tr>
+        <tr><td><code>RepetitionInfo</code></td><td>Qué repetición es esta. Ver <a href="guia-03-un-test-muchos-datos.html">guía 03</a>.</td><td><code>@RepeatedTest</code>.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="term">
+    <button class="copy" type="button" data-etiqueta="Copiar">Copiar</button>
+<pre><code><span class="kw">@Test</span>
+<span class="kw">void</span> variasALaVez(<span class="ty">TestInfo</span> info, <span class="ty">TestReporter</span> reporter, <span class="kw">@TempDir</span> <span class="ty">Path</span> carpeta)
+        <span class="kw">throws</span> <span class="ty">IOException</span> {
+
+    <span class="ty">Path</span> archivo = carpeta.resolve(<span class="st">"evidencia.txt"</span>);
+    <span class="ty">Files</span>.writeString(archivo, <span class="st">"test: "</span> + info.getDisplayName());
+
+    reporter.publishEntry(<span class="st">"evidencia"</span>, archivo.getFileName().toString());
+
+    assertTrue(<span class="ty">Files</span>.readString(archivo).contains(<span class="st">"Varias inyecciones"</span>));
+}
+<span class="cm">// Los parametros van en cualquier orden: JUnit los resuelve por TIPO.</span></code></pre>
+  </div>
+
+  <p class="note"><strong>Por qué <code>@TempDir</code> merece la pena.</strong> Resuelve un problema viejo y feo: el test que escribe en <code>/tmp/salida.txt</code>, pasa la primera vez, y a la segunda pasa <em>porque el archivo de la primera seguía ahí</em>. Basura que sobrevive entre corridas y hace que la suite mienta. Con <code>@TempDir</code> eso no puede pasar — y no hay <code>@AfterEach</code> que mantener.</p>
+</section>
+
+<section id="orden">
+  <p class="rubric">El aviso</p>
+  <h2 class="sec"><span class="num">07</span> El orden, y por qué es un error</h2>
+
+  <p>Por defecto JUnit ejecuta los métodos en un orden <strong>determinista pero deliberadamente no obvio</strong>. No es un descuido de diseño: es una defensa. Si el orden fuera alfabético o el del archivo, se escribirían tests que dependen del anterior sin querer.</p>
+
+  <p>Y ya conoces la otra mitad de esa defensa: la instancia nueva por test de la guía 01. Entre las dos, JUnit te lo pone difícil a propósito.</p>
+
+  <p>Se pueden desactivar las dos:</p>
+
+  <div class="term">
+    <button class="copy" type="button" data-etiqueta="Copiar">Copiar</button>
+    <span class="lbl">OrdenTest.java</span>
+<pre><code><span class="kw">@TestInstance</span>(<span class="ty">TestInstance</span>.<span class="ty">Lifecycle</span>.PER_CLASS)   <span class="cm">// una sola instancia:</span>
+<span class="kw">@TestMethodOrder</span>(<span class="ty">MethodOrderer</span>.<span class="ty">OrderAnnotation</span>.<span class="kw">class</span>)  <span class="cm">// los campos sobreviven</span>
+<span class="kw">class</span> <span class="ty">OrdenTest</span> {
+
+    <span class="kw">private</span> <span class="ty">Curso</span> curso;          <span class="cm">// NO se reinicia entre tests</span>
+
+    <span class="kw">@Test</span> <span class="kw">@Order</span>(<span class="st">1</span>) <span class="kw">void</span> seAbre()            { curso = <span class="kw">new</span> <span class="ty">Curso</span>(<span class="st">"JAVA-101"</span>, <span class="st">2</span>); … }
+    <span class="kw">@Test</span> <span class="kw">@Order</span>(<span class="st">2</span>) <span class="kw">void</span> seLlena()           { curso.inscribir(<span class="st">"A01"</span>); … }
+    <span class="kw">@Test</span> <span class="kw">@Order</span>(<span class="st">3</span>) <span class="kw">void</span> noCabeUnTercero()   { … }
+}</code></pre>
+  </div>
+
+  <p class="note warn"><strong>Lo que acabas de leer es una narración, no cuatro tests.</strong> Y tiene un precio que se paga el día que algo falla:</p>
+
+  <ul class="check">
+    <li><span class="box">1</span><span><b>El test 3 no se puede correr solo</b> En el IDE, ejecutar únicamente <code>noCabeUnTercero</code> truena con <code>NullPointerException</code>.</span></li>
+    <li><span class="box">2</span><span><b>Un fallo se multiplica</b> Si el test 1 falla, los otros tres fallan también. El reporte enseña cuatro rojos donde hay <strong>un</strong> problema.</span></li>
+    <li><span class="box">3</span><span><b>Reordenar cambia el significado</b> Nadie se atreve a tocarlo, y por tanto nadie lo mantiene.</span></li>
+  </ul>
+
+  <p>Cuando de verdad quieras contar una secuencia, la forma sana es <strong>un solo test con los pasos dentro</strong>, o <code>@Nested</code> como en la sección 04.</p>
+
+  <p class="note"><strong>El uso legítimo de <code>PER_CLASS</code>,</strong> que sí existe y es común: permite que <code>@BeforeAll</code> <strong>no</strong> sea <code>static</code>. Eso importa cuando el montaje caro — levantar un contenedor, abrir una conexión — necesita campos de instancia. Ahí <code>PER_CLASS</code> se usa por el <code>@BeforeAll</code>, no por compartir estado entre tests.</p>
+
+  <p class="note key"><strong>Y un <code>MethodOrderer</code> que sí vale la pena: <code>Random</code>.</strong> Revuelve el orden a propósito en cada corrida. Suena absurdo y es lo contrario: es la forma de <em>cazar</em> las dependencias ocultas entre tests antes de que te exploten en el servidor de integración.</p>
+</section>
+
+<section id="suite">
+  <p class="rubric">Cierre</p>
+  <h2 class="sec"><span class="num">08</span> Suites y configuración global</h2>
+
+  <h3><code>@Suite</code>: una selección con nombre</h3>
+
+  <p>Una suite es una clase <strong>sin un solo <code>@Test</code></strong>: solo dice qué ejecutar. Sirve para darle nombre a una selección que se repite.</p>
+
+  <div class="term">
+    <button class="copy" type="button" data-etiqueta="Copiar">Copiar</button>
+    <span class="lbl">SuiteDelCurso.java — la configuración ES la clase</span>
+<pre><code><span class="kw">@Suite</span>
+<span class="kw">@SuiteDisplayName</span>(<span class="st">"Humo: lo minimo que debe pasar antes de subir codigo"</span>)
+<span class="kw">@SelectClasses</span>({ <span class="ty">ExcepcionesTest</span>.<span class="kw">class</span>, <span class="ty">CursoNestedTest</span>.<span class="kw">class</span>, <span class="ty">EtiquetasTest</span>.<span class="kw">class</span> })
+<span class="kw">@ExcludeTags</span>(<span class="st">"lento"</span>)
+<span class="kw">public class</span> <span class="ty">SuiteDelCurso</span> { }</code></pre>
+  </div>
+
+  <div class="term">
+    <button class="copy" type="button" data-etiqueta="Copiar">Copiar</button>
+<pre><code><span class="p">$</span> <span class="cmd">./mvnw test -Dtest=SuiteDelCurso</span>
+<span class="out ok">[INFO] Tests run: 15, Failures: 0, Errors: 0, Skipped: 0</span></code></pre>
+  </div>
+
+  <p>Necesita su propia dependencia, <code>org.junit.platform:junit-platform-suite</code>. Y ojo con Maven: el <code>pom</code> de este proyecto <strong>excluye</strong> la clase de <code>mvn test</code>. Si no, los tests que selecciona correrían dos veces — una por sí mismos y otra a través de la suite — y el conteo del reporte saldría inflado.</p>
+
+  <p class="note"><strong>Nota honesta:</strong> con Maven las suites se usan poco, porque <code>-Dgroups=</code> sobre <code>@Tag</code> hace lo mismo sin clase extra ni exclusiones que mantener. Vale la pena conocerlas porque salen en código heredado.</p>
+
+  <h3><code>junit-platform.properties</code></h3>
+
+  <p>Un archivo en <code>src/test/resources</code> que JUnit lee solo. No hay que registrarlo en ninguna parte.</p>
+
+  <div class="term">
+    <button class="copy" type="button" data-etiqueta="Copiar">Copiar</button>
+    <span class="lbl">src/test/resources/junit-platform.properties</span>
+<pre><code><span class="cm"># Nombres legibles sin escribir @DisplayName en cada metodo:</span>
+<span class="cm"># convierte  void un_curso_lleno_rechaza()  en  "un curso lleno rechaza"</span>
+<span class="cm">#junit.jupiter.displayname.generator.default = \</span>
+<span class="cm">#    org.junit.jupiter.api.DisplayNameGenerator$ReplaceUnderscores</span>
+
+<span class="cm"># Reparte los tests entre varios hilos. Ademas de bajar el tiempo,</span>
+<span class="cm"># saca a la luz los tests que compartian estado sin saberlo.</span>
+<span class="cm">#junit.jupiter.execution.parallel.enabled = true</span>
+<span class="cm">#junit.jupiter.execution.parallel.mode.default = concurrent</span>
+
+<span class="cm"># Red de seguridad contra el test que se cuelga y para el build:</span>
+junit.jupiter.execution.timeout.testable.method.default = 30 s</code></pre>
+  </div>
+
+  <p>En el proyecto casi todo está comentado a propósito: descomenta y corre <code>mvn test</code> para ver el efecto. La única activa es el <em>timeout</em> global.</p>
+</section>
+
+<section id="trampas">
+  <p class="rubric">Referencia</p>
+  <h2 class="sec"><span class="num">09</span> Trampas y ejercicios</h2>
+
+  <div class="trap">
+    <span class="k">01</span>
+    <span><b>Un <code>@Nested</code> desaparece del reporte</b>Le pusiste <code>static</code>. JUnit deja de reconocerla y no avisa.</span>
+  </div>
+
+  <div class="trap">
+    <span class="k">02</span>
+    <span><b><code>assertThrows(RuntimeException.class, …)</code> pasa siempre</b>Acepta subclases. Pide el tipo concreto.</span>
+  </div>
+
+  <div class="trap">
+    <span class="k">03</span>
+    <span><b>Un test funciona suelto y falla dentro de <code>assertTimeoutPreemptively</code></b>Corre en otro hilo: perdiste el <code>ThreadLocal</code>. Cambia a <code>assertTimeout</code>.</span>
+  </div>
+
+  <div class="trap">
+    <span class="k">04</span>
+    <span><b>Build verde con <code>Skipped: N</code></b>Esos N no probaron nada. Revisa las <em>assumptions</em> y los <code>@Disabled</code> antes de fiarte del verde.</span>
+  </div>
+
+  <div class="trap">
+    <span class="k">05</span>
+    <span><b>El conteo de tests sale al doble</b>Una clase <code>@Suite</code> ejecutándose además de los tests que selecciona. Excluye la suite en Surefire.</span>
+  </div>
+
+  <div class="trap">
+    <span class="k">06</span>
+    <span><b><code>-Dgroups=rapido</code> no filtra nada</b>Surefire necesita 3.x, y la etiqueta se escribe igual en el <code>@Tag</code> y en la línea de comandos — distingue mayúsculas.</span>
+  </div>
+
+  <h3>Ejercicios</h3>
+
+  <ul class="check">
+    <li><span class="box">1</span><span><b>El mensaje frágil</b> Escribe un test que afirme sobre <code>ex.getMessage()</code> con un <code>assertEquals</code> exacto. Ahora cambia una palabra del mensaje en <code>CupoLlenoException</code>. Se rompió un test sin que nada esté mal: eso es un test frágil.</span></li>
+    <li><span class="box">2</span><span><b>La cuarta situación</b> Añade a <code>CursoNestedTest</code> un <code>@Nested</code> para «cuando está lleno Y cerrado». ¿Qué excepción gana? Descúbrelo con un test, no leyendo el código.</span></li>
+    <li><span class="box">3</span><span><b>Etiqueta lo tuyo</b> Marca <code>@Tag("integracion")</code> la clase <code>InyeccionTest</code> entera y comprueba que <code>-DexcludedGroups=integracion</code> la salta completa.</span></li>
+    <li><span class="box">4</span><span><b>Caza una dependencia oculta</b> Cambia el <code>MethodOrderer</code> de <code>OrdenTest</code> por <code>MethodOrderer.Random.class</code> y corre varias veces. Explica exactamente por qué falla.</span></li>
+    <li><span class="box">5</span><span><b>Assumption contra @Disabled</b> Convierte el <code>@Disabled</code> de <code>listaDeEspera</code> en un <code>assumeTrue(false)</code>. ¿Cambia algo en el reporte? ¿Cuál de los dos comunica mejor la intención?</span></li>
+    <li><span class="box">6</span><span><b>Paralelismo</b> Descomenta las dos líneas de paralelismo en <code>junit-platform.properties</code> y corre la suite varias veces. Si algo empieza a fallar de forma intermitente, acabas de encontrar un test que compartía estado.</span></li>
+  </ul>
+
+  <p class="note"><strong>Si trabajas en Windows.</strong> <code>mvnw.cmd test</code> en lugar de <code>./mvnw test</code>, y <code>filtrar.sh</code> necesita <strong>Git Bash</strong> o <strong>WSL</strong>.</p>
+
+  <p class="closing">Laboratorio 02 de 04 &middot; Serie <strong>JUnit</strong> &middot; Academia Monterrey. Sigue en <a href="guia-03-un-test-muchos-datos.html"><strong>Un test, muchos datos</strong></a>, donde 32 métodos se convierten en 211 tests. Conceptos en <a href="guia-00-por-que-se-prueba.html">Por qué se prueba</a>.</p>
+</section>
+
+</main>
+</div>
+
+<script>
+document.querySelectorAll('.copy').forEach(function (btn) {
+  btn.addEventListener('click', function () {
+    var pre = btn.parentElement.querySelector('pre');
+    if (!pre) return;
+    var texto = pre.innerText;
+
+    function avisar(msg) {
+      var prev = btn.dataset.etiqueta || 'Copiar';
+      btn.textContent = msg;
+      setTimeout(function () { btn.textContent = prev; }, 1400);
+    }
+
+    // Plan B con execCommand. Hace falta de verdad: estas guias se abren
+    // con doble clic (file://) y en varios navegadores navigator.clipboard
+    // no esta disponible o rechaza ahi. Sin este respaldo, el boton se
+    // quedaria en "Error" y el alumno no podria copiar nada.
+    function copiarALaAntigua() {
+      var ta = document.createElement('textarea');
+      ta.value = texto;
+      ta.setAttribute('readonly', '');
+      ta.style.position = 'fixed';
+      ta.style.top = '-1000px';
+      document.body.appendChild(ta);
+      ta.select();
+      var ok = false;
+      try { ok = document.execCommand('copy'); } catch (e) { ok = false; }
+      document.body.removeChild(ta);
+      avisar(ok ? 'Copiado' : 'Selecciona y copia a mano');
+    }
+
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(texto)
+        .then(function () { avisar('Copiado'); })
+        .catch(copiarALaAntigua);
+    } else {
+      copiarALaAntigua();
+    }
+  });
+});
+(function () {
+  var links = Array.prototype.slice.call(document.querySelectorAll('.toc a[href^="#"]'));
+  var map = {};
+  links.forEach(function (a) {
+    var el = document.getElementById(a.getAttribute('href').slice(1));
+    if (el) map[el.id] = a;
+  });
+  var obs = new IntersectionObserver(function (entries) {
+    entries.forEach(function (e) {
+      if (!map[e.target.id]) return;
+      if (e.isIntersecting) {
+        links.forEach(function (a) { a.classList.remove('cur'); });
+        map[e.target.id].classList.add('cur');
+      }
+    });
+  }, { rootMargin: '-10% 0px -75% 0px', threshold: 0 });
+  Object.keys(map).forEach(function (id) { obs.observe(document.getElementById(id)); });
+})();
+
+// ---------------------------------------------------------------------
+//  Los enlaces entre guias son RELATIVOS en el HTML, a proposito: el
+//  alumno abre el archivo con doble clic y navegar tiene que funcionar
+//  sin internet y sin permisos.
+//
+//  Cuando la misma pagina corre publicada como artifact, un enlace
+//  relativo no resuelve a nada -- cada artifact vive en su propio
+//  origen. Por eso aqui se reescriben a su URL, y SOLO ahi.
+//
+//  Antes esto estaba al reves (URL fijas en el HTML) y rompia el caso
+//  que de verdad se usa: el archivo local.
+// ---------------------------------------------------------------------
+(function () {
+  var PUBLICADAS = {
+    'guia-00-por-que-se-prueba.html': 'dc6ceb37-bac9-4a8c-bbd0-89f91dbc7def',
+    'guia-01-anatomia-de-un-test.html': '6755acb6-a6c0-42ac-95dd-e2ffb84a3a71',
+    'guia-02-el-catalogo.html': 'b02ccd10-cb0b-4545-a130-a0dc29e6a26c',
+    'guia-03-un-test-muchos-datos.html': 'dec3fbf5-39f0-411c-8daa-02bb3dec3eb0',
+    'guia-04-dobles-de-prueba.html': '33074df8-6377-44cd-a3c6-68f766ff4b78',
+    'anexo-junit5-vs-junit6.html': '53f58e3c-f8ea-4c4c-a6a9-ae93e2b9ca9a'
+  };
+  if (!/claudeusercontent|claude\.ai/.test(location.hostname)) return;
+  document.querySelectorAll('a[href]').forEach(function (a) {
+    var id = PUBLICADAS[a.getAttribute('href')];
+    if (id) a.setAttribute('href', 'https://claude.ai/code/artifact/' + id);
+  });
+})();
+</script>

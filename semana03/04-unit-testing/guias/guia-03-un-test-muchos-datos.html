@@ -1,0 +1,1122 @@
+<meta charset="utf-8">
+<title>Un test, muchos datos</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&family=Zilla+Slab:wght@600;700&display=swap">
+<style>
+:root{
+  --bg:#f4f6f5;
+  --surface:#ffffff;
+  --surface-2:#eaeeec;
+  --ink:#12181a;
+  --ink-2:#4a5559;
+  --ink-3:#78848a;
+  --rule:#dbe2df;
+  --accent:#0e6b63;
+  --accent-soft:#dcedea;
+
+  --warn:#8a5a10;      --warn-bg:#f7eeda;
+  --next:#2f7d3a;      --next-bg:#e2f0e4;
+  --error:#b23a2e;     --error-bg:#f8e6e3;
+  --complete:#1f5b96;  --complete-bg:#e3edf8;
+
+  --term-bg:#101619;
+  --term-ink:#dbe4e6;
+  --term-dim:#7b8a8e;
+  --term-prompt:#5fb8ac;
+  --term-out:#a3b0b3;
+  --term-rule:#232d31;
+
+  --step:clamp(1.9rem,1.4rem + 1.6vw,2.6rem);
+  --h2:clamp(1.45rem,1.2rem + 1vw,1.9rem);
+  --h3:1.1rem;
+  --body:1rem;
+  --small:.87rem;
+  --tiny:.76rem;
+  --radius:10px;
+  --maxw:1180px;
+}
+
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --bg:#0d1113;
+    --surface:#151b1e;
+    --surface-2:#1b2327;
+    --ink:#e6edee;
+    --ink-2:#9fadb0;
+    --ink-3:#78868a;
+    --rule:#242e32;
+    --accent:#5fc0b4;
+    --accent-soft:#122b29;
+
+    --warn:#dfa955;      --warn-bg:#2e2312;
+    --next:#69bf7a;      --next-bg:#152a1a;
+    --error:#e8908b;     --error-bg:#2f1a18;
+    --complete:#7fb0e8;  --complete-bg:#16243a;
+
+    --term-bg:#070a0c;
+    --term-ink:#dbe4e6;
+    --term-dim:#6c797d;
+    --term-prompt:#6fc9bc;
+    --term-out:#94a2a5;
+    --term-rule:#1d262a;
+  }
+}
+
+:root[data-theme="dark"]{
+  --bg:#0d1113;
+  --surface:#151b1e;
+  --surface-2:#1b2327;
+  --ink:#e6edee;
+  --ink-2:#9fadb0;
+  --ink-3:#78868a;
+  --rule:#242e32;
+  --accent:#5fc0b4;
+  --accent-soft:#122b29;
+
+  --warn:#dfa955;      --warn-bg:#2e2312;
+  --next:#69bf7a;      --next-bg:#152a1a;
+  --error:#e8908b;     --error-bg:#2f1a18;
+  --complete:#7fb0e8;  --complete-bg:#16243a;
+
+  --term-bg:#070a0c;
+  --term-ink:#dbe4e6;
+  --term-dim:#6c797d;
+  --term-prompt:#6fc9bc;
+  --term-out:#94a2a5;
+  --term-rule:#1d262a;
+}
+
+*{box-sizing:border-box}
+
+body{
+  margin:0;
+  background:var(--bg);
+  color:var(--ink);
+  font-family:"IBM Plex Sans",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  font-size:var(--body);
+  line-height:1.62;
+  -webkit-font-smoothing:antialiased;
+}
+
+.wrap{max-width:var(--maxw);margin:0 auto;padding:0 1.5rem}
+
+/* ---------- masthead ---------- */
+.masthead{
+  border-bottom:1px solid var(--rule);
+  background:var(--surface);
+  padding:3.2rem 0 2.4rem;
+}
+.eyebrow{
+  font-family:"JetBrains Mono",monospace;
+  font-size:var(--tiny);letter-spacing:.09em;text-transform:uppercase;
+  color:var(--ink-3);margin:0 0 1rem;
+}
+.masthead h1{
+  font-family:"Zilla Slab",Georgia,serif;font-weight:700;
+  font-size:clamp(2.4rem,1.7rem + 3.2vw,4rem);
+  line-height:1.04;letter-spacing:-.015em;
+  margin:0 0 1.1rem;max-width:16ch;text-wrap:balance;
+}
+.lede{
+  font-size:clamp(1.02rem,.98rem + .35vw,1.2rem);
+  color:var(--ink-2);max-width:62ch;margin:0 0 1.6rem;
+}
+.facts{
+  list-style:none;display:flex;flex-wrap:wrap;gap:.45rem;margin:0;padding:0;
+}
+.facts li{
+  font-family:"JetBrains Mono",monospace;font-size:var(--tiny);
+  color:var(--ink-2);background:var(--surface-2);
+  border:1px solid var(--rule);border-radius:99px;padding:.28rem .7rem;
+}
+
+/* ---------- shell ---------- */
+.shell{
+  display:grid;grid-template-columns:minmax(0,1fr);gap:2.4rem;
+  padding-top:2.6rem;padding-bottom:5rem;
+}
+@media (min-width:1000px){
+  .shell{grid-template-columns:216px minmax(0,1fr);gap:3.4rem}
+}
+
+.toc{font-size:var(--small);align-self:start}
+@media (min-width:1000px){
+  .toc{position:sticky;top:1.6rem;max-height:calc(100vh - 3.2rem);overflow-y:auto}
+}
+.toc h2{
+  font-family:"JetBrains Mono",monospace;font-size:var(--tiny);font-weight:700;
+  letter-spacing:.09em;text-transform:uppercase;color:var(--ink-3);
+  margin:0 0 .6rem;padding-bottom:.4rem;border-bottom:1px solid var(--rule);
+}
+.toc h2+*{margin-top:0}
+.toc ol,.toc ul{list-style:none;margin:0 0 1.6rem;padding:0;display:flex;flex-direction:column;gap:.08rem}
+.toc a{
+  display:flex;gap:.55rem;align-items:baseline;
+  color:var(--ink-2);text-decoration:none;
+  padding:.3rem .45rem;border-radius:6px;line-height:1.35;
+}
+.toc a:hover{color:var(--ink);background:var(--surface-2)}
+.toc a:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
+.toc .n{
+  font-family:"JetBrains Mono",monospace;font-size:.7rem;
+  color:var(--ink-3);flex:none;
+}
+.toc a.cur{color:var(--ink);font-weight:600;background:var(--surface-2)}
+
+main{min-width:0;max-width:70ch}
+
+/* ---------- secciones ---------- */
+section{
+  padding-top:2.2rem;margin-top:2.2rem;border-top:1px solid var(--rule);
+}
+section:first-child{padding-top:0;margin-top:0;border-top:0}
+.rubric{
+  font-family:"JetBrains Mono",monospace;font-size:var(--tiny);
+  letter-spacing:.09em;text-transform:uppercase;color:var(--accent);
+  margin:0 0 .35rem;
+}
+h2.sec{
+  font-family:"Zilla Slab",Georgia,serif;font-weight:700;
+  font-size:var(--h2);line-height:1.14;letter-spacing:-.01em;
+  margin:0 0 1.1rem;display:flex;gap:.75rem;align-items:baseline;text-wrap:balance;
+}
+h2.sec .num{
+  font-family:"JetBrains Mono",monospace;font-size:.8rem;font-weight:700;
+  color:var(--ink-3);flex:none;
+}
+h3{
+  font-family:"Zilla Slab",Georgia,serif;font-weight:600;font-size:var(--h3);
+  margin:2rem 0 .6rem;letter-spacing:-.005em;
+}
+p{margin:0 0 1rem;max-width:66ch}
+strong{font-weight:600}
+em{font-style:italic}
+a{color:var(--accent)}
+
+code{
+  font-family:"JetBrains Mono",monospace;font-size:.86em;
+  background:var(--surface-2);border:1px solid var(--rule);
+  border-radius:4px;padding:.08em .34em;
+}
+
+/* ---------- notas ---------- */
+.note{
+  background:var(--surface);border:1px solid var(--rule);
+  border-left:3px solid var(--accent);border-radius:var(--radius);
+  padding:.85rem 1.05rem;margin:0 0 1.2rem;font-size:var(--small);
+  color:var(--ink-2);max-width:66ch;
+}
+.note strong{color:var(--ink)}
+.note.warn{border-left-color:var(--warn);background:var(--warn-bg)}
+.note.warn strong{color:var(--ink)}
+.note.key{border-left-color:var(--accent);background:var(--accent-soft)}
+.note.key strong{color:var(--ink)}
+.note p:last-child{margin-bottom:0}
+
+/* ---------- analogía ---------- */
+.ana{
+  background:var(--surface);border:1px solid var(--rule);border-radius:var(--radius);
+  padding:1.1rem 1.2rem;margin:0 0 1.3rem;max-width:66ch;
+  position:relative;
+}
+.ana .tag{
+  font-family:"JetBrains Mono",monospace;font-size:.68rem;font-weight:700;
+  letter-spacing:.1em;text-transform:uppercase;color:var(--accent);
+  display:block;margin-bottom:.5rem;
+}
+.ana p:last-child{margin-bottom:0}
+.ana h4{
+  font-family:"Zilla Slab",Georgia,serif;font-weight:600;font-size:1.05rem;
+  margin:0 0 .5rem;
+}
+
+/* ---------- terminal / código ---------- */
+.term{
+  background:var(--term-bg);border:1px solid var(--term-rule);
+  border-radius:var(--radius);margin:0 0 1.2rem;position:relative;overflow:hidden;
+}
+.term pre{
+  margin:0;padding:1rem 1.1rem;overflow-x:auto;
+  font-family:"JetBrains Mono",monospace;font-size:.8rem;line-height:1.72;
+  color:var(--term-ink);
+}
+.term code{background:none;border:0;padding:0;font-size:inherit;color:inherit}
+.term .cm{color:var(--term-dim)}
+.term .p{color:var(--term-prompt);user-select:none}
+.term .kw{color:#c99bd8}
+.term .ty{color:#7fc3e8}
+.term .st{color:#c8d98a}
+.term .out{color:var(--term-out)}
+.term .bad{color:#e8908b}
+.term .ok{color:#8ed49a}
+.term .lbl{
+  font-family:"JetBrains Mono",monospace;font-size:.66rem;font-weight:700;
+  letter-spacing:.1em;text-transform:uppercase;color:var(--term-dim);
+  padding:.55rem 1.1rem .1rem;display:block;
+}
+.copy{
+  position:absolute;top:.5rem;right:.5rem;z-index:2;
+  font-family:"JetBrains Mono",monospace;font-size:.66rem;
+  color:var(--term-dim);background:transparent;
+  border:1px solid var(--term-rule);border-radius:5px;
+  padding:.2rem .5rem;cursor:pointer;
+}
+.copy:hover{color:var(--term-ink);border-color:var(--term-dim)}
+.copy:focus-visible{outline:2px solid var(--term-prompt);outline-offset:1px}
+
+/* ---------- figuras ---------- */
+figure.flow{
+  background:var(--surface);border:1px solid var(--rule);border-radius:var(--radius);
+  padding:1.15rem 1.15rem .9rem;margin:0 0 1.4rem;overflow-x:auto;
+}
+figure.flow svg{display:block;width:100%;height:auto;color:var(--ink-2)}
+figure.flow figcaption{
+  font-family:"JetBrains Mono",monospace;font-size:var(--tiny);
+  color:var(--ink-3);line-height:1.55;margin-top:.85rem;
+}
+figure.flow figcaption strong{color:var(--ink-2)}
+
+figure.mapa{
+  background:var(--surface);border:1px solid var(--rule);border-radius:var(--radius);
+  padding:.85rem;margin:0 0 1.4rem;
+}
+figure.mapa img{display:block;width:100%;height:auto;border-radius:6px}
+figure.mapa figcaption{
+  font-family:"JetBrains Mono",monospace;font-size:var(--tiny);
+  color:var(--ink-3);line-height:1.55;margin-top:.8rem;
+}
+
+/* ---------- tablas ---------- */
+.tw{overflow-x:auto;margin:0 0 1.3rem;border:1px solid var(--rule);border-radius:var(--radius)}
+table{border-collapse:collapse;width:100%;font-size:var(--small);background:var(--surface)}
+th,td{text-align:left;padding:.6rem .8rem;border-bottom:1px solid var(--rule);vertical-align:top}
+thead th{
+  font-family:"JetBrains Mono",monospace;font-size:.7rem;font-weight:700;
+  letter-spacing:.06em;text-transform:uppercase;color:var(--ink-3);
+  background:var(--surface-2);white-space:nowrap;
+}
+tbody tr:last-child td{border-bottom:0}
+td code{font-size:.8rem}
+
+/* ---------- señales ---------- */
+.sig{
+  font-family:"JetBrains Mono",monospace;font-size:.72rem;font-weight:700;
+  padding:.16rem .45rem;border-radius:5px;white-space:nowrap;
+}
+.sig.n{color:var(--next);background:var(--next-bg)}
+.sig.e{color:var(--error);background:var(--error-bg)}
+.sig.c{color:var(--complete);background:var(--complete-bg)}
+
+/* ---------- listas ---------- */
+ul.plain,ol.plain{margin:0 0 1.2rem;padding-left:1.15rem;max-width:66ch}
+ul.plain li,ol.plain li{margin-bottom:.45rem}
+
+ul.check{list-style:none;margin:0 0 1.3rem;padding:0;display:flex;flex-direction:column;gap:.4rem;max-width:66ch}
+ul.check li{
+  display:grid;grid-template-columns:auto minmax(0,1fr);gap:.6rem;align-items:start;
+  background:var(--surface);border:1px solid var(--rule);border-radius:8px;
+  padding:.6rem .8rem;font-size:var(--small);
+}
+ul.check .box{font-family:"JetBrains Mono",monospace;color:var(--ink-3);flex:none}
+ul.check b{display:block;margin-bottom:.1rem;font-size:.95rem;color:var(--ink)}
+
+/* ---------- trampa ---------- */
+.trap{
+  display:grid;grid-template-columns:auto minmax(0,1fr);gap:.85rem;align-items:start;
+  background:var(--surface);border:1px solid var(--rule);border-radius:var(--radius);
+  padding:.85rem 1rem;margin-bottom:.55rem;font-size:var(--small);max-width:66ch;
+}
+.trap .k{
+  font-family:"JetBrains Mono",monospace;font-size:.72rem;font-weight:700;
+  color:var(--error);background:var(--error-bg);
+  border-radius:5px;padding:.22rem .5rem;white-space:nowrap;
+}
+.trap b{display:block;margin-bottom:.15rem;font-size:.95rem;color:var(--ink)}
+
+/* ---------- glosario ---------- */
+dl.glos{margin:0 0 1.3rem;max-width:66ch}
+dl.glos dt{
+  font-family:"JetBrains Mono",monospace;font-size:.8rem;font-weight:700;
+  color:var(--accent);margin-top:.9rem;
+}
+dl.glos dd{margin:.15rem 0 0;font-size:var(--small);color:var(--ink-2)}
+
+/* ---------- cierre ---------- */
+.closing{
+  border-top:1px solid var(--rule);margin-top:3rem;padding-top:1.6rem;
+  font-size:var(--small);color:var(--ink-3);
+}
+.closing a{color:var(--ink-2)}
+
+@media (prefers-reduced-motion:reduce){
+  *{animation:none !important;transition:none !important;scroll-behavior:auto !important}
+}
+html{scroll-behavior:smooth}
+
+/* ---------- añadidos de la serie JUnit ----------
+   Estas clases se usaban ya en las guías de springWebFlux pero no
+   llegaron a definirse en su hoja de estilo: .arch, .cmd, .dir, .hi, .ver.
+   Se definen aquí, más .veredicto, propia de esta serie.                */
+
+.term .cmd{color:var(--term-ink);font-weight:500}
+.term .hi{color:#f0d48a}
+.term .dir{color:#7fc3e8;font-weight:500}
+.term .num{color:#e0a86a}
+
+.arch{
+  font-family:"JetBrains Mono",monospace;font-size:var(--small);
+  background:var(--term-bg);color:var(--term-ink);
+  border-radius:var(--radius);padding:1.15rem 1.25rem;margin:0 0 1.3rem;
+  overflow-x:auto;line-height:1.75;white-space:pre;
+}
+.arch .dir{color:#7fc3e8;font-weight:500}
+.arch .hi{color:#f0d48a}
+.arch .cm{color:var(--term-dim)}
+
+.ver{
+  border:1px solid var(--rule);border-left:3px solid var(--next);
+  background:var(--next-bg);border-radius:var(--radius);
+  padding:.9rem 1.15rem;margin:0 0 1.3rem;font-size:var(--small);
+}
+.ver b{display:block;color:var(--ink);margin-bottom:.2rem}
+.ver p:last-child{margin-bottom:0}
+
+.veredicto{
+  display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
+  gap:.75rem;margin:0 0 1.4rem;
+}
+.veredicto div{
+  border:1px solid var(--rule);border-radius:var(--radius);
+  background:var(--surface);padding:.9rem 1rem;font-size:var(--small);
+}
+.veredicto b{display:block;font-family:"JetBrains Mono",monospace;
+  font-size:var(--tiny);letter-spacing:.07em;text-transform:uppercase;
+  margin-bottom:.35rem;}
+.veredicto .ok b{color:var(--next)}
+.veredicto .bad b{color:var(--error)}
+.veredicto .mid b{color:var(--warn)}
+/* ---------- ligaduras: fuera, y no es cosmetica ----------
+   JetBrains Mono dibuja  <!--  como una flecha,  -->  como otra, y  >=  como
+   un solo glifo. En una guia de codigo eso deja de ser bonito y pasa a ser
+   un error: el alumno no puede ver la sintaxis literal que tiene que teclear.
+   Y en esta serie es critico -- toda la seccion 07 de la guia 01 trata sobre
+   la diferencia entre  >=  y  >.  Se apagan en TODO contexto de codigo.       */
+.term pre, .term code, .arch, code, pre, kbd, samp{
+  font-variant-ligatures:none;
+  font-feature-settings:"liga" 0,"clig" 0,"calt" 0;
+}
+
+</style>
+
+<header class="masthead">
+  <div class="wrap">
+    <p class="eyebrow">JUnit 6.1.3 &middot; Java 21 &middot; Laboratorio &middot; 03 de 04</p>
+    <h1>Un test, muchos datos</h1>
+    <p class="lede">Treinta y dos métodos escritos a mano que producen doscientos once tests. Y en medio, dos CURP que se diferencian en un solo carácter y por eso una es válida y la otra no — el caso que ninguna expresión regular puede resolver.</p>
+    <ul class="facts">
+      <li>32 métodos</li>
+      <li>211 tests</li>
+      <li>validador de CURP</li>
+      <li>110 min</li>
+    </ul>
+  </div>
+</header>
+
+<div class="wrap shell">
+
+<nav class="toc" aria-label="Contenido">
+  <h2>La ruta</h2>
+  <ol>
+    <li><a href="#empezar"><span class="n">00</span> Poner en marcha</a></li>
+    <li><a href="#problema"><span class="n">01</span> El problema, y <code>@ValueSource</code></a></li>
+    <li><a href="#csv"><span class="n">02</span> Varias columnas: <code>@CsvSource</code></a></li>
+    <li><a href="#febrero"><span class="n">03</span> El 29 de febrero</a></li>
+    <li><a href="#method"><span class="n">04</span> Cuando no cabe en una anotación</a></li>
+    <li><a href="#enum"><span class="n">05</span> La fuente que se actualiza sola</a></li>
+    <li><a href="#repeated"><span class="n">06</span> Repetir, y cuándo no</a></li>
+    <li><a href="#factory"><span class="n">07</span> Tests que no existen hasta que corres</a></li>
+    <li><a href="#cuenta"><span class="n">08</span> 32 métodos, 211 tests</a></li>
+    <li><a href="#trampas"><span class="n">09</span> Trampas y ejercicios</a></li>
+  </ol>
+
+  <h2>La serie</h2>
+  <ul>
+    <li><a href="guia-00-por-que-se-prueba.html"><span class="n">00</span> Por qué se prueba</a></li>
+    <li><a href="guia-01-anatomia-de-un-test.html"><span class="n">01</span> Anatomía de un test</a></li>
+    <li><a href="guia-02-el-catalogo.html"><span class="n">02</span> El catálogo</a></li>
+    <li><a href="#empezar" class="cur"><span class="n">03</span> Un test, muchos datos</a></li>
+    <li><a href="guia-04-dobles-de-prueba.html"><span class="n">04</span> Dobles de prueba</a></li>
+    <li><a href="anexo-junit5-vs-junit6.html"><span class="n">··</span> JUnit 5 contra 6</a></li>
+  </ul>
+</nav>
+
+<main>
+
+<section id="empezar">
+  <p class="rubric">Antes de empezar</p>
+  <h2 class="sec"><span class="num">00</span> Poner en marcha</h2>
+
+  <div class="term">
+    <button class="copy" type="button" data-etiqueta="Copiar">Copiar</button>
+<pre><code><span class="p">$</span> <span class="cmd">cd testing/proyectos/03-junit-datos</span>
+<span class="p">$</span> <span class="cmd">./mvnw test</span>
+
+<span class="out ok">[INFO] Tests run: 211, Failures: 0, Errors: 0, Skipped: 0</span>
+<span class="out ok">[INFO] BUILD SUCCESS</span></code></pre>
+  </div>
+
+  <p>El código bajo prueba es un <strong>validador de CURP</strong>. Está elegido por un motivo muy concreto: tiene decenas de casos que probar y todos se prueban <em>igual</em>, cambiando solo el dato.</p>
+
+  <div class="term">
+    <button class="copy" type="button" data-etiqueta="Copiar">Copiar</button>
+    <span class="lbl">las 18 posiciones</span>
+<pre><code>  <span class="hi">RUGM</span> <span class="hi">800101</span> <span class="hi">H</span> <span class="hi">NL</span> <span class="hi">ZRK</span> <span class="hi">0</span> <span class="hi">9</span>
+  ^^^^ ^^^^^^ ^ ^^ ^^^ ^ ^
+  |    |      | |  |   | +-- 18: digito verificador
+  |    |      | |  |   +---- 17: homoclave. DIGITO -&gt; nacio en 1900s
+  |    |      | |  |                        LETRA  -&gt; nacio en 2000s
+  |    |      | |  +-------- 14-16: tres consonantes internas
+  |    |      | +----------- 12-13: entidad federativa
+  |    |      +------------- 11: H o M
+  |    +------------------ 5-10: fecha AAMMDD
+  +----------------------- 1-4: iniciales (la 2a es vocal, o X)</code></pre>
+  </div>
+
+  <p class="note warn"><strong>Fuera de alcance, y se dice en voz alta:</strong> el dígito verificador de la posición 18 se calcula con una tabla oficial de RENAPO y <strong>este validador no lo comprueba</strong>. Valida la estructura, no la autenticidad. Un material didáctico que finge validar algo que no valida es peor que uno que no lo intenta.</p>
+
+  <div class="arch"><span class="dir">03-junit-datos/</span>
+├── <span class="dir">scripts/</span>
+│   └── <span class="hi">contar.sh</span>             <span class="cm">← el conteo de la §08</span>
+├── <span class="dir">src/main/java/…/academia/</span>
+│   ├── <span class="hi">ValidadorCurp.java</span>    <span class="cm">el código bajo prueba</span>
+│   ├── <span class="hi">Calificador.java</span>      <span class="cm">tres límites: 90, 80, 70</span>
+│   ├── <span class="hi">Nivel.java</span>            <span class="cm">enum</span>
+│   └── <span class="hi">Sexo.java</span>             <span class="cm">enum</span>
+├── <span class="dir">src/test/resources/</span>
+│   └── <span class="hi">curps-validas.csv</span>     <span class="cm">§02  datos fuera del código</span>
+└── <span class="dir">src/test/java/…/academia/</span>
+    ├── <span class="hi">ValueSourceTest.java</span>  <span class="cm">§01</span>
+    ├── <span class="hi">CsvSourceTest.java</span>    <span class="cm">§02 y §03</span>
+    ├── <span class="hi">MethodSourceTest.java</span> <span class="cm">§04</span>
+    ├── <span class="hi">CatalogoDeCurps.java</span>  <span class="cm">§04  sin un solo @Test</span>
+    ├── <span class="hi">EnumSourceTest.java</span>   <span class="cm">§05</span>
+    ├── <span class="hi">RepeticionesTest.java</span> <span class="cm">§06</span>
+    └── <span class="hi">TestFactoryTest.java</span>  <span class="cm">§07</span></div>
+</section>
+
+<section id="problema">
+  <p class="rubric">El problema</p>
+  <h2 class="sec"><span class="num">01</span> El problema, y <code>@ValueSource</code></h2>
+
+  <p>Así se prueban cuatro CURP válidas con lo que sabes hasta ahora:</p>
+
+  <div class="term">
+    <button class="copy" type="button" data-etiqueta="Copiar">Copiar</button>
+<pre><code><span class="kw">@Test</span> <span class="kw">void</span> valida1() { assertTrue(<span class="ty">ValidadorCurp</span>.esValida(<span class="st">"RUGM800101HNLZRK09"</span>)); }
+<span class="kw">@Test</span> <span class="kw">void</span> valida2() { assertTrue(<span class="ty">ValidadorCurp</span>.esValida(<span class="st">"TOLA010615MNLRPNA5"</span>)); }
+<span class="kw">@Test</span> <span class="kw">void</span> valida3() { assertTrue(<span class="ty">ValidadorCurp</span>.esValida(<span class="st">"MAAJ990228HDFRRS08"</span>)); }
+<span class="kw">@Test</span> <span class="kw">void</span> valida4() { assertTrue(<span class="ty">ValidadorCurp</span>.esValida(<span class="st">"XEXX010101HNEXXXA4"</span>)); }</code></pre>
+  </div>
+
+  <p>Cuatro métodos idénticos salvo por una cadena. Y con dos consecuencias malas: añadir el quinto caso cuesta copiar y pegar — <strong>así que nadie lo hace</strong> — y si cambia la regla hay que tocar cuatro sitios.</p>
+
+  <div class="term">
+    <button class="copy" type="button" data-etiqueta="Copiar">Copiar</button>
+    <span class="lbl">ValueSourceTest.java — lo mismo, en un método</span>
+<pre><code><span class="kw">@ParameterizedTest</span>(name = <span class="st">"[{index}] {0} es una CURP con estructura valida"</span>)
+<span class="kw">@ValueSource</span>(strings = {
+        <span class="st">"RUGM800101HNLZRK09"</span>,     <span class="cm">// 1980-01-01, hombre, Nuevo Leon</span>
+        <span class="st">"TOLA010615MNLRPNA5"</span>,     <span class="cm">// 2001-06-15, mujer, Nuevo Leon</span>
+        <span class="st">"MAAJ990228HDFRRS08"</span>,     <span class="cm">// 1999-02-28, hombre, CDMX</span>
+        <span class="st">"XEXX010101HNEXXXA4"</span>      <span class="cm">// la CURP generica de extranjero</span>
+})
+<span class="kw">void</span> curpsValidas(<span class="ty">String</span> curp) {
+    assertTrue(<span class="ty">ValidadorCurp</span>.esValida(curp), <span class="st">"Deberia ser valida: "</span> + curp);
+}</code></pre>
+  </div>
+
+  <p class="note key"><strong>Sigue siendo cuatro tests.</strong> En el reporte aparecen como cuatro entradas independientes: si el tercero falla, los otros tres siguen en verde y sabes exactamente cuál cayó. No es «un test con cuatro datos» — es un método que <em>produce</em> cuatro tests.</p>
+
+  <h3>Dos cambios respecto a un <code>@Test</code>, y los dos se olvidan</h3>
+
+  <ul class="check">
+    <li><span class="box">1</span><span><b><code>@ParameterizedTest</code> <em>en lugar de</em> <code>@Test</code></b> No además. Si dejas los dos, JUnit ejecuta el método dos veces de dos maneras distintas y falla de forma confusa.</span></li>
+    <li><span class="box">2</span><span><b>Ahora el método sí recibe parámetros</b> Uno por columna, en orden.</span></li>
+  </ul>
+
+  <h3>El atributo <code>name</code> vale los diez segundos que cuesta</h3>
+
+  <div class="veredicto">
+    <div class="bad"><b>Sin name</b><code>[1]</code>, <code>[2]</code>, <code>[3]</code>. Cuando el 7 falla, no sabes qué dato era.</div>
+    <div class="ok"><b>Con name</b><code>[3] MAAJ990228HDFRRS08 es una CURP…</code>. El dato que falló, en el reporte.</div>
+  </div>
+
+  <p>Marcadores disponibles: <code>{index}</code>, <code>{0}</code> <code>{1}</code>… por posición, y <code>{argumentsWithNames}</code>.</p>
+
+  <h3>Los casos que <em>no</em> pasan, y una regla al escribirlos</h3>
+
+  <div class="term">
+    <button class="copy" type="button" data-etiqueta="Copiar">Copiar</button>
+<pre><code><span class="kw">@ParameterizedTest</span>(name = <span class="st">"[{index}] {0} NO es valida"</span>)
+<span class="kw">@ValueSource</span>(strings = {
+        <span class="st">"RUGM800101HNLZRK0"</span>,      <span class="cm">// 17 caracteres: falta el verificador</span>
+        <span class="st">"RUGM800101HNLZRK099"</span>,    <span class="cm">// 19: sobra uno</span>
+        <span class="st">"RBGM800101HNLZRK09"</span>,     <span class="cm">// la 2a posicion debe ser vocal (o X); B no</span>
+        <span class="st">"RUGM801301HNLZRK09"</span>,     <span class="cm">// mes 13</span>
+        <span class="st">"RUGM800132HNLZRK09"</span>,     <span class="cm">// dia 32</span>
+        <span class="st">"RUGM800101XNLZRK09"</span>,     <span class="cm">// sexo X: solo H o M</span>
+        <span class="st">"RUGM800101HXXZRK09"</span>,     <span class="cm">// XX no es una entidad federativa</span>
+        <span class="st">"RUGM800101HNLAEK09"</span>,     <span class="cm">// A y E son vocales donde van consonantes</span>
+        <span class="st">"rugm800101hnlzrk09"</span>      <span class="cm">// minusculas</span>
+})
+<span class="kw">void</span> curpsInvalidas(<span class="ty">String</span> curp) {
+    assertFalse(<span class="ty">ValidadorCurp</span>.esValida(curp), <span class="st">"No deberia ser valida: "</span> + curp);
+}</code></pre>
+  </div>
+
+  <p class="note key"><strong>Cada dato rompe UNA sola regla.</strong> Si uno rompiera dos, el test seguiría en verde aunque el validador solo detectara una — y no te enterarías. Un caso inválido por cada motivo, nunca uno que los junte todos.</p>
+
+  <h3>El <code>null</code> y el vacío tienen su propia fuente</h3>
+
+  <div class="term">
+    <button class="copy" type="button" data-etiqueta="Copiar">Copiar</button>
+<pre><code><span class="kw">@ParameterizedTest</span>
+<span class="kw">@NullAndEmptySource</span>                          <span class="cm">// = @NullSource + @EmptySource</span>
+<span class="kw">@ValueSource</span>(strings = { <span class="st">" "</span>, <span class="st">"   "</span>, <span class="st">"\t"</span> })  <span class="cm">// y de paso, solo espacios</span>
+<span class="kw">void</span> nadaEsValido(<span class="ty">String</span> curp) {
+    assertFalse(<span class="ty">ValidadorCurp</span>.esValida(curp));
+}</code></pre>
+  </div>
+
+  <p><code>@ValueSource</code> <strong>no puede</strong> producir <code>null</code>: las anotaciones de Java no admiten <code>null</code> en sus arreglos. Por eso existen aparte. Y merecen su propio test siempre — el <code>null</code> y el vacío son, por mucho, los dos valores que más veces tumban código en producción.</p>
+
+  <p class="note"><strong>Las fuentes se apilan y los datos se suman.</strong> Ese método corre 1 (<code>null</code>) + 1 (vacío) + 3 (<code>@ValueSource</code>) = <strong>5</strong> veces.</p>
+</section>
+
+<section id="csv">
+  <p class="rubric">El código</p>
+  <h2 class="sec"><span class="num">02</span> Varias columnas: <code>@CsvSource</code></h2>
+
+  <p><code>@ValueSource</code> solo da un valor por corrida. En cuanto necesitas «esta entrada produce <em>este</em> resultado» hacen falta al menos dos columnas.</p>
+
+  <div class="term">
+    <button class="copy" type="button" data-etiqueta="Copiar">Copiar</button>
+    <span class="lbl">CsvSourceTest.java — la tabla de límites</span>
+<pre><code><span class="kw">@ParameterizedTest</span>(name = <span class="st">"{0} -&gt; {1}"</span>)
+<span class="kw">@CsvSource</span>({
+        <span class="st">"100, EXCELENTE"</span>,
+        <span class="st">" 90, EXCELENTE"</span>,     <span class="cm">// limite exacto</span>
+        <span class="st">" 89, BUENO"</span>,         <span class="cm">// uno menos</span>
+        <span class="st">" 80, BUENO"</span>,         <span class="cm">// limite exacto</span>
+        <span class="st">" 79, SUFICIENTE"</span>,    <span class="cm">// uno menos</span>
+        <span class="st">" 70, SUFICIENTE"</span>,    <span class="cm">// limite exacto</span>
+        <span class="st">" 69, INSUFICIENTE"</span>,  <span class="cm">// uno menos</span>
+        <span class="st">"  1, INSUFICIENTE"</span>,
+        <span class="st">"  0, INSUFICIENTE"</span>
+})
+<span class="kw">void</span> tablaDeNiveles(<span class="kw">int</span> calificacion, <span class="ty">Nivel</span> esperado) {
+    assertEquals(esperado, <span class="ty">Calificador</span>.nivelDe(calificacion));
+}</code></pre>
+  </div>
+
+  <p class="note key"><strong>Ahí están los tres límites y sus vecinos de abajo.</strong> 90/89, 80/79, 70/69. Eso es la receta de la guía 01 — el límite y el límite menos uno — aplicada tres veces, y cuesta seis líneas en vez de seis métodos. <strong>Ese es el verdadero cambio: añadir un caso límite deja de dar pereza.</strong></p>
+
+  <p>Y fíjate en que la tabla <em>se lee como una especificación</em>. Un analista que no programa puede revisarla y decir «falta el caso del 100».</p>
+
+  <h3>JUnit convierte los tipos solo</h3>
+
+  <p>El <code>String</code> <code>"90"</code> llega como <code>int</code>, <code>"EXCELENTE"</code> llega como <code>Nivel.EXCELENTE</code>, <code>"1980-01-01"</code> llega como <code>LocalDate</code>. No hay que parsear nada. Se llama <strong>conversión implícita</strong>.</p>
+
+  <div class="term">
+    <button class="copy" type="button" data-etiqueta="Copiar">Copiar</button>
+    <span class="lbl">delimitador propio y bloque de texto</span>
+<pre><code><span class="kw">@ParameterizedTest</span>(name = <span class="st">"{1}"</span>)
+<span class="kw">@CsvSource</span>(delimiter = <span class="st">'|'</span>, textBlock = <span class="st">"""</span>
+<span class="st">        RUGM800101HNLZRK09 | 1980-01-01 | HOMBRE | NL</span>
+<span class="st">        TOLA010615MNLRPNA5 | 2001-06-15 | MUJER  | NL</span>
+<span class="st">        MAAJ990228HDFRRS08 | 1999-02-28 | HOMBRE | DF</span>
+<span class="st">        """</span>)
+<span class="kw">void</span> desglosarLaCurp(<span class="ty">String</span> curp, <span class="ty">LocalDate</span> fecha, <span class="ty">Sexo</span> sexo, <span class="ty">String</span> entidad) {
+    assertAll(<span class="st">"todo lo que se puede sacar de "</span> + curp,
+            () -&gt; assertTrue(<span class="ty">ValidadorCurp</span>.esValida(curp)),
+            () -&gt; assertEquals(fecha,   <span class="ty">ValidadorCurp</span>.fechaNacimiento(curp)),
+            () -&gt; assertEquals(sexo,    <span class="ty">ValidadorCurp</span>.sexo(curp)),
+            () -&gt; assertEquals(entidad, <span class="ty">ValidadorCurp</span>.entidad(curp)));
+}</code></pre>
+  </div>
+
+  <h3><code>@CsvFileSource</code>: los datos salen del código</h3>
+
+  <div class="term">
+    <button class="copy" type="button" data-etiqueta="Copiar">Copiar</button>
+    <span class="lbl">src/test/resources/curps-validas.csv</span>
+<pre><code>curp,fecha_nacimiento,sexo,entidad,nivel_beca
+RUGM800101HNLZRK09,1980-01-01,HOMBRE,NL,
+TOLA010615MNLRPNA5,2001-06-15,MUJER,NL,EXCELENTE
+MAAJ990228HDFRRS08,1999-02-28,HOMBRE,DF,BUENO
+XEXX010101HNEXXXA4,2001-01-01,HOMBRE,NE,
+RUGM000229HNLZRKA9,2000-02-29,HOMBRE,NL,SUFICIENTE
+LOMS951231MJCPRL03,1995-12-31,MUJER,JC,BUENO</code></pre>
+  </div>
+
+  <div class="term">
+    <button class="copy" type="button" data-etiqueta="Copiar">Copiar</button>
+<pre><code><span class="kw">@ParameterizedTest</span>(name = <span class="st">"[{index}] {0} nacio el {1}"</span>)
+<span class="kw">@CsvFileSource</span>(resources = <span class="st">"/curps-validas.csv"</span>, numLinesToSkip = <span class="st">1</span>, nullValues = <span class="st">""</span>)
+<span class="kw">void</span> desdeUnArchivo(<span class="ty">String</span> curp, <span class="ty">LocalDate</span> fecha, <span class="ty">Sexo</span> sexo,
+                    <span class="ty">String</span> entidad, <span class="ty">Nivel</span> beca) { … }</code></pre>
+  </div>
+
+  <div class="tw">
+    <table>
+      <thead><tr><th>Atributo</th><th>Para qué</th></tr></thead>
+      <tbody>
+        <tr><td><code>numLinesToSkip = 1</code></td><td>Saltarse la cabecera. Si se te olvida, JUnit intenta convertir la palabra <code>curp</code> en… una CURP, y el fallo no dirá «te faltó la cabecera»: hablará de una conversión imposible. Vale la pena reconocerlo a la primera.</td></tr>
+        <tr><td><code>nullValues = ""</code></td><td>Las celdas vacías llegan como <code>null</code>. Sin esto llegan como cadena vacía y la conversión a <code>enum</code> truena.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <p class="note"><strong>Cuándo un archivo en vez de la anotación:</strong> cuando hay muchas filas (a partir de diez o quince, la anotación estorba), cuando el archivo lo mantiene alguien que no toca el código, o cuando los datos salen de una exportación de la base de datos.</p>
+</section>
+
+<section id="febrero">
+  <p class="rubric">El caso estrella</p>
+  <h2 class="sec"><span class="num">03</span> El 29 de febrero</h2>
+
+  <p>Estas dos CURP dicen «29 de febrero». Se diferencian en <strong>un carácter</strong>, el número 17 — la homoclave — y eso decide el siglo:</p>
+
+  <div class="term">
+    <button class="copy" type="button" data-etiqueta="Copiar">Copiar</button>
+<pre><code>RUGM990229HNLZRK<span class="hi">0</span>9    <span class="cm">homoclave DIGITO -&gt; 1999 -&gt; no fue bisiesto</span>  <span class="out bad">INVALIDA</span>
+RUGM000229HNLZRK<span class="hi">A</span>9    <span class="cm">homoclave LETRA  -&gt; 2000 -&gt; SI fue bisiesto</span>  <span class="out ok">valida</span></code></pre>
+  </div>
+
+  <p>(2000 es bisiesto porque es divisible entre 400. 1900 no lo fue.)</p>
+
+  <p class="note key"><strong>Ninguna expresión regular puede distinguirlas.</strong> Para el patrón las dos son «día 29 del mes 02», y las dos encajan. Hace falta un calendario de verdad.</p>
+
+  <div class="term">
+    <button class="copy" type="button" data-etiqueta="Copiar">Copiar</button>
+    <span class="lbl">ValidadorCurp.java — las dos capas</span>
+<pre><code><span class="kw">public static boolean</span> esValida(<span class="ty">String</span> curp) {
+    <span class="kw">if</span> (curp == <span class="kw">null</span> || !PATRON.matcher(curp).matches()) {
+        <span class="kw">return false</span>;                <span class="cm">// capa 1: el FORMATO</span>
+    }
+    <span class="kw">return</span> fechaReal(curp) != <span class="kw">null</span>;    <span class="cm">// capa 2: el SIGNIFICADO</span>
+}
+
+<span class="cm">// La regla del siglo: homoclave numerica -&gt; 1900s, alfabetica -&gt; 2000s</span>
+<span class="kw">private static</span> <span class="ty">LocalDate</span> fechaReal(<span class="ty">String</span> curp) {
+    <span class="kw">int</span> siglo = <span class="ty">Character</span>.isDigit(curp.charAt(<span class="st">16</span>)) ? <span class="st">1900</span> : <span class="st">2000</span>;
+    <span class="kw">try</span> {
+        <span class="kw">return</span> <span class="ty">LocalDate</span>.of(siglo + anio, mes, dia);
+    } <span class="kw">catch</span> (<span class="ty">DateTimeException</span> e) {
+        <span class="kw">return null</span>;                  <span class="cm">// 29-feb de un anio no bisiesto</span>
+    }
+}</code></pre>
+  </div>
+
+  <p>Y el test que protege la segunda capa — la única que ninguna otra cosa protege:</p>
+
+  <div class="term">
+    <button class="copy" type="button" data-etiqueta="Copiar">Copiar</button>
+<pre><code><span class="kw">@ParameterizedTest</span>(name = <span class="st">"{0} -&gt; valida={1} ({2})"</span>)
+<span class="kw">@CsvSource</span>({
+        <span class="st">"RUGM990229HNLZRK09, false, 1999 no fue bisiesto"</span>,
+        <span class="st">"RUGM000229HNLZRKA9, true,  2000 si fue bisiesto"</span>,
+        <span class="st">"RUGM040229HNLZRKA9, true,  2004 bisiesto normal"</span>,
+        <span class="st">"RUGM010229HNLZRKA9, false, 2001 no fue bisiesto"</span>
+})
+<span class="kw">void</span> elVeintinueveDeFebrero(<span class="ty">String</span> curp, <span class="kw">boolean</span> esperada, <span class="ty">String</span> porque) {
+    assertEquals(esperada, <span class="ty">ValidadorCurp</span>.esValida(curp), porque);
+}</code></pre>
+  </div>
+
+  <p class="note"><strong>La tercera columna no se afirma.</strong> No aparece en ninguna aserción: solo entra en el nombre de la corrida. Y ahí convierte el reporte en documentación legible — <code>RUGM990229HNLZRK09 -&gt; valida=false (1999 no fue bisiesto)</code>. Es un truco barato y muy rentable.</p>
+
+  <div class="ver">
+    <b>La lección general, más allá de la CURP</b>
+    <p>El <strong>formato</strong> y el <strong>significado</strong> son dos validaciones distintas, y confundirlas deja pasar datos imposibles. Un correo con arroba puede no existir; un código postal con cinco dígitos puede no corresponder a ningún lugar; una fecha con día 31 puede caer en un mes de 30. Si tu validación es solo un <em>regex</em>, ya sabes qué te falta probar.</p>
+  </div>
+</section>
+
+<section id="method">
+  <p class="rubric">El código</p>
+  <h2 class="sec"><span class="num">04</span> Cuando no cabe en una anotación</h2>
+
+  <p><code>@ValueSource</code> y <code>@CsvSource</code> solo aceptan <strong>constantes</strong>: cadenas, números, clases. Es una limitación de Java, no de JUnit — una anotación no puede contener un objeto construido en tiempo de ejecución.</p>
+
+  <div class="term">
+    <button class="copy" type="button" data-etiqueta="Copiar">Copiar</button>
+<pre><code><span class="kw">@ParameterizedTest</span>(name = <span class="st">"{0} -&gt; {1}, {2}, {3}"</span>)
+<span class="kw">@MethodSource</span>(<span class="st">"curpsConSuContenido"</span>)
+<span class="kw">void</span> desglosarConObjetosReales(<span class="ty">String</span> curp, <span class="ty">LocalDate</span> fecha, <span class="ty">Sexo</span> sexo, <span class="ty">String</span> entidad) {
+    assertEquals(fecha, <span class="ty">ValidadorCurp</span>.fechaNacimiento(curp));
+    <span class="cm">// …</span>
+}
+
+<span class="kw">static</span> <span class="ty">Stream</span>&lt;<span class="ty">Arguments</span>&gt; curpsConSuContenido() {
+    <span class="kw">return</span> <span class="ty">Stream</span>.of(
+            <span class="ty">Arguments</span>.of(<span class="st">"RUGM800101HNLZRK09"</span>, <span class="ty">LocalDate</span>.of(<span class="st">1980</span>, <span class="st">1</span>, <span class="st">1</span>),  <span class="ty">Sexo</span>.HOMBRE, <span class="st">"NL"</span>),
+            <span class="ty">Arguments</span>.of(<span class="st">"TOLA010615MNLRPNA5"</span>, <span class="ty">LocalDate</span>.of(<span class="st">2001</span>, <span class="st">6</span>, <span class="st">15</span>), <span class="ty">Sexo</span>.MUJER,  <span class="st">"NL"</span>),
+            <span class="ty">Arguments</span>.of(<span class="st">"RUGM000229HNLZRKA9"</span>, <span class="ty">LocalDate</span>.of(<span class="st">2000</span>, <span class="st">2</span>, <span class="st">29</span>), <span class="ty">Sexo</span>.HOMBRE, <span class="st">"NL"</span>));
+}</code></pre>
+  </div>
+
+  <p class="note"><strong>La ventaja sobre <code>@CsvSource</code>:</strong> los valores son objetos de verdad, construidos en Java, con el compilador vigilando. Si te equivocas de tipo, no compila. En un CSV te enterarías en ejecución.</p>
+
+  <div class="tw">
+    <table>
+      <thead><tr><th colspan="2">Reglas del método proveedor</th></tr></thead>
+      <tbody>
+        <tr><td><code>static</code></td><td>Salvo con <code>@TestInstance(PER_CLASS)</code>, que viste en la guía 02.</td></tr>
+        <tr><td>Sin parámetros</td><td></td></tr>
+        <tr><td>Devuelve</td><td><code>Stream</code>, <code>Collection</code>, <code>Iterator</code> o un arreglo.</td></tr>
+        <tr><td>Un parámetro</td><td><code>Stream&lt;String&gt;</code>, <code>IntStream</code>…</td></tr>
+        <tr><td>Varios parámetros</td><td><code>Stream&lt;Arguments&gt;</code></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>Lo que ninguna anotación puede hacer: datos calculados</h3>
+
+  <div class="term">
+    <button class="copy" type="button" data-etiqueta="Copiar">Copiar</button>
+<pre><code><span class="kw">@ParameterizedTest</span>(name = <span class="st">"entidad {0}"</span>)
+<span class="kw">@MethodSource</span>(<span class="st">"todasLasEntidades"</span>)
+<span class="kw">void</span> cualquierEntidadValidaSeAcepta(<span class="ty">String</span> entidad) {
+    <span class="ty">String</span> curp = <span class="st">"RUGM800101H"</span> + entidad + <span class="st">"ZRK09"</span>;
+    assertTrue(<span class="ty">ValidadorCurp</span>.esValida(curp));
+}
+
+<span class="kw">static</span> <span class="ty">Stream</span>&lt;<span class="ty">String</span>&gt; todasLasEntidades() {
+    <span class="kw">return</span> <span class="ty">ValidadorCurp</span>.entidadesValidas().stream().sorted();
+}</code></pre>
+  </div>
+
+  <p class="note key"><strong>Ventaja real, no teórica:</strong> el día que se añada una entidad federativa, el test la cubre <em>solo</em>. Un <code>@ValueSource</code> con las 33 escritas a mano habría que actualizarlo — y nadie se acuerda.</p>
+
+  <p>Lo mismo con bucles: <code>IntStream.rangeClosed(1, 12)</code> genera los doce meses en una línea. A mano serían doce métodos o un <code>@ValueSource</code> que nadie querría revisar.</p>
+
+  <h3>Un proveedor en otra clase</h3>
+
+  <div class="term">
+    <button class="copy" type="button" data-etiqueta="Copiar">Copiar</button>
+<pre><code><span class="kw">@MethodSource</span>(<span class="st">"com.academymty.academia.CatalogoDeCurps#lasValidas"</span>)
+<span class="cm">//             ruta completa de la clase          ^ y # antes del metodo</span></code></pre>
+  </div>
+
+  <p>Así se comparte un catálogo de datos entre varias clases de test sin duplicarlo. Es lo que se hace en proyectos grandes: una clase <code>DatosDePrueba</code> con los casos canónicos. <code>CatalogoDeCurps</code> no tiene ni un <code>@Test</code> — y Surefire no la ejecuta porque su nombre no termina en <code>Test</code>.</p>
+</section>
+
+<section id="enum">
+  <p class="rubric">El código</p>
+  <h2 class="sec"><span class="num">05</span> La fuente que se actualiza sola</h2>
+
+  <p><code>@EnumSource</code> tiene una propiedad que ninguna otra fuente tiene, y es la razón de usarla siempre que haya un <code>enum</code> de por medio:</p>
+
+  <p class="note key"><strong>El día que alguien añada una constante al <code>enum</code>, este test la prueba sin que nadie lo toque.</strong> Con un <code>@ValueSource</code> escribirías los cuatro niveles a mano, llegaría un quinto, y el test seguiría en verde sin haberlo probado nunca. Ese es el fallo silencioso más común al probar <code>enum</code>.</p>
+
+  <div class="term">
+    <button class="copy" type="button" data-etiqueta="Copiar">Copiar</button>
+<pre><code><span class="kw">@ParameterizedTest</span>(name = <span class="st">"{0}"</span>)
+<span class="kw">@EnumSource</span>                                <span class="cm">// sin atributos: TODAS las constantes.</span>
+<span class="kw">void</span> todoNivelSabeSiEsAprobatorio(<span class="ty">Nivel</span> nivel) {   <span class="cm">// JUnit deduce el enum de la firma</span>
+
+    <span class="cm">// La regla, expresada de forma que aguante niveles nuevos:</span>
+    assertEquals(nivel != <span class="ty">Nivel</span>.INSUFICIENTE, nivel.esAprobatorio());
+}</code></pre>
+  </div>
+
+  <div class="tw">
+    <table>
+      <thead><tr><th>Forma</th><th>Qué selecciona</th></tr></thead>
+      <tbody>
+        <tr><td><code>@EnumSource</code></td><td>Todas las constantes del tipo del parámetro.</td></tr>
+        <tr><td><code>@EnumSource(names = {"EXCELENTE", "BUENO"})</code></td><td>Solo esas.</td></tr>
+        <tr><td><code>@EnumSource(mode = EXCLUDE, names = "INSUFICIENTE")</code></td><td>Todas <em>menos</em> esa.</td></tr>
+        <tr><td><code>@EnumSource(mode = MATCH_ALL, names = ".*E$")</code></td><td>Las que casan con la expresión regular.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <p class="note"><strong>Prefiere <code>EXCLUDE</code> a listar las incluidas</strong> cuando la excepción es corta. «Todas menos X» envejece bien: si mañana se añade un nivel nuevo, entra automáticamente. «Estas tres» no envejece — se queda obsoleto en silencio.</p>
+
+  <h3>El test de ida y vuelta</h3>
+
+  <div class="term">
+    <button class="copy" type="button" data-etiqueta="Copiar">Copiar</button>
+<pre><code><span class="kw">@ParameterizedTest</span>
+<span class="kw">@EnumSource</span>
+<span class="kw">void</span> idaYVueltaDelSexo(<span class="ty">Sexo</span> sexo) {
+    assertEquals(sexo, <span class="ty">Sexo</span>.desdeLetra(sexo.letra()));
+}</code></pre>
+  </div>
+
+  <p>Los tests de ida y vuelta son de los más rentables que existen: <strong>una sola línea cubre dos métodos y garantiza que no se desincronicen</strong>. Y si el <code>enum</code> crece, crecen solos.</p>
+</section>
+
+<section id="repeated">
+  <p class="rubric">El código</p>
+  <h2 class="sec"><span class="num">06</span> Repetir, y cuándo no</h2>
+
+  <p>Empecemos por lo que no es, porque es el mal uso más frecuente:</p>
+
+  <div class="trap">
+    <span class="k">no</span>
+    <span><b><code>@RepeatedTest</code> NO es para tests inestables</b>Si un test falla una de cada diez veces, repetirlo diez veces no lo arregla: <strong>lo esconde mejor</strong>. Un test inestable señala un bug real — casi siempre una condición de carrera, o una dependencia del reloj o del orden — y taparlo con repeticiones es cambiar una señal por ruido.</span>
+  </div>
+
+  <p>Para lo que sí sirve: código con aleatoriedad dentro, comprobar que una operación es idempotente, o provocar a propósito problemas de concurrencia.</p>
+
+  <div class="term">
+    <button class="copy" type="button" data-etiqueta="Copiar">Copiar</button>
+<pre><code><span class="kw">@RepeatedTest</span>(value = <span class="st">10</span>, name = <span class="st">"CURP al azar {currentRepetition} de {totalRepetitions}"</span>)
+<span class="kw">void</span> cualquierCurpGeneradaEsValida() {
+    <span class="ty">String</span> curp = curpAlAzar();
+    assertTrue(<span class="ty">ValidadorCurp</span>.esValida(curp), <span class="st">"Se genero una CURP invalida: "</span> + curp);
+}</code></pre>
+  </div>
+
+  <p><code>{currentRepetition}</code> y <code>{totalRepetitions}</code> son marcadores propios de <code>@RepeatedTest</code>. Sin ellos las diez corridas se llaman igual y no sabes cuál cayó.</p>
+
+  <h3><code>RepetitionInfo</code>: que cada repetición haga algo distinto</h3>
+
+  <div class="term">
+    <button class="copy" type="button" data-etiqueta="Copiar">Copiar</button>
+<pre><code><span class="kw">@RepeatedTest</span>(value = <span class="st">28</span>, name = <span class="st">"dia {currentRepetition} del mes"</span>)
+<span class="kw">void</span> losVeintiochoDias(<span class="ty">RepetitionInfo</span> info) {
+    <span class="kw">int</span> dia = info.getCurrentRepetition();
+    <span class="ty">String</span> curp = <span class="ty">String</span>.format(<span class="st">"RUGM8001%02dHNLZRK09"</span>, dia);
+
+    assertTrue(<span class="ty">ValidadorCurp</span>.esValida(curp), <span class="st">"El dia "</span> + dia + <span class="st">" deberia valer"</span>);
+}</code></pre>
+  </div>
+
+  <p>Se inyecta igual que el <code>TestInfo</code> de la guía 02: lo pides por parámetro y JUnit te lo da.</p>
+
+  <p class="note warn"><strong>Y la semilla del <code>Random</code> es fija a propósito.</strong> Un test con aleatoriedad sin semilla es un test que no se puede reproducir: falla el martes, lo corres el miércoles y pasa, y te quedas sin saber qué dato lo tumbó. <code>new Random(20260826L)</code> — la misma secuencia siempre.</p>
+</section>
+
+<section id="factory">
+  <p class="rubric">El código</p>
+  <h2 class="sec"><span class="num">07</span> Tests que no existen hasta que corres</h2>
+
+  <p>Un <code>@Test</code> lo descubre JUnit <em>antes</em> de ejecutar nada, leyendo las anotaciones. Un <code>@ParameterizedTest</code> también: sus datos están en el código o en un archivo del <em>classpath</em>.</p>
+
+  <p>Un <code>@TestFactory</code> es distinto: es un método que <strong>se ejecuta y devuelve tests</strong>. Los casos pueden salir de donde sea — una consulta a la base de datos, una llamada a un API, un archivo que no existía al compilar.</p>
+
+  <div class="term">
+    <button class="copy" type="button" data-etiqueta="Copiar">Copiar</button>
+<pre><code><span class="kw">@TestFactory</span>
+<span class="ty">Stream</span>&lt;<span class="ty">DynamicTest</span>&gt; unTestPorFilaDelArchivo() <span class="kw">throws</span> <span class="ty">IOException</span> {
+    <span class="kw">return</span> leerCsv(<span class="st">"/curps-validas.csv"</span>).stream()
+            .map(fila -&gt; dynamicTest(
+                    <span class="st">"fila: "</span> + fila[<span class="st">0</span>] + <span class="st">" ("</span> + fila[<span class="st">1</span>] + <span class="st">")"</span>,   <span class="cm">// nombre: un String normal</span>
+                    () -&gt; {                                     <span class="cm">// cuerpo: una lambda</span>
+                        assertTrue(<span class="ty">ValidadorCurp</span>.esValida(fila[<span class="st">0</span>]));
+                        <span class="cm">// …</span>
+                    }));
+}</code></pre>
+  </div>
+
+  <p>Con <code>@CsvFileSource</code> también se lee un archivo, sí — pero el nombre tiene que estar escrito en la anotación, es decir, <strong>decidido al compilar</strong>. Aquí el archivo podría elegirse por una variable de entorno, bajarse de un servidor o listarse de un directorio.</p>
+
+  <h3>La letra pequeña, y es importante</h3>
+
+  <div class="trap">
+    <span class="k">ojo</span>
+    <span><b><code>@BeforeEach</code> corre una vez por <code>@TestFactory</code>, NO por cada test dinámico</b>Es la fuente número uno de sorpresas con esta anotación. Si cada caso necesita su escenario limpio, <strong>móntalo dentro de la lambda</strong> de cada <code>dynamicTest</code> — no confíes en el <code>@BeforeEach</code>.</span>
+  </div>
+
+  <p>El proyecto lo demuestra con un test que se comprueba a sí mismo: <code>elCicloDeVidaNoAplica()</code> devuelve tres tests dinámicos y los tres miran el mismo contador. No sube — se queda clavado.</p>
+
+  <h3><code>DynamicContainer</code>: el árbol, pero generado</h3>
+
+  <div class="term">
+    <button class="copy" type="button" data-etiqueta="Copiar">Copiar</button>
+<pre><code><span class="ty">DynamicContainer</span>.dynamicContainer(<span class="st">"entidad "</span> + entidad, <span class="ty">Stream</span>.of(
+        dynamicTest(<span class="st">"la CURP es valida"</span>,          () -&gt; …),
+        dynamicTest(<span class="st">"se lee de vuelta como "</span> + entidad, () -&gt; …)));</code></pre>
+  </div>
+
+  <p>Es lo que hacía <code>@Nested</code> con los tests estáticos, pero construido al vuelo.</p>
+
+  <p class="note key"><strong>Regla práctica:</strong> si puedes con <code>@ParameterizedTest</code>, usa <code>@ParameterizedTest</code>. <code>@TestFactory</code> es para cuando los casos <strong>no se conocen hasta el momento de correr</strong>. Es más potente y bastante más fácil de escribir mal.</p>
+</section>
+
+<section id="cuenta">
+  <p class="rubric">El experimento</p>
+  <h2 class="sec"><span class="num">08</span> 32 métodos, 211 tests</h2>
+
+  <div class="term">
+    <button class="copy" type="button" data-etiqueta="Copiar">Copiar</button>
+<pre><code><span class="p">$</span> <span class="cmd">./scripts/contar.sh</span>
+
+<span class="out">== 1. Lo que hay ESCRITO en src/test/java ==</span>
+<span class="out">   @Test                    1</span>
+<span class="out">   @ParameterizedTest      24</span>
+<span class="out">   @RepeatedTest            3</span>
+<span class="out">   @TestFactory             4</span>
+<span class="out">   TOTAL                   32 metodos</span>
+
+<span class="out">== 2. Lo que de verdad SE EJECUTA ==</span>
+<span class="out ok">   Tests run: 211, Failures: 0, Errors: 0, Skipped: 0</span>
+
+<span class="out">== 3. Y clase por clase ==</span>
+<span class="out">   CsvSourceTest         27 tests</span>
+<span class="out">   ValueSourceTest       35 tests</span>
+<span class="out">   EnumSourceTest        20 tests</span>
+<span class="out">   TestFactoryTest       22 tests</span>
+<span class="out">   MethodSourceTest      64 tests</span>
+<span class="out">   RepeticionesTest      43 tests</span></code></pre>
+  </div>
+
+  <div class="ver">
+    <b>Un método por cada FORMA de probar algo. Un test por cada DATO con el que se prueba.</b>
+    <p>Escribir el caso 212 no cuesta un método nuevo: cuesta <strong>una línea en una tabla</strong>. Y ahí está el verdadero cambio — no es que escribas menos código, es que <em>añadir un caso deja de dar pereza</em>. Los casos límite se prueban cuando probarlos es barato.</p>
+  </div>
+
+  <p>Y cuando algo falla, el reporte no dice «<code>curpsInvalidas</code> falló»: dice cuál de los diez datos falló, con su nombre. Por eso vale la pena el atributo <code>name = "…"</code> en cada uno.</p>
+</section>
+
+<section id="trampas">
+  <p class="rubric">Referencia</p>
+  <h2 class="sec"><span class="num">09</span> Trampas y ejercicios</h2>
+
+  <div class="trap">
+    <span class="k">01</span>
+    <span><b><code>@Test</code> y <code>@ParameterizedTest</code> juntos</b>Es uno <em>en lugar del</em> otro. Con los dos, JUnit ejecuta el método dos veces de dos maneras y el fallo es difícil de leer.</span>
+  </div>
+
+  <div class="trap">
+    <span class="k">02</span>
+    <span><b><code>ParameterResolutionException</code></b>El número o el tipo de los parámetros no cuadra con las columnas de la fuente. Cuenta las comas.</span>
+  </div>
+
+  <div class="trap">
+    <span class="k">03</span>
+    <span><b>Un error de conversión en la primera fila de un CSV</b>Falta <code>numLinesToSkip = 1</code>: está intentando convertir la cabecera en datos.</span>
+  </div>
+
+  <div class="trap">
+    <span class="k">04</span>
+    <span><b>Una celda vacía revienta la conversión a <code>enum</code></b>Falta <code>nullValues = ""</code>. Sin eso, la celda llega como cadena vacía, no como <code>null</code>.</span>
+  </div>
+
+  <div class="trap">
+    <span class="k">05</span>
+    <span><b><code>@MethodSource</code> no encuentra el proveedor</b>¿Es <code>static</code>? ¿Tiene parámetros (no debe)? ¿El nombre está bien escrito? Si vive en otra clase, la ruta completa y <code>#</code>.</span>
+  </div>
+
+  <div class="trap">
+    <span class="k">06</span>
+    <span><b>Los tests dinámicos comparten estado sin querer</b>El <code>@BeforeEach</code> corrió <strong>una sola vez</strong>, no por cada uno. Monta el escenario dentro de cada lambda.</span>
+  </div>
+
+  <h3>Ejercicios</h3>
+
+  <ul class="check">
+    <li><span class="box">1</span><span><b>Añade el caso 212</b> Mete una CURP inválida más en <code>curpsInvalidas</code> — que rompa una regla que todavía no esté cubierta. ¿Cuánto te costó? Compáralo con escribir un <code>@Test</code> nuevo.</span></li>
+    <li><span class="box">2</span><span><b>El límite que falta</b> ¿Está probado el día 30 y el 31 en un mes que solo tiene 30? Escribe el caso. Pista: mira la sección 03 y piensa qué capa lo tendría que atrapar.</span></li>
+    <li><span class="box">3</span><span><b>Rompe el <code>@EnumSource</code></b> Añade una constante <code>SOBRESALIENTE</code> a <code>Nivel</code> y corre la suite <em>sin tocar ningún test</em>. Mira cuáles la cubrieron solos y cuáles la ignoraron. Esa diferencia es toda la sección 05.</span></li>
+    <li><span class="box">4</span><span><b>El regex miente</b> Encuentra otra CURP que pase el patrón y describa una fecha imposible. Añádela a <code>elVeintinueveDeFebrero</code> con su motivo.</span></li>
+    <li><span class="box">5</span><span><b>De <code>@ValueSource</code> a <code>@MethodSource</code></b> Convierte <code>calificacionesAprobatorias</code> para que genere los valores con un <code>IntStream</code> en vez de listarlos. ¿Ganaste o perdiste legibilidad? No hay respuesta única: argumenta.</span></li>
+    <li><span class="box">6</span><span><b>Quita la semilla</b> Cambia <code>new Random(20260826L)</code> por <code>new Random()</code> y corre la suite veinte veces. Si algún día falla, no vas a poder reproducirlo. Ese es el argumento entero.</span></li>
+  </ul>
+
+  <p class="closing">Laboratorio 03 de 04 &middot; Serie <strong>JUnit</strong> &middot; Academia Monterrey. Cierra con el <a href="anexo-junit5-vs-junit6.html"><strong>anexo de JUnit 5 contra 6</strong></a>: qué versión estás usando de verdad, y cómo se lee el código de JUnit 4 que te vas a encontrar. Conceptos en <a href="guia-00-por-que-se-prueba.html">Por qué se prueba</a>.</p>
+</section>
+
+</main>
+</div>
+
+<script>
+document.querySelectorAll('.copy').forEach(function (btn) {
+  btn.addEventListener('click', function () {
+    var pre = btn.parentElement.querySelector('pre');
+    if (!pre) return;
+    var texto = pre.innerText;
+
+    function avisar(msg) {
+      var prev = btn.dataset.etiqueta || 'Copiar';
+      btn.textContent = msg;
+      setTimeout(function () { btn.textContent = prev; }, 1400);
+    }
+
+    // Plan B con execCommand. Hace falta de verdad: estas guias se abren
+    // con doble clic (file://) y en varios navegadores navigator.clipboard
+    // no esta disponible o rechaza ahi. Sin este respaldo, el boton se
+    // quedaria en "Error" y el alumno no podria copiar nada.
+    function copiarALaAntigua() {
+      var ta = document.createElement('textarea');
+      ta.value = texto;
+      ta.setAttribute('readonly', '');
+      ta.style.position = 'fixed';
+      ta.style.top = '-1000px';
+      document.body.appendChild(ta);
+      ta.select();
+      var ok = false;
+      try { ok = document.execCommand('copy'); } catch (e) { ok = false; }
+      document.body.removeChild(ta);
+      avisar(ok ? 'Copiado' : 'Selecciona y copia a mano');
+    }
+
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(texto)
+        .then(function () { avisar('Copiado'); })
+        .catch(copiarALaAntigua);
+    } else {
+      copiarALaAntigua();
+    }
+  });
+});
+(function () {
+  var links = Array.prototype.slice.call(document.querySelectorAll('.toc a[href^="#"]'));
+  var map = {};
+  links.forEach(function (a) {
+    var el = document.getElementById(a.getAttribute('href').slice(1));
+    if (el) map[el.id] = a;
+  });
+  var obs = new IntersectionObserver(function (entries) {
+    entries.forEach(function (e) {
+      if (!map[e.target.id]) return;
+      if (e.isIntersecting) {
+        links.forEach(function (a) { a.classList.remove('cur'); });
+        map[e.target.id].classList.add('cur');
+      }
+    });
+  }, { rootMargin: '-10% 0px -75% 0px', threshold: 0 });
+  Object.keys(map).forEach(function (id) { obs.observe(document.getElementById(id)); });
+})();
+
+// ---------------------------------------------------------------------
+//  Los enlaces entre guias son RELATIVOS en el HTML, a proposito: el
+//  alumno abre el archivo con doble clic y navegar tiene que funcionar
+//  sin internet y sin permisos.
+//
+//  Cuando la misma pagina corre publicada como artifact, un enlace
+//  relativo no resuelve a nada -- cada artifact vive en su propio
+//  origen. Por eso aqui se reescriben a su URL, y SOLO ahi.
+//
+//  Antes esto estaba al reves (URL fijas en el HTML) y rompia el caso
+//  que de verdad se usa: el archivo local.
+// ---------------------------------------------------------------------
+(function () {
+  var PUBLICADAS = {
+    'guia-00-por-que-se-prueba.html': 'dc6ceb37-bac9-4a8c-bbd0-89f91dbc7def',
+    'guia-01-anatomia-de-un-test.html': '6755acb6-a6c0-42ac-95dd-e2ffb84a3a71',
+    'guia-02-el-catalogo.html': 'b02ccd10-cb0b-4545-a130-a0dc29e6a26c',
+    'guia-03-un-test-muchos-datos.html': 'dec3fbf5-39f0-411c-8daa-02bb3dec3eb0',
+    'guia-04-dobles-de-prueba.html': '33074df8-6377-44cd-a3c6-68f766ff4b78',
+    'anexo-junit5-vs-junit6.html': '53f58e3c-f8ea-4c4c-a6a9-ae93e2b9ca9a'
+  };
+  if (!/claudeusercontent|claude\.ai/.test(location.hostname)) return;
+  document.querySelectorAll('a[href]').forEach(function (a) {
+    var id = PUBLICADAS[a.getAttribute('href')];
+    if (id) a.setAttribute('href', 'https://claude.ai/code/artifact/' + id);
+  });
+})();
+</script>

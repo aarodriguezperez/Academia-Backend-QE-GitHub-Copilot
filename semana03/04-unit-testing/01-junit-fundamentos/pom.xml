@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<groupId>com.academymty</groupId>
+	<artifactId>junit-fundamentos</artifactId>
+	<version>1.0.0</version>
+	<name>junit-fundamentos</name>
+	<description>JUnit 01 - Anatomia de un test</description>
+
+	<properties>
+		<maven.compiler.release>21</maven.compiler.release>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<junit.version>6.1.3</junit.version>
+		<surefire.version>3.5.6</surefire.version>
+	</properties>
+
+	<dependencyManagement>
+		<dependencies>
+			<!-- El BOM fija la version de TODOS los artefactos de JUnit a la vez.        -->
+			<!-- Por eso las dependencias de abajo no llevan <version>: la hereda de aqui. -->
+			<dependency>
+				<groupId>org.junit</groupId>
+				<artifactId>junit-bom</artifactId>
+				<version>${junit.version}</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
+
+	<dependencies>
+		<!-- Un solo artefacto agregador. Trae tres cosas:                    -->
+		<!--   junit-jupiter-api     -> lo que ESCRIBES  (@Test, Assertions)  -->
+		<!--   junit-jupiter-params  -> @ParameterizedTest (proyecto 03)      -->
+		<!--   junit-jupiter-engine  -> lo que EJECUTA tus tests (en runtime) -->
+		<dependency>
+			<groupId>org.junit.jupiter</groupId>
+			<artifactId>junit-jupiter</artifactId>
+			<scope>test</scope>
+		</dependency>
+	</dependencies>
+
+	<build>
+		<plugins>
+			<!-- Surefire es quien corre los tests durante `mvn test`.        -->
+			<!-- Necesita ser 3.x: las 2.x no saben hablar con JUnit Platform. -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<version>${surefire.version}</version>
+			</plugin>
+		</plugins>
+	</build>
+</project>
