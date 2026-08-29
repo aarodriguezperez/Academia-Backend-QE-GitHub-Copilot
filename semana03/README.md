@@ -10,7 +10,7 @@ Durante esta semana se trabajaron conceptos avanzados de Java y desarrollo backe
 
 Manejo de archivos y serialización en Java.
 
-También se documenta el concepto de threading, aunque no se desarrolló un proyecto específico de hilos por indicación del instructor.
+También se documenta el concepto de threading, aunque no se desarrolló un proyecto específico de hilos.
 
 ### [02 - Spring Security](./02-spring-security/)
 
