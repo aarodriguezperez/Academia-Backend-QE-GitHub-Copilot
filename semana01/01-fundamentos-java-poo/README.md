@@ -351,32 +351,5 @@ Se utiliza `@Override` cuando una clase cambia la implementación de un método 
 * `toString()`
 
 ---
-
-## Resumen
-
-El proyecto **Taller Automotriz** utiliza Programación Orientada a Objetos para manejar clientes, mecánicos, vehículos, servicios, refacciones y órdenes.
-
-Los conceptos principales utilizados fueron:
-
-* Clases abstractas
-* Herencia
-* IS-A
-* HAS-A
-* Polimorfismo
-* Upcasting y Downcasting
-* Interfaces
-* Strategy
-* Singleton
-* Comparable y Comparator
-* Generics
-* Lambdas
-* `final` y `static`
-* Constructores
-* Encapsulación
-* Getters y Setters
-* Excepciones
-* Modificadores de acceso
-* `@Override`
----
 [← Volver a Semana 01](../README.md)
 
