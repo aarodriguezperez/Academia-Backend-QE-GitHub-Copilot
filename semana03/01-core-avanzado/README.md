@@ -386,14 +386,6 @@ Declarar `serialVersionUID` manualmente permite tener control sobre la compatibi
 
 Si no se declara, Java puede generar automáticamente un identificador a partir de la estructura de la clase, pero algunos cambios en la clase pueden provocar que dicho identificador también cambie.
 
-El valor:
-
-```java
-1L
-```
-
-es simplemente un valor de tipo `long` utilizado como identificador. No representa técnicamente una versión decimal `1.0`.
-
 ---
 
 ## ¿Qué ocurre con `transient`?
