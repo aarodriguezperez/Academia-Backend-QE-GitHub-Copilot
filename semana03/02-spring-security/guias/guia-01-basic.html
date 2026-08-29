@@ -1,0 +1,1081 @@
+<meta charset="utf-8">
+<title>Seguridad 01 — HTTP Basic</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&family=Zilla+Slab:wght@600;700&display=swap">
+<style>
+:root{
+  --bg:#f4f6f8;
+  --surface:#ffffff;
+  --surface-2:#eef1f5;
+  --ink:#12161c;
+  --ink-2:#4d5866;
+  --ink-3:#77828f;
+  --rule:#dce2ea;
+  --accent:#23456e;
+  --accent-soft:#e4ecf6;
+
+  --term-bg:#12161c;
+  --term-ink:#dbe2ea;
+  --term-dim:#7c8899;
+  --term-prompt:#5f9ea0;
+  --term-out:#a8b3c0;
+  --term-rule:#2a323d;
+
+  --get:#1f5b96;
+  --post:#2b6f47;
+  --put:#8f5a12;
+  --patch:#186b6b;
+  --delete:#a33636;
+
+  --get-bg:#e3edf8;
+  --post-bg:#e2f0e7;
+  --put-bg:#f7ecdb;
+  --patch-bg:#ddf0ef;
+  --delete-bg:#f8e5e4;
+
+  --step:clamp(1.9rem,1.4rem + 1.6vw,2.6rem);
+  --h2:clamp(1.45rem,1.2rem + 1vw,1.9rem);
+  --h3:1.1rem;
+  --body:1rem;
+  --small:.86rem;
+  --tiny:.76rem;
+  --radius:10px;
+  --maxw:1180px;
+}
+
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --bg:#0e1116;
+    --surface:#161a21;
+    --surface-2:#1c222b;
+    --ink:#e7ecf2;
+    --ink-2:#a2adbb;
+    --ink-3:#7b8694;
+    --rule:#262d38;
+    --accent:#89b0e0;
+    --accent-soft:#1a2531;
+
+    --term-bg:#080a0e;
+    --term-ink:#dbe2ea;
+    --term-dim:#6d7887;
+    --term-prompt:#6fb3b5;
+    --term-out:#98a4b2;
+    --term-rule:#222932;
+
+    --get:#7fb0e8;
+    --post:#74c294;
+    --put:#dfa955;
+    --patch:#5fc0bd;
+    --delete:#e8908b;
+
+    --get-bg:#16243a;
+    --post-bg:#152a1f;
+    --put-bg:#2e2312;
+    --patch-bg:#12292a;
+    --delete-bg:#2f1a1a;
+  }
+}
+
+:root[data-theme="dark"]{
+  --bg:#0e1116;
+  --surface:#161a21;
+  --surface-2:#1c222b;
+  --ink:#e7ecf2;
+  --ink-2:#a2adbb;
+  --ink-3:#7b8694;
+  --rule:#262d38;
+  --accent:#89b0e0;
+  --accent-soft:#1a2531;
+
+  --term-bg:#080a0e;
+  --term-ink:#dbe2ea;
+  --term-dim:#6d7887;
+  --term-prompt:#6fb3b5;
+  --term-out:#98a4b2;
+  --term-rule:#222932;
+
+  --get:#7fb0e8;
+  --post:#74c294;
+  --put:#dfa955;
+  --patch:#5fc0bd;
+  --delete:#e8908b;
+
+  --get-bg:#16243a;
+  --post-bg:#152a1f;
+  --put-bg:#2e2312;
+  --patch-bg:#12292a;
+  --delete-bg:#2f1a1a;
+}
+
+*{box-sizing:border-box}
+
+body{
+  margin:0;
+  background:var(--bg);
+  color:var(--ink);
+  font-family:"IBM Plex Sans",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  font-size:var(--body);
+  line-height:1.62;
+  -webkit-font-smoothing:antialiased;
+}
+
+html{scroll-behavior:smooth}
+@media (prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  *{animation-duration:.01ms !important;transition-duration:.01ms !important}
+}
+
+a{color:var(--accent);text-decoration-thickness:1px;text-underline-offset:2px}
+a:focus-visible,button:focus-visible,summary:focus-visible{
+  outline:2px solid var(--accent);outline-offset:2px;border-radius:3px;
+}
+
+code,kbd,pre,.mono{font-family:"JetBrains Mono",ui-monospace,SFMono-Regular,Menlo,monospace}
+
+/* ---------- shell ---------- */
+
+.wrap{max-width:var(--maxw);margin:0 auto;padding:0 clamp(1rem,3vw,2.5rem)}
+
+.masthead{
+  border-bottom:1px solid var(--rule);
+  background:var(--surface);
+}
+.masthead .wrap{
+  padding-top:clamp(2.4rem,5vw,4rem);
+  padding-bottom:clamp(1.8rem,4vw,2.8rem);
+  display:flex;flex-direction:column;gap:1.1rem;
+}
+.eyebrow{
+  font-family:"JetBrains Mono",monospace;
+  font-size:var(--tiny);
+  letter-spacing:.13em;
+  text-transform:uppercase;
+  color:var(--ink-3);
+  margin:0;
+}
+h1{
+  font-family:"Zilla Slab",Georgia,serif;
+  font-weight:700;
+  font-size:clamp(2.3rem,1.6rem + 3vw,3.6rem);
+  line-height:1.06;
+  letter-spacing:-.015em;
+  margin:0;
+  text-wrap:balance;
+}
+.lede{
+  margin:0;
+  max-width:60ch;
+  font-size:clamp(1.02rem,.98rem + .3vw,1.16rem);
+  color:var(--ink-2);
+}
+.facts{
+  display:flex;flex-wrap:wrap;gap:.5rem .45rem;
+  margin-top:.3rem;padding:0;list-style:none;
+}
+.facts li{
+  font-family:"JetBrains Mono",monospace;
+  font-size:var(--tiny);
+  color:var(--ink-2);
+  background:var(--surface-2);
+  border:1px solid var(--rule);
+  border-radius:99px;
+  padding:.2rem .62rem;
+}
+
+/* ---------- layout ---------- */
+
+.shell{
+  display:grid;
+  grid-template-columns:210px minmax(0,1fr);
+  gap:clamp(1.5rem,4vw,3.5rem);
+  padding-top:clamp(1.6rem,3vw,2.6rem);
+  padding-bottom:4rem;
+  align-items:start;
+}
+@media (max-width:900px){
+  .shell{grid-template-columns:minmax(0,1fr);gap:1.6rem}
+}
+
+/* ---------- nav ---------- */
+
+nav.toc{position:sticky;top:1.5rem}
+@media (max-width:900px){
+  nav.toc{position:static;background:var(--surface);border:1px solid var(--rule);border-radius:var(--radius);padding:1rem 1.1rem}
+}
+.toc h2{
+  font-family:"JetBrains Mono",monospace;
+  font-size:var(--tiny);letter-spacing:.13em;text-transform:uppercase;
+  color:var(--ink-3);margin:0 0 .7rem;font-weight:500;
+}
+.toc ol,.toc ul{list-style:none;margin:0 0 1.3rem;padding:0;display:flex;flex-direction:column;gap:.08rem}
+.toc a{
+  display:flex;gap:.55rem;align-items:baseline;
+  padding:.26rem .45rem;margin-left:-.45rem;
+  border-radius:5px;
+  text-decoration:none;
+  color:var(--ink-2);
+  font-size:.87rem;line-height:1.35;
+  transition:background .15s,color .15s;
+}
+.toc a:hover{background:var(--surface-2);color:var(--ink)}
+.toc a.on{background:var(--accent-soft);color:var(--accent);font-weight:600}
+.toc .n{
+  font-family:"JetBrains Mono",monospace;font-size:.72rem;
+  color:var(--ink-3);flex:none;
+}
+.toc a.on .n{color:var(--accent)}
+
+/* ---------- sections ---------- */
+
+section{scroll-margin-top:1.5rem;margin-bottom:3.2rem}
+.rubric{
+  font-family:"JetBrains Mono",monospace;
+  font-size:var(--tiny);letter-spacing:.13em;text-transform:uppercase;
+  color:var(--ink-3);
+  display:flex;align-items:center;gap:.7rem;
+  margin:0 0 1.4rem;
+}
+.rubric::after{content:"";flex:1;height:1px;background:var(--rule)}
+
+h2.sec{
+  font-family:"Zilla Slab",Georgia,serif;
+  font-weight:600;font-size:var(--h2);line-height:1.15;
+  margin:0 0 .5rem;letter-spacing:-.01em;text-wrap:balance;
+  display:flex;gap:.7rem;align-items:baseline;
+}
+h2.sec .num{
+  font-family:"JetBrains Mono",monospace;
+  font-size:.8em;color:var(--ink-3);font-weight:400;flex:none;
+}
+h3{
+  font-family:"IBM Plex Sans",sans-serif;
+  font-weight:600;font-size:var(--h3);
+  margin:1.9rem 0 .5rem;line-height:1.3;text-wrap:balance;
+}
+p{margin:0 0 .9rem;max-width:68ch}
+ul.prose,ol.prose{margin:0 0 1rem;padding-left:1.2rem;max-width:66ch}
+ul.prose li,ol.prose li{margin-bottom:.4rem}
+strong{font-weight:600}
+p code,li code,td code,.tag{
+  font-size:.87em;
+  background:var(--surface-2);
+  border:1px solid var(--rule);
+  border-radius:4px;
+  padding:.08em .34em;
+  word-break:break-word;
+}
+
+/* ---------- terminal ---------- */
+
+.term{
+  position:relative;
+  background:var(--term-bg);
+  border:1px solid var(--term-rule);
+  border-radius:var(--radius);
+  margin:0 0 1.1rem;
+  overflow:hidden;
+}
+.term pre{
+  margin:0;
+  padding:1rem 1.1rem;
+  overflow-x:auto;
+  font-size:.83rem;
+  line-height:1.72;
+  color:var(--term-ink);
+  tab-size:2;
+}
+.term .p{color:var(--term-prompt);user-select:none}
+.term .cmd{color:var(--term-ink)}
+.term .out{color:var(--term-out)}
+.term .cm{color:var(--term-dim);font-style:italic}
+.term .ok{color:#74c294}
+.term .bad{color:#e8908b}
+.copy{
+  position:absolute;top:.55rem;right:.55rem;
+  font-family:"JetBrains Mono",monospace;font-size:.68rem;
+  letter-spacing:.06em;text-transform:uppercase;
+  color:var(--term-dim);
+  background:transparent;
+  border:1px solid var(--term-rule);
+  border-radius:5px;
+  padding:.24rem .55rem;
+  cursor:pointer;
+  transition:color .15s,border-color .15s,background .15s;
+}
+.copy:hover{color:var(--term-ink);border-color:var(--term-dim);background:rgba(255,255,255,.05)}
+
+/* ---------- endpoint cards ---------- */
+
+.ep{
+  background:var(--surface);
+  border:1px solid var(--rule);
+  border-radius:var(--radius);
+  padding:1.2rem 1.3rem 1.1rem;
+  margin-bottom:1.3rem;
+}
+.ep-head{display:flex;flex-wrap:wrap;align-items:center;gap:.6rem;margin-bottom:.7rem}
+.verb{
+  font-family:"JetBrains Mono",monospace;
+  font-size:.7rem;font-weight:700;letter-spacing:.1em;
+  padding:.24rem .55rem;border-radius:5px;flex:none;
+}
+.verb.get{color:var(--get);background:var(--get-bg)}
+.verb.post{color:var(--post);background:var(--post-bg)}
+.verb.put{color:var(--put);background:var(--put-bg)}
+.verb.patch{color:var(--patch);background:var(--patch-bg)}
+.verb.delete{color:var(--delete);background:var(--delete-bg)}
+.path{font-family:"JetBrains Mono",monospace;font-size:.9rem;font-weight:500;word-break:break-all}
+.src{
+  font-family:"JetBrains Mono",monospace;font-size:var(--tiny);
+  color:var(--ink-3);margin-left:auto;flex:none;
+}
+.ep p{margin-bottom:.85rem}
+.ep p:last-child{margin-bottom:0}
+
+.note{
+  border-left:2px solid var(--accent);
+  padding:.15rem 0 .15rem .85rem;
+  margin:.9rem 0 1.1rem;
+  font-size:var(--small);
+  color:var(--ink-2);
+  max-width:66ch;
+}
+.note strong{color:var(--ink)}
+.note.warn{border-left-color:var(--put)}
+.note.warn strong{color:var(--put)}
+
+/* ---------- tables ---------- */
+
+.tw{overflow-x:auto;margin:0 0 1.2rem;border:1px solid var(--rule);border-radius:var(--radius);background:var(--surface)}
+table{border-collapse:collapse;width:100%;font-size:var(--small);min-width:520px}
+th,td{text-align:left;padding:.62rem .85rem;border-bottom:1px solid var(--rule);vertical-align:top}
+tbody tr:last-child td{border-bottom:none}
+th{
+  font-family:"JetBrains Mono",monospace;
+  font-size:var(--tiny);letter-spacing:.08em;text-transform:uppercase;
+  color:var(--ink-3);font-weight:500;
+  background:var(--surface-2);
+  white-space:nowrap;
+}
+td:first-child{white-space:nowrap}
+td.wrap-ok:first-child{white-space:normal}
+.num-col{font-variant-numeric:tabular-nums}
+
+/* ---------- checklist ---------- */
+
+.check{list-style:none;margin:0 0 1.2rem;padding:0;display:flex;flex-direction:column;gap:.55rem}
+.check li{
+  display:grid;grid-template-columns:auto minmax(0,1fr);gap:.7rem;align-items:baseline;
+  background:var(--surface);border:1px solid var(--rule);border-radius:var(--radius);
+  padding:.7rem .9rem;font-size:var(--small);
+}
+.check .box{
+  font-family:"JetBrains Mono",monospace;color:var(--ink-3);font-size:.9em;flex:none;
+}
+.check b{font-weight:600;display:block;margin-bottom:.1rem;font-size:1rem}
+
+/* ---------- details ---------- */
+
+details{
+  background:var(--surface);border:1px solid var(--rule);border-radius:var(--radius);
+  padding:.75rem 1rem;margin:0 0 1.2rem;
+}
+details[open]{padding-bottom:1rem}
+summary{
+  cursor:pointer;font-weight:600;font-size:var(--small);
+  list-style:none;display:flex;align-items:center;gap:.5rem;
+}
+summary::-webkit-details-marker{display:none}
+summary::before{
+  content:"+";font-family:"JetBrains Mono",monospace;color:var(--ink-3);
+  font-weight:400;
+}
+details[open] summary::before{content:"\2212"}
+details > *:not(summary){margin-top:.9rem}
+
+/* ---------- footer ---------- */
+
+footer{
+  border-top:1px solid var(--rule);
+  background:var(--surface);
+  padding:1.8rem 0 2.4rem;
+}
+footer .wrap{
+  display:flex;flex-wrap:wrap;gap:.6rem 1.5rem;justify-content:space-between;
+  font-size:var(--tiny);color:var(--ink-3);
+  font-family:"JetBrains Mono",monospace;
+}
+</style>
+<style>
+/* ---------- añadidos de la serie de seguridad ---------- */
+.role{
+  font-family:"JetBrains Mono",monospace;
+  font-size:.7rem;font-weight:700;letter-spacing:.08em;
+  padding:.2rem .5rem;border-radius:5px;white-space:nowrap;
+}
+.role.emp{color:var(--get);background:var(--get-bg)}
+.role.mgr{color:var(--put);background:var(--put-bg)}
+.role.adm{color:var(--delete);background:var(--delete-bg)}
+.code-ok{color:var(--post);font-weight:600;font-family:"JetBrains Mono",monospace}
+.code-bad{color:var(--delete);font-weight:600;font-family:"JetBrains Mono",monospace}
+.flow{
+  background:var(--surface);border:1px solid var(--rule);border-radius:var(--radius);
+  padding:1.1rem;margin:0 0 1.2rem;overflow-x:auto;
+}
+.flow svg{display:block;width:100%;min-width:600px;height:auto}
+.flow .fig{
+  font-size:var(--tiny);color:var(--ink-3);margin:.7rem 0 0;
+  font-family:"JetBrains Mono",monospace;
+}
+.pill-row{display:flex;flex-wrap:wrap;gap:.4rem;margin:0 0 1rem}
+.stage{
+  display:grid;grid-template-columns:auto minmax(0,1fr);gap:.8rem;align-items:start;
+  background:var(--surface);border:1px solid var(--rule);border-radius:var(--radius);
+  padding:.85rem 1rem;margin-bottom:.6rem;font-size:var(--small);
+}
+.stage .k{
+  font-family:"JetBrains Mono",monospace;font-size:.75rem;font-weight:700;
+  color:var(--accent);background:var(--accent-soft);
+  border-radius:5px;padding:.22rem .5rem;white-space:nowrap;
+}
+.stage b{display:block;margin-bottom:.15rem;font-size:.95rem}
+.stage.now{border-color:var(--accent);border-left-width:3px}
+figure.poster{
+  margin:0 0 1.4rem;
+  background:var(--surface);
+  border:1px solid var(--rule);
+  border-radius:var(--radius);
+  padding:.9rem;
+}
+figure.poster img{display:block;width:100%;height:auto;border-radius:6px}
+figure.poster figcaption{
+  font-family:"JetBrains Mono",monospace;
+  font-size:var(--tiny);color:var(--ink-3);
+  margin-top:.7rem;line-height:1.5;
+}
+.toc a.cur{color:var(--ink);font-weight:600;background:var(--surface-2)}
+.toc a.cur .n{color:var(--ink-2)}
+</style>
+
+<header class="masthead">
+  <div class="wrap">
+    <p class="eyebrow">Spring Boot 4.1 &middot; Spring Security 7.1 &middot; Guía de laboratorio &middot; 01 de 03</p>
+    <h1>Cerrar la puerta: HTTP&nbsp;Basic</h1>
+    <p class="lede">La API que construiste en el proyecto 16 funciona perfecto y tiene un problema: cualquiera que sepa la URL puede borrar a todos tus empleados. En esta guía le pones usuarios, contraseñas y roles — sin tocar una sola línea del CRUD que ya escribiste.</p>
+    <ul class="facts">
+      <li>~45 min</li>
+      <li>Java 21</li>
+      <li>MySQL 9.7 en Docker</li>
+      <li>localhost:8071</li>
+      <li>Spring Security 7.1</li>
+    </ul>
+  </div>
+</header>
+
+<div class="wrap shell">
+
+<nav class="toc" aria-label="Contenido">
+  <h2>La ruta</h2>
+  <ol>
+    <li><a href="#empezar"><span class="n">00</span> Poner en marcha</a></li>
+    <li><a href="#desnuda"><span class="n">01</span> La API desnuda</a></li>
+    <li><a href="#preguntas"><span class="n">02</span> Dos preguntas distintas</a></li>
+    <li><a href="#cadena"><span class="n">03</span> La cadena de filtros</a></li>
+    <li><a href="#preparar"><span class="n">04</span> Preparar el terreno</a></li>
+    <li><a href="#codigo"><span class="n">05</span> El código</a></li>
+    <li><a href="#matriz"><span class="n">06</span> La matriz de roles</a></li>
+    <li><a href="#talon"><span class="n">07</span> El talón de Aquiles</a></li>
+  </ol>
+  <h2>Referencia</h2>
+  <ul>
+    <li><a href="#bcrypt">BCrypt y el salt</a></li>
+    <li><a href="#internet">Por qué los tutoriales fallan</a></li>
+    <li><a href="#errores">Errores comunes</a></li>
+    <li><a href="#ejercicios">Ejercicios</a></li>
+  </ul>
+  <h2>La serie</h2>
+  <ul>
+    <li><a href="guia-00-las-tres-ideas.html"><span class="n">00</span> Las tres ideas</a></li>
+    <li><a href="guia-01-basic.html" class="cur"><span class="n">01</span> HTTP Basic</a></li>
+    <li><a href="guia-02-jwt.html"><span class="n">02</span> JWT</a></li>
+    <li><a href="guia-03-oauth2.html"><span class="n">03</span> OAuth2</a></li>
+  </ul>
+</nav>
+
+<main>
+
+<section id="empezar">
+  <p class="rubric">Antes de empezar</p>
+  <h2 class="sec"><span class="num">00</span> Poner en marcha</h2>
+
+  <ul class="check">
+    <li><span class="box">[ ]</span><span><b>Java 21 o superior</b> <code>java -version</code> debe decir <code>21</code> o más.</span></li>
+    <li><span class="box">[ ]</span><span><b>Docker corriendo</b> <code>docker ps</code> debe responder sin errores.</span></li>
+    <li><span class="box">[ ]</span><span><b>curl instalado</b> Viene de fábrica en macOS, Linux y Windows 10 en adelante.</span></li>
+    <li><span class="box">[ ]</span><span><b>El proyecto 16 a mano</b> — lo vas a necesitar corriendo en el <code>8070</code> para la demostración de la sección 01.</span></li>
+  </ul>
+
+  <div class="term">
+    <button class="copy" type="button">Copiar</button>
+<pre><code><span class="cm"># 1. la base de datos de empleados</span>
+<span class="p">$</span> <span class="cmd">docker start mysql-9.7</span>
+
+<span class="cm"># 2. las tablas de usuarios (solo la primera vez)</span>
+<span class="p">$</span> <span class="cmd">docker exec -i mysql-9.7 mysql -uroot -pTU_PASSWORD employee_directory &lt; ../sql-scripts/01-security-tables.sql</span>
+
+<span class="cm"># 3. arrancar esta aplicación — escucha en el 8071</span>
+<span class="p">$</span> <span class="cmd">cd 01-security-basic</span>
+<span class="p">$</span> <span class="cmd">./mvnw spring-boot:run</span>
+
+<span class="cm"># 4. comprobar que quedó cerrada</span>
+<span class="p">$</span> <span class="cmd">curl -i http://localhost:8071/api/employees</span>
+<span class="out bad">HTTP/1.1 401</span></code></pre>
+  </div>
+
+  <p class="note">Si el paso 2 falla o no sabes la contraseña de root, todo el detalle está en <code>17-seguridad-autenticacion/instalacion.txt</code>. Ese <code>401</code> del paso 4 no es un error: es la señal de que la seguridad ya está puesta.</p>
+  <p class="note warn"><strong>Si trabajas en Windows.</strong> Los comandos de arriba son de macOS y Linux. En PowerShell: usa <code>mvnw.cmd spring-boot:run</code> en lugar de <code>./mvnw</code>, y si un comando ocupa varias líneas, la barra <code>\</code> del final se cambia por acento grave <code>`</code>. Los scripts <code>.sh</code> de la carpeta <code>scripts/</code> necesitan <strong>Git Bash</strong> o <strong>WSL</strong>; en <code>instalacion.txt</code> están las versiones para PowerShell.</p>
+
+</section>
+
+<section id="desnuda">
+  <p class="rubric">El problema</p>
+  <h2 class="sec"><span class="num">01</span> La API desnuda</h2>
+  <p>Arranca el proyecto 16 — el de la semana pasada, el que funciona — y ejecuta esto desde cualquier terminal de la red:</p>
+
+  <div class="term">
+    <button class="copy" type="button">Copiar</button>
+<pre><code><span class="p">$</span> <span class="cmd">curl -X DELETE http://localhost:8070/api/employees/1</span>
+<span class="out bad">Deleted employee id - 1</span></code></pre>
+  </div>
+
+  <p>Sin usuario. Sin contraseña. Sin preguntas. El empleado ya no existe.</p>
+  <p>No es un bug: es <em>exactamente</em> lo que programaste. Un <code>@RestController</code> responde a quien le hable. Nunca le dijiste que preguntara quién es el que llama, así que no pregunta.</p>
+
+  <p class="note warn"><strong>Esto es la norma, no la excepción.</strong> Una API sin seguridad es una base de datos con una URL pública enfrente. Lo único que protegía tus datos hasta hoy era que nadie más conocía el puerto.</p>
+
+  <h3>El plan de las tres etapas</h3>
+  <p>La pregunta “¿cómo le demuestro a la API quién soy?” tiene tres respuestas famosas, y vas a implementar las tres. Cada una arregla un defecto de la anterior:</p>
+
+  <div class="stage now">
+    <span class="k">01</span>
+    <span><b>HTTP Basic</b> — mandas tu usuario y contraseña en cada petición. La prueba <em>es</em> el secreto. Simple, y por eso mismo frágil.</span>
+  </div>
+  <div class="stage">
+    <span class="k">02</span>
+    <span><b>JWT</b> — te identificas una vez y recibes un pase firmado con fecha de caducidad. Dejas de mandar la contraseña en cada llamada.</span>
+  </div>
+  <div class="stage">
+    <span class="k">03</span>
+    <span><b>OAuth2</b> — el pase lo emite un tercero de confianza. Tu API deja de conocer contraseñas: ni siquiera tiene tabla de usuarios.</span>
+  </div>
+</section>
+
+<section id="preguntas">
+  <p class="rubric">El concepto</p>
+  <h2 class="sec"><span class="num">02</span> Dos preguntas distintas</h2>
+  <p>Casi todo el tema se ordena solo cuando separas dos preguntas que suenan parecido y no lo son:</p>
+
+  <div class="tw">
+  <table>
+    <thead><tr><th>Pregunta</th><th>Nombre</th><th>Ejemplo</th><th>Si falla</th></tr></thead>
+    <tbody>
+      <tr>
+        <td><strong>¿Quién eres?</strong></td>
+        <td>Autenticación<br><span class="tag">authentication</span></td>
+        <td>“Soy john, y esta es mi contraseña.”</td>
+        <td><span class="code-bad">401</span> Unauthorized</td>
+      </tr>
+      <tr>
+        <td><strong>¿Qué puedes hacer?</strong></td>
+        <td>Autorización<br><span class="tag">authorization</span></td>
+        <td>“john puede leer, pero no borrar.”</td>
+        <td><span class="code-bad">403</span> Forbidden</td>
+      </tr>
+    </tbody>
+  </table>
+  </div>
+
+  <p class="note"><strong>Los dos códigos están mal nombrados y confunden a todo el mundo.</strong> El <code>401</code> se llama <em>Unauthorized</em> pero significa “no autenticado”: no sé quién eres. El <code>403</code> es el que de verdad habla de autorización: sé perfectamente quién eres, y no te toca. Aprende a leerlos así y vas a depurar el doble de rápido: <strong>401 = revisa tus credenciales; 403 = revisa tus roles.</strong></p>
+
+  <h3>Y una tercera pregunta, que es la del curso</h3>
+  <p>Autenticación y autorización son <em>qué</em>. La pregunta que separa a Basic de JWT y de OAuth2 es otra: <strong>¿cómo viaja la prueba de quién eres, y quién la emitió?</strong> Con Basic, la prueba es tu contraseña y la emites tú, en cada petición. Guarda esa frase: en la etapa 02 vas a ver cómo cambia.</p>
+</section>
+
+<section id="cadena">
+  <p class="rubric">El mecanismo</p>
+  <h2 class="sec"><span class="num">03</span> La cadena de filtros</h2>
+  <p>Antes del detalle técnico, la idea completa en una imagen. Tu petición sale llevando las credenciales <strong>a la vista</strong>, cruza al servidor y atraviesa <strong>dos controles distintos</strong>: de cada uno puede salir rechazada, y por motivos que no son el mismo.</p>
+
+  <figure class="poster">
+    <img src="img/fig-01-basic-flujo.png"
+         alt="Un portátil envía una petición dibujada como una postal abierta con el usuario john y la contraseña test123 legibles, apoyada en un cristal transparente rotulado base64. Debajo, escondido tras un muro, alguien con prismáticos lee la misma contraseña. La petición entra en un recinto punteado rotulado SERVER y atraviesa dos puertas: la primera pregunta WHO ARE YOU y de ella sale una flecha roja marcada 401; la segunda pregunta WHAT CAN YOU DO y de ella sale otra flecha roja marcada 403. Quien supera las dos llega por una flecha verde marcada 200 hasta una caja fuerte abierta con las fichas de los empleados.">
+    <figcaption>Fig. 1 — Las credenciales viajan legibles: base64 es un cristal, no una cerradura. Dentro del servidor hay dos controles, y cada uno rechaza por su cuenta. Ojo: al fisgón le funciona porque la petición va <strong>sin HTTPS</strong>; con TLS solo vería ruido.</figcaption>
+  </figure>
+
+  <p>Spring Security no vive dentro de tu controlador. Vive <em>antes</em>. Se mete en la fila de filtros por la que pasa todo request antes de que Tomcat se lo entregue a Spring MVC:</p>
+
+  <div class="flow">
+    <svg viewBox="0 0 840 420" role="img" aria-label="Diagrama de la cadena de filtros de Spring Security">
+      <defs>
+        <marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+          <path d="M 0 0 L 10 5 L 0 10 z" fill="var(--ink-3)"/>
+        </marker>
+        <marker id="arbad" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+          <path d="M 0 0 L 10 5 L 0 10 z" fill="var(--delete)"/>
+        </marker>
+      </defs>
+      <g font-family="JetBrains Mono, monospace">
+
+        <rect x="16" y="14" width="210" height="42" rx="7" fill="var(--surface-2)" stroke="var(--rule)"/>
+        <text x="121" y="40" text-anchor="middle" font-size="13" fill="var(--ink)">curl / navegador</text>
+
+        <path d="M 121 58 L 121 104" stroke="var(--ink-3)" stroke-width="1.5" marker-end="url(#ar)" fill="none"/>
+        <text x="134" y="84" font-size="11" fill="var(--ink-2)">Authorization: Basic am9objp0ZXN0MTIz</text>
+
+        <rect x="16" y="108" width="530" height="190" rx="9" fill="var(--accent-soft)" stroke="var(--accent)" stroke-dasharray="4 3"/>
+        <text x="32" y="130" font-size="11" fill="var(--accent)" letter-spacing="1.5">SECURITYFILTERCHAIN</text>
+
+        <rect x="34" y="142" width="494" height="62" rx="7" fill="var(--surface)" stroke="var(--rule)"/>
+        <text x="48" y="166" font-size="13" font-weight="700" fill="var(--ink)">BasicAuthenticationFilter</text>
+        <text x="48" y="188" font-size="11" fill="var(--ink-2)">decodifica base64 &#8594; busca en members &#8594; compara BCrypt</text>
+
+        <rect x="34" y="216" width="494" height="62" rx="7" fill="var(--surface)" stroke="var(--rule)"/>
+        <text x="48" y="240" font-size="13" font-weight="700" fill="var(--ink)">AuthorizationFilter</text>
+        <text x="48" y="262" font-size="11" fill="var(--ink-2)">compara tus roles contra las reglas de filterChain()</text>
+
+        <path d="M 528 173 L 646 173" stroke="var(--delete)" stroke-width="1.5" marker-end="url(#arbad)" fill="none"/>
+        <rect x="650" y="152" width="174" height="42" rx="7" fill="var(--delete-bg)" stroke="var(--delete)"/>
+        <text x="737" y="170" text-anchor="middle" font-size="13" font-weight="700" fill="var(--delete)">401</text>
+        <text x="737" y="186" text-anchor="middle" font-size="10" fill="var(--delete)">no sé quién eres</text>
+
+        <path d="M 528 247 L 646 247" stroke="var(--delete)" stroke-width="1.5" marker-end="url(#arbad)" fill="none"/>
+        <rect x="650" y="226" width="174" height="42" rx="7" fill="var(--delete-bg)" stroke="var(--delete)"/>
+        <text x="737" y="244" text-anchor="middle" font-size="13" font-weight="700" fill="var(--delete)">403</text>
+        <text x="737" y="260" text-anchor="middle" font-size="10" fill="var(--delete)">sé quién eres, no te toca</text>
+
+        <path d="M 121 298 L 121 342" stroke="var(--ink-3)" stroke-width="1.5" marker-end="url(#ar)" fill="none"/>
+        <text x="134" y="324" font-size="11" fill="var(--post)">pasa</text>
+
+        <rect x="16" y="346" width="240" height="56" rx="7" fill="var(--surface-2)" stroke="var(--rule)"/>
+        <text x="136" y="370" text-anchor="middle" font-size="12" fill="var(--ink)">DispatcherServlet</text>
+        <text x="136" y="390" text-anchor="middle" font-size="12" fill="var(--ink)">EmployeeRestController</text>
+
+        <path d="M 262 374 L 330 374" stroke="var(--ink-3)" stroke-width="1.5" marker-end="url(#ar)" fill="none" stroke-dasharray="3 3"/>
+        <text x="342" y="370" font-size="12" font-weight="700" fill="var(--post)">tu código del proyecto 16</text>
+        <text x="342" y="388" font-size="11" fill="var(--ink-2)">sin una sola línea modificada</text>
+      </g>
+    </svg>
+    <p class="fig">Fig. 2 — El mismo recorrido, con los nombres reales de los filtros. Todo request los atraviesa antes de tocar tu controlador.</p>
+  </div>
+
+  <p>Esa es la idea que hay que llevarse de esta etapa, porque las tres etapas del curso usan <strong>la misma cadena</strong>. En JWT y en OAuth2 solo cambia el primer filtro: quién valida y contra qué. El controlador nunca se entera de que existe la seguridad — y por eso <code>EmployeeRestController</code> queda idéntico al del proyecto 16.</p>
+
+  <p class="note"><strong>No te lo imagines: míralo.</strong> Descomenta esta línea en <code>application.properties</code> y Spring te imprime, en cada petición, la lista completa de filtros que atravesó:</p>
+
+  <div class="term">
+    <button class="copy" type="button">Copiar</button>
+<pre><code><span class="cmd">logging.level.org.springframework.security=DEBUG</span></code></pre>
+  </div>
+</section>
+
+<section id="preparar">
+  <p class="rubric">Manos a la obra</p>
+  <h2 class="sec"><span class="num">04</span> Preparar el terreno</h2>
+
+  <h3>1. La dependencia</h3>
+  <p>Una sola, en el <code>pom.xml</code>:</p>
+
+  <div class="term">
+    <button class="copy" type="button">Copiar</button>
+<pre><code><span class="cmd">&lt;dependency&gt;</span>
+<span class="cmd">    &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;</span>
+<span class="cmd">    &lt;artifactId&gt;spring-boot-starter-security&lt;/artifactId&gt;</span>
+<span class="cmd">&lt;/dependency&gt;</span></code></pre>
+  </div>
+
+  <p>Antes de escribir nada más, arranca la app y mira la consola. Vas a encontrar una línea así:</p>
+
+  <div class="term">
+<pre><code><span class="out">Using generated security password: 809b7001-dd01-4a94-b0ee-681936fc82e5</span></code></pre>
+  </div>
+
+  <p>Y ahora la API ya está cerrada, sin haber escrito una línea de código:</p>
+
+  <div class="term">
+<pre><code><span class="p">$</span> <span class="cmd">curl -i http://localhost:8071/api/employees</span>
+<span class="out bad">HTTP/1.1 401</span>
+
+<span class="cm"># con el usuario "user" y esa contraseña generada:</span>
+<span class="p">$</span> <span class="cmd">curl -u user:809b7001-dd01-4a94-b0ee-681936fc82e5 http://localhost:8071/api/employees</span>
+<span class="out ok">[{"firstName":"Patrobas", ...}]</span></code></pre>
+  </div>
+
+  <p class="note"><strong>Esto es Spring Boot en su forma más pura:</strong> agregas una dependencia y el comportamiento por defecto es <em>seguro</em> (todo cerrado), no <em>cómodo</em> (todo abierto). La contraseña cambia en cada arranque, precisamente para que no se te ocurra usarla en serio. Todo lo que sigue existe para reemplazar ese usuario de juguete por usuarios de verdad.</p>
+
+  <h3>2. Las tablas de usuarios</h3>
+  <p>Los usuarios van en la misma base <code>employee_directory</code>, en dos tablas nuevas. Ejecuta el script <code>sql-scripts/01-security-tables.sql</code>:</p>
+
+  <div class="term">
+    <button class="copy" type="button">Copiar</button>
+<pre><code><span class="p">$</span> <span class="cmd">docker start mysql-9.7</span>
+<span class="p">$</span> <span class="cmd">docker exec -i mysql-9.7 mysql -uroot -pTU_PASSWORD employee_directory &lt; sql-scripts/01-security-tables.sql</span></code></pre>
+  </div>
+
+  <p>Quedan así — <code>members</code> con las contraseñas, <code>roles</code> con los permisos:</p>
+
+  <div class="tw">
+  <table>
+    <thead><tr><th>Usuario</th><th>Contraseña</th><th>Roles</th><th>Puede</th></tr></thead>
+    <tbody>
+      <tr><td><code>john</code></td><td><code>test123</code></td><td><span class="role emp">EMPLOYEE</span></td><td>leer</td></tr>
+      <tr><td><code>mary</code></td><td><code>test123</code></td><td><span class="role emp">EMPLOYEE</span> <span class="role mgr">MANAGER</span></td><td>leer, crear, modificar</td></tr>
+      <tr><td><code>susan</code></td><td><code>test123</code></td><td><span class="role emp">EMPLOYEE</span> <span class="role mgr">MANAGER</span> <span class="role adm">ADMIN</span></td><td>todo, incluido borrar</td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <p>Abre la tabla <code>members</code> y mira la columna <code>pw</code>. Los tres usuarios tienen <strong>la misma contraseña</strong>, y sin embargo:</p>
+
+  <div class="term">
+<pre><code><span class="out">john   {bcrypt}$2y$10$q5C89SItU5ZKPZlTspXrZOOcm7njHEeRF7dys6b.Bgo7NhKWbMGfG</span>
+<span class="out">mary   {bcrypt}$2y$10$y0UvRlnLKlOh7nBfH8sNvuXUIVhvwOMYaz1ysyJoPYvwY8tCg.K/i</span>
+<span class="out">susan  {bcrypt}$2y$10$6eOesXl7A1E7kaE7UYulPu4h5o5r6Yqd/F/dPFMWx2kDTZA64qU1W</span></code></pre>
+  </div>
+
+  <p>Tres hashes completamente distintos para la palabra <code>test123</code>. Eso no es un error: es el <strong>salt</strong>, y es la razón por la que BCrypt sigue siendo la respuesta correcta en 2026. Lo desarmamos en la <a href="#bcrypt">sección de referencia</a>.</p>
+
+  <p class="note warn"><strong>El prefijo <code>{bcrypt}</code> no es decorativo.</strong> Es como Spring sabe con qué algoritmo comparar. Si lo omites, el arranque truena con <code>There is no PasswordEncoder mapped for the id "null"</code>. Y sí, la columna es <code>char(68)</code> por una razón exacta: 8 caracteres de <code>{bcrypt}</code> + 60 del hash = 68.</p>
+</section>
+
+<section id="codigo">
+  <p class="rubric">Manos a la obra</p>
+  <h2 class="sec"><span class="num">05</span> El código: dos beans</h2>
+  <p>Toda la seguridad de este proyecto cabe en una clase, <code>security/SecurityConfig.java</code>, con dos beans que responden a las dos preguntas de la sección 02.</p>
+
+  <h3>Bean 1 — ¿de dónde salen los usuarios?</h3>
+  <div class="term">
+    <button class="copy" type="button">Copiar</button>
+<pre><code><span class="cmd">@Bean</span>
+<span class="cmd">public UserDetailsService userDetailsService(DataSource theDataSource) {</span>
+<span class="cmd"></span>
+<span class="cmd">    JdbcUserDetailsManager theUserDetailsManager = new JdbcUserDetailsManager(theDataSource);</span>
+<span class="cmd"></span>
+<span class="cmd">    theUserDetailsManager.setUsersByUsernameQuery(</span>
+<span class="cmd">            "select user_id, pw, active from members where user_id=?");</span>
+<span class="cmd"></span>
+<span class="cmd">    theUserDetailsManager.setAuthoritiesByUsernameQuery(</span>
+<span class="cmd">            "select user_id, role from roles where user_id=?");</span>
+<span class="cmd"></span>
+<span class="cmd">    return theUserDetailsManager;</span>
+<span class="cmd">}</span></code></pre>
+  </div>
+
+  <p>Spring trae un esquema por defecto (tablas <code>users</code> y <code>authorities</code>). Si usaras esos nombres exactos, <code>new JdbcUserDetailsManager(dataSource)</code> bastaría y las dos consultas sobrarían. Las nuestras se llaman <code>members</code> y <code>roles</code>, así que hay que decirle cómo buscar: <strong>Spring no adivina tu esquema</strong>. El <code>?</code> de cada consulta es el username.</p>
+
+  <h3>Bean 2 — ¿quién puede hacer qué?</h3>
+  <div class="term">
+    <button class="copy" type="button">Copiar</button>
+<pre><code><span class="cmd">@Bean</span>
+<span class="cmd">public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {</span>
+<span class="cmd"></span>
+<span class="cmd">    http.authorizeHttpRequests(configurer -&gt; configurer</span>
+<span class="cmd">            .requestMatchers(HttpMethod.GET,    "/api/employees").hasRole("EMPLOYEE")</span>
+<span class="cmd">            .requestMatchers(HttpMethod.GET,    "/api/employees/**").hasRole("EMPLOYEE")</span>
+<span class="cmd">            .requestMatchers(HttpMethod.POST,   "/api/employees").hasRole("MANAGER")</span>
+<span class="cmd">            .requestMatchers(HttpMethod.PUT,    "/api/employees").hasRole("MANAGER")</span>
+<span class="cmd">            .requestMatchers(HttpMethod.PATCH,  "/api/employees/**").hasRole("MANAGER")</span>
+<span class="cmd">            .requestMatchers(HttpMethod.DELETE, "/api/employees/**").hasRole("ADMIN")</span>
+<span class="cmd">            .anyRequest().authenticated());</span>
+<span class="cmd"></span>
+<span class="cmd">    http.httpBasic(Customizer.withDefaults());</span>
+<span class="cmd">    http.csrf(csrf -&gt; csrf.disable());</span>
+<span class="cmd">    http.sessionManagement(session -&gt; session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));</span>
+<span class="cmd"></span>
+<span class="cmd">    return http.build();</span>
+<span class="cmd">}</span></code></pre>
+  </div>
+
+  <p class="note warn"><strong>La trampa número uno del tema.</strong> En la base de datos el rol se guarda como <code>ROLE_EMPLOYEE</code>, pero en Java se escribe <code>hasRole("EMPLOYEE")</code>, <em>sin</em> el prefijo: Spring lo agrega solo. Si escribes <code>hasRole("ROLE_EMPLOYEE")</code>, buscará <code>ROLE_ROLE_EMPLOYEE</code>, no lo va a encontrar nunca, y vas a recibir <code>403</code> en todo sin ninguna pista de por qué. (Si prefieres escribirlo completo, existe <code>hasAuthority("ROLE_EMPLOYEE")</code>, que no agrega nada.)</p>
+
+  <h3>Las tres líneas del final</h3>
+  <ul class="prose">
+    <li><code>httpBasic(...)</code> — activa HTTP Basic. Es lo que hace que Spring devuelva la cabecera <code>WWW-Authenticate</code> y lea la cabecera <code>Authorization</code>.</li>
+    <li><code>csrf(...disable())</code> — <strong>solo</strong> porque esto es una API REST sin cookies de sesión. CSRF protege contra que <em>otra</em> página use la cookie de sesión de tu navegador a tus espaldas; si no hay cookie de sesión, no hay nada que robar. En una app web con formularios y login por sesión, CSRF se deja <strong>encendido</strong>. Desactivarlo “porque me daba error” es de las decisiones que crean vulnerabilidades reales.</li>
+    <li><code>sessionCreationPolicy(STATELESS)</code> — el servidor no guarda nada entre peticiones. Cada request llega con sus credenciales y se autentica desde cero. Eso es ser <em>stateless</em>, y es la razón por la que Basic manda la contraseña una y otra vez.</li>
+  </ul>
+
+  <p class="note"><strong>Fíjate en lo que NO cambió:</strong> <code>EmployeeRestController</code>, <code>EmployeeService</code>, <code>EmployeeRepository</code> y <code>Employee</code> son byte por byte los del proyecto 16. Toda la seguridad entró por un archivo nuevo y una dependencia. Eso es la cadena de filtros trabajando.</p>
+</section>
+
+<section id="matriz">
+  <p class="rubric">Comprobación</p>
+  <h2 class="sec"><span class="num">06</span> La matriz de roles</h2>
+  <p>Esta es la tabla que tu configuración acaba de crear. Cada celda es comprobable desde la terminal:</p>
+
+  <div class="tw">
+  <table>
+    <thead><tr><th>Operación</th><th>Rol necesario</th><th class="num-col">john</th><th class="num-col">mary</th><th class="num-col">susan</th></tr></thead>
+    <tbody>
+      <tr><td><span class="verb get">GET</span> <span class="path">/api/employees</span></td><td><span class="role emp">EMPLOYEE</span></td><td><span class="code-ok">200</span></td><td><span class="code-ok">200</span></td><td><span class="code-ok">200</span></td></tr>
+      <tr><td><span class="verb post">POST</span> <span class="path">/api/employees</span></td><td><span class="role mgr">MANAGER</span></td><td><span class="code-bad">403</span></td><td><span class="code-ok">200</span></td><td><span class="code-ok">200</span></td></tr>
+      <tr><td><span class="verb put">PUT</span> <span class="path">/api/employees</span></td><td><span class="role mgr">MANAGER</span></td><td><span class="code-bad">403</span></td><td><span class="code-ok">200</span></td><td><span class="code-ok">200</span></td></tr>
+      <tr><td><span class="verb patch">PATCH</span> <span class="path">/api/employees/{id}</span></td><td><span class="role mgr">MANAGER</span></td><td><span class="code-bad">403</span></td><td><span class="code-ok">200</span></td><td><span class="code-ok">200</span></td></tr>
+      <tr><td><span class="verb delete">DELETE</span> <span class="path">/api/employees/{id}</span></td><td><span class="role adm">ADMIN</span></td><td><span class="code-bad">403</span></td><td><span class="code-bad">403</span></td><td><span class="code-ok">200</span></td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <p>Las cuatro pruebas que más enseñan, con la salida real:</p>
+
+  <div class="term">
+    <button class="copy" type="button">Copiar</button>
+<pre><code><span class="cm"># 1. sin credenciales: ya no entra nadie</span>
+<span class="p">$</span> <span class="cmd">curl -i http://localhost:8071/api/employees</span>
+<span class="out bad">HTTP/1.1 401</span>
+<span class="out">WWW-Authenticate: Basic realm="Realm", charset="UTF-8"</span>
+
+<span class="cm"># 2. john es EMPLOYEE: puede leer</span>
+<span class="p">$</span> <span class="cmd">curl -u john:test123 http://localhost:8071/api/employees</span>
+<span class="out ok">[{"firstName":"Patrobas","lastName":"Filologo","email":"patrobas@gmail.com","id":1}, ...]</span>
+
+<span class="cm"># 3. john intenta borrar: sé quién eres, y no te toca</span>
+<span class="p">$</span> <span class="cmd">curl -u john:test123 -X DELETE http://localhost:8071/api/employees/1</span>
+<span class="out bad">{"status":403,"error":"Forbidden","path":"/api/employees/1"}</span>
+
+<span class="cm"># 4. susan es ADMIN: ella sí</span>
+<span class="p">$</span> <span class="cmd">curl -u susan:test123 -X DELETE http://localhost:8071/api/employees/5</span>
+<span class="out ok">Deleted employee id - 5</span></code></pre>
+  </div>
+
+  <p class="note"><strong>Compara la 3 con la 1.</strong> Son fallos distintos y el código lo dice: en la 1 la API no sabe quién llama (<code>401</code>); en la 3 sabe perfectamente que es john, y por eso puede decirle que no (<code>403</code>). Ese par es la pregunta de examen más probable de todo el tema.</p>
+
+  <h3>La matriz completa, automatizada</h3>
+  <p>El script <code>scripts/test-endpoints.sh</code> corre las seis comprobaciones de la matriz, marca cada una con <code>OK</code> o <code>!!</code>, y crea y borra un empleado temporal para que tus datos queden como estaban:</p>
+
+  <div class="term">
+    <button class="copy" type="button">Copiar</button>
+<pre><code><span class="p">$</span> <span class="cmd">./scripts/test-endpoints.sh</span>
+<span class="out ok">OK  john                   GET    -&gt; HTTP 200   (esperado 200)</span>
+<span class="out ok">OK  john                   POST   -&gt; HTTP 403   (esperado 403)</span>
+<span class="out ok">OK  mary                   DELETE -&gt; HTTP 403   (esperado 403)</span>
+<span class="out ok">OK  susan                  DELETE -&gt; HTTP 200   (esperado 200)</span></code></pre>
+  </div>
+</section>
+
+<section id="talon">
+  <p class="rubric">La lección</p>
+  <h2 class="sec"><span class="num">07</span> El talón de Aquiles</h2>
+  <p>Ya tienes la API protegida. Ahora vamos a romperla. Pregunta: cuando escribes <code>-u john:test123</code>, ¿qué manda curl exactamente?</p>
+
+  <div class="term">
+    <button class="copy" type="button">Copiar</button>
+<pre><code><span class="p">$</span> <span class="cmd">curl -v -u john:test123 http://localhost:8071/api/employees</span>
+<span class="out">&gt; Authorization: Basic am9objp0ZXN0MTIz</span></code></pre>
+  </div>
+
+  <p>Se ve cifrado. No lo está. Es <strong>base64</strong>, que no es un algoritmo de seguridad sino de empaquetado — y se revierte con un comando que ya tienes instalado:</p>
+
+  <div class="term">
+    <button class="copy" type="button">Copiar</button>
+<pre><code><span class="p">$</span> <span class="cmd">echo -n 'am9objp0ZXN0MTIz' | base64 -d</span>
+<span class="out bad">john:test123</span></code></pre>
+  </div>
+
+  <p>Usuario y contraseña, en claro, en un solo paso y sin fuerza bruta. Y no viajan una vez: viajan <strong>en cada petición</strong>, porque la app es stateless.</p>
+
+  <p class="note warn"><strong>Conclusión operativa: HTTP Basic sin HTTPS es mandar la contraseña en texto plano.</strong> Cualquiera con acceso al tráfico — un WiFi público, un proxy corporativo, un log mal configurado — la lee. Basic <em>no</em> está prohibido en producción: está prohibido <em>sin TLS</em>. Y fíjate en el detalle cruel: tu contraseña acaba también en los logs de acceso, en el historial de tu terminal y en la memoria de cualquier cliente que la reenvíe.</p>
+
+  <h3>Los cuatro defectos que arregla la etapa 02</h3>
+  <ul class="prose">
+    <li><strong>La contraseña viaja siempre.</strong> Mil peticiones son mil oportunidades de interceptarla.</li>
+    <li><strong>No caduca.</strong> Si alguien la captura, sirve hasta que la cambies — y no te vas a enterar.</li>
+    <li><strong>No hay logout.</strong> No existe forma de invalidar unas credenciales desde el servidor.</li>
+    <li><strong>No se puede acotar.</strong> No puedes dar acceso “solo de lectura y solo por una hora” a una app de terceros: o le das la contraseña completa, o nada.</li>
+  </ul>
+
+  <p>Los cuatro tienen el mismo origen: <strong>la prueba de identidad es el secreto mismo</strong>. La etapa 02 lo cambia por un pase firmado, temporal y revocable. Eso es JWT.</p>
+</section>
+
+<section id="bcrypt">
+  <p class="rubric">Referencia</p>
+  <h2 class="sec">BCrypt y el salt</h2>
+  <p>Recuerda los tres hashes distintos para la misma contraseña. Así se lee uno:</p>
+
+  <div class="term">
+<pre><code><span class="out">$2y$ 10 $ q5C89SItU5ZKPZlTspXrZO Ocm7njHEeRF7dys6b.Bgo7NhKWbMGfG</span>
+<span class="cm">  │    │        │                          │</span>
+<span class="cm">  │    │        │                          └─ el hash (31 chars)</span>
+<span class="cm">  │    │        └─ el SALT: 22 chars aleatorios, distintos por usuario</span>
+<span class="cm">  │    └─ coste 10: el hash se recalcula 2^10 = 1024 veces</span>
+<span class="cm">  └─ versión del algoritmo</span></code></pre>
+  </div>
+
+  <ul class="prose">
+    <li><strong>El salt va dentro del hash.</strong> No hay que guardarlo aparte — por eso dos usuarios con la misma contraseña tienen hashes distintos, y por eso <em>mirar la tabla no te dice quién repitió contraseña</em>.</li>
+    <li><strong>El coste es deliberadamente lento.</strong> MD5 y SHA-256 están diseñados para ser rápidos: una GPU prueba miles de millones por segundo. BCrypt está diseñado para ser <em>lento</em>, y el coste se sube cada pocos años conforme el hardware mejora.</li>
+    <li><strong>Es de una sola vía.</strong> Ni Spring ni tú pueden recuperar la contraseña desde el hash. Por eso las apps serias te dejan <em>restablecer</em> la contraseña, nunca <em>recordártela</em>: si una web te manda tu contraseña por correo, la tenía guardada en claro.</li>
+    <li><strong>Nunca escribas tu propio hash.</strong> Ni MD5, ni SHA con salt casero, ni “yo le doy la vuelta al string”. Este es el ejemplo clásico de no inventar tu propia criptografía.</li>
+  </ul>
+
+  <p class="note"><strong>¿Y cómo genero un hash para un usuario nuevo?</strong> Con la herramienta que ya viene en macOS y Linux: <code>htpasswd -bnBC 10 "" mipassword</code>. Copia lo que sale después de los dos puntos y pégalo en la columna <code>pw</code> precedido de <code>{bcrypt}</code>.</p>
+</section>
+
+<section id="internet">
+  <p class="rubric">Referencia</p>
+  <h2 class="sec">Por qué los tutoriales de internet no te van a funcionar</h2>
+  <p>Este proyecto usa <strong>Spring Boot 4.1 con Spring Security 7.1</strong>. Casi todo lo que vas a encontrar buscando “spring security rest api” — vídeos, blogs, respuestas de Stack Overflow, y también lo que te conteste una IA — está escrito para Boot 3 y Security 6, o peor, para Boot 2 y Security 5. <strong>Ese código no compila aquí.</strong> Traducción rápida:</p>
+
+  <div class="tw">
+  <table>
+    <thead><tr><th>Lo que vas a encontrar</th><th>Lo que va aquí</th><th>Desde</th></tr></thead>
+    <tbody>
+      <tr><td><code>extends WebSecurityConfigurerAdapter</code></td><td>un <code>@Bean SecurityFilterChain</code></td><td>Security 5.7</td></tr>
+      <tr><td><code>.authorizeRequests()</code></td><td><code>.authorizeHttpRequests()</code></td><td>Security 5.8</td></tr>
+      <tr><td><code>.antMatchers(...)</code></td><td><code>.requestMatchers(...)</code></td><td>Security 6.0</td></tr>
+      <tr><td>cadenas con <code>.and()</code></td><td>lambdas: <code>http.csrf(c -&gt; c.disable())</code></td><td>Security 6.1</td></tr>
+      <tr><td><code>spring-boot-starter-web</code></td><td><code>spring-boot-starter-webmvc</code></td><td>Boot 4.0</td></tr>
+      <tr><td><code>spring-boot-starter-oauth2-resource-server</code></td><td><code>spring-boot-starter-security-oauth2-resource-server</code></td><td>Boot 4.0 <span class="tag">etapa 03</span></td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <p class="note warn"><strong>Esto no es un obstáculo del curso, es el curso.</strong> La habilidad que separa a un junior de alguien que se puede soltar solo no es memorizar la API de este año: es abrir las notas de versión, mirar la fecha del tutorial antes de copiarlo, y confiar en el compilador por encima del blog. Regla práctica: <strong>si el ejemplo no dice para qué versión es, asume que está viejo.</strong></p>
+</section>
+
+<section id="errores">
+  <p class="rubric">Referencia</p>
+  <h2 class="sec">Errores comunes</h2>
+
+  <div class="tw">
+  <table>
+    <thead><tr><th>Síntoma</th><th>Causa</th><th>Arreglo</th></tr></thead>
+    <tbody>
+      <tr>
+        <td class="wrap-ok">Arranca y truena: <code>There is no PasswordEncoder mapped for the id "null"</code></td>
+        <td>Al hash de la base de datos le falta el prefijo <code>{bcrypt}</code>.</td>
+        <td>Agrégalo. Spring usa ese prefijo para saber qué algoritmo comparar.</td>
+      </tr>
+      <tr>
+        <td class="wrap-ok"><span class="code-bad">403</span> en absolutamente todo, incluso con susan</td>
+        <td><code>hasRole("ROLE_ADMIN")</code>: Spring busca <code>ROLE_ROLE_ADMIN</code>.</td>
+        <td><code>hasRole("ADMIN")</code>, sin prefijo. O <code>hasAuthority("ROLE_ADMIN")</code>.</td>
+      </tr>
+      <tr>
+        <td class="wrap-ok"><span class="code-bad">401</span> siempre, con la contraseña correcta</td>
+        <td>La columna <code>active</code> está en <code>0</code>, o la columna <code>pw</code> es más corta que 68 y MySQL truncó el hash en silencio.</td>
+        <td><code>active = 1</code> y <code>char(68)</code>.</td>
+      </tr>
+      <tr>
+        <td class="wrap-ok">GET funciona, pero POST, PUT, PATCH y DELETE devuelven <span class="code-bad">401</span> con el cuerpo <strong>vacío</strong></td>
+        <td>Falta <code>http.csrf(csrf -&gt; csrf.disable())</code>. Es un fallo de CSRF disfrazado: el filtro rechaza el request <em>antes</em> de autenticarte, así que la respuesta parece de credenciales malas y tus credenciales están bien.</td>
+        <td>Desactiva CSRF en APIs REST stateless. Fíjate en que solo se rompen los métodos que <em>modifican</em>: esa es la firma del problema.</td>
+      </tr>
+      <tr>
+        <td class="wrap-ok"><code>JOHN</code> en mayúsculas entra igual que <code>john</code></td>
+        <td>No es Spring: es MySQL. La collation de las tablas es <code>latin1_swedish_ci</code>, y ese <code>_ci</code> significa <em>case-insensitive</em> — el <code>where user_id=?</code> ignora mayúsculas.</td>
+        <td>Si necesitas distinguirlas, la collation de la columna tiene que ser <code>_bin</code> o <code>_cs</code>. Compruébalo tú: <code>select * from members where user_id='JOHN';</code></td>
+      </tr>
+      <tr>
+        <td class="wrap-ok">El navegador me pide usuario y contraseña en una ventanita</td>
+        <td>Eso es la cabecera <code>WWW-Authenticate</code> haciendo su trabajo. No es un error.</td>
+        <td>Para probar la API usa curl o Postman. El navegador, además, cachea esas credenciales hasta que lo cierras.</td>
+      </tr>
+      <tr>
+        <td class="wrap-ok">Cambié la contraseña en la tabla y sigue sin entrar</td>
+        <td>Guardaste el texto plano, no el hash.</td>
+        <td>Genera el hash con <code>htpasswd -bnBC 10 "" nueva</code> y guárdalo con el prefijo.</td>
+      </tr>
+      <tr>
+        <td class="wrap-ok"><code>Port 8071 was already in use</code></td>
+        <td>Ya tienes esta app corriendo, en otra terminal o en Eclipse.</td>
+        <td><code>lsof -i :8071</code> y mata el proceso, o cambia <code>server.port</code>.</td>
+      </tr>
+    </tbody>
+  </table>
+  </div>
+</section>
+
+<section id="ejercicios">
+  <p class="rubric">Referencia</p>
+  <h2 class="sec">Ejercicios</h2>
+
+  <ul class="check">
+    <li><span class="box">[ ]</span><span><b>1. Un usuario nuevo</b> Crea a <code>peter</code> con rol <span class="role emp">EMPLOYEE</span> y contraseña <code>abc123</code>, generando tú el hash. Compruébalo con curl: debe leer y no debe poder crear.</span></li>
+    <li><span class="box">[ ]</span><span><b>2. Degrada a susan</b> Quítale <code>ROLE_ADMIN</code> en la tabla <code>roles</code> y reinicia. ¿Qué código devuelve ahora su DELETE? Explica por qué es <code>403</code> y no <code>401</code>.</span></li>
+    <li><span class="box">[ ]</span><span><b>3. Abre una puerta</b> Haz que <code>GET /api/employees</code> sea público (sin credenciales) pero que el resto siga protegido. Pista: <code>permitAll()</code>. Y responde: ¿por qué el <em>orden</em> de los <code>requestMatchers</code> importa?</span></li>
+    <li><span class="box">[ ]</span><span><b>4. Rompe CSRF a propósito</b> Comenta la línea <code>http.csrf(...)</code>, reinicia y prueba un POST con mary. Anota el código exacto y el cuerpo de la respuesta. Ahora ya reconoces ese error cuando te pase de verdad.</span></li>
+    <li><span class="box">[ ]</span><span><b>5. Mira la cadena</b> Activa <code>logging.level.org.springframework.security=DEBUG</code>, haz un GET y cuenta cuántos filtros atraviesa el request. Encuentra en la lista los dos de la Fig. 2.</span></li>
+    <li><span class="box">[ ]</span><span><b>6. Piensa como atacante</b> Estás en el WiFi de un café y tu compañero usa esta API sin HTTPS. Describe, en tres pasos, cómo obtendrías su contraseña. Luego di qué cambia exactamente si la API usara HTTPS.</span></li>
+  </ul>
+
+  <p class="note"><strong>Siguiente parada:</strong> <a href="guia-02-jwt.html">etapa 02 — JWT</a>. Vas a dejar de mandar la contraseña en cada petición y a cambiarla por un pase firmado con fecha de caducidad. Todo lo que construiste hoy (las tablas, BCrypt, los roles, la cadena de filtros) se queda: solo cambia lo que viaja en la cabecera <code>Authorization</code>.</p>
+</section>
+
+</main>
+</div>
+
+<footer>
+  <div class="wrap">
+    <span>Academia MTY &middot; Seguridad y autenticación 01/03</span>
+    <span>Spring Boot 4.1.0 &middot; Spring Security 7.1.0 &middot; Java 21</span>
+  </div>
+</footer>
+<script>
+document.querySelectorAll(".term").forEach(function (term) {
+  var btn = term.querySelector(".copy");
+  if (!btn) return;
+
+  btn.addEventListener("click", function () {
+    var lines = Array.prototype.map.call(
+      term.querySelectorAll(".cmd"),
+      function (n) { return n.textContent; }
+    );
+    var text = lines.join("\n");
+
+    var flash = function (msg) {
+      btn.textContent = msg;
+      setTimeout(function () { btn.textContent = "Copiar"; }, 1800);
+    };
+
+    var fallback = function () {
+      var ta = document.createElement("textarea");
+      ta.value = text;
+      ta.setAttribute("readonly", "");
+      ta.style.position = "fixed";
+      ta.style.opacity = "0";
+      document.body.appendChild(ta);
+      ta.select();
+      var ok = false;
+      try { ok = document.execCommand("copy"); } catch (e) { ok = false; }
+      document.body.removeChild(ta);
+      flash(ok ? "Copiado" : "Selecciónalo");
+    };
+
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(text).then(function () {
+        flash("Copiado");
+      }, fallback);
+    } else {
+      fallback();
+    }
+  });
+});
+
+var links = Array.prototype.slice.call(document.querySelectorAll(".toc a"));
+var byId = {};
+links.forEach(function (a) { byId[a.getAttribute("href").slice(1)] = a; });
+
+if ("IntersectionObserver" in window) {
+  var obs = new IntersectionObserver(function (entries) {
+    entries.forEach(function (e) {
+      if (!e.isIntersecting) return;
+      links.forEach(function (a) { a.classList.remove("on"); });
+      var a = byId[e.target.id];
+      if (a) a.classList.add("on");
+    });
+  }, { rootMargin: "-10% 0px -75% 0px", threshold: 0 });
+
+  document.querySelectorAll("section[id]").forEach(function (s) { obs.observe(s); });
+}
+</script>

@@ -1,0 +1,99 @@
+================================================================
+ SEGURIDAD Y AUTENTICACION - preparacion del entorno
+ Tres proyectos: 01 Basic (8071) · 02 JWT (8072) · 03 OAuth2 (8073)
+================================================================
+
+----------------------------------------------------------------
+ PARA LOS TRES PROYECTOS: MySQL
+----------------------------------------------------------------
+Los empleados viven en MySQL en los tres proyectos.
+
+  docker start mysql-9.7          (si ya lo tienes del proyecto 15/16)
+
+  # o desde cero:
+  docker run --name mysql-9.7 -p 3306:3306 \
+    -e MYSQL_ROOT_PASSWORD=tu_password -d mysql:9.7
+
+Si empiezas de cero de verdad (contenedor recien creado), antes que nada
+necesitas la base employee_directory, el usuario springstudent y la tabla
+employee. Todo eso esta en:
+
+  ../15-spring-boot-rest-crud-employee-rest-controller-delete-employee/instructions.txt
+
+Ese archivo trae los dos scripts SQL: el que crea el usuario springstudent
+y el que crea la base y la tabla employee. Ejecuta esos DOS primero; el de
+aqui abajo solo agrega las tablas de usuarios de seguridad.
+
+OJO: si tienes tambien el contenedor bd-mysql, los dos usan el 3306
+y NO pueden correr a la vez. Arranca solo uno.
+
+----------------------------------------------------------------
+ PROYECTOS 01 y 02: las tablas de usuarios
+----------------------------------------------------------------
+Crea las tablas members y roles con los 3 usuarios de practica
+(john, mary, susan - todos con password test123):
+
+  docker exec -i mysql-9.7 mysql -uroot -pTU_PASSWORD employee_directory \
+    < sql-scripts/01-security-tables.sql
+
+----------------------------------------------------------------
+ PROYECTO 02: el par de llaves RSA
+----------------------------------------------------------------
+El proyecto ya trae unas llaves listas para que la clase funcione.
+Para generar las tuyas (y entender de donde salen):
+
+  cd 02-security-jwt
+  mkdir -p src/main/resources/certs
+  openssl genpkey -algorithm RSA -pkeyopt rsa_keygen_bits:2048 \
+    -out src/main/resources/certs/private.pem
+  openssl rsa -pubout -in src/main/resources/certs/private.pem \
+    -out src/main/resources/certs/public.pem
+
+La privada debe empezar con "-----BEGIN PRIVATE KEY-----" (formato PKCS#8).
+Si dice "BEGIN RSA PRIVATE KEY" es PKCS#1 y Spring no la va a leer.
+
+En un proyecto real la llave privada NUNCA se sube a git.
+
+----------------------------------------------------------------
+ PROYECTO 03: Keycloak
+----------------------------------------------------------------
+Puerto 8090. NO uses el 8081: en Windows ese puerto lo ocupa
+mongo-express del proyecto 16.
+
+  docker run --name keycloak-academy -p 8090:8080 \
+    -e KC_BOOTSTRAP_ADMIN_USERNAME=admin \
+    -e KC_BOOTSTRAP_ADMIN_PASSWORD=admin \
+    -d quay.io/keycloak/keycloak:26.4 start-dev
+
+Para Windows (PowerShell), con acento grave al final de cada linea:
+
+  docker run --name keycloak-academy -p 8090:8080 `
+    -e KC_BOOTSTRAP_ADMIN_USERNAME=admin `
+    -e KC_BOOTSTRAP_ADMIN_PASSWORD=admin `
+    -d quay.io/keycloak/keycloak:26.4 start-dev
+
+Tarda unos 15 segundos en arrancar. Luego crea el realm, el client,
+los roles y los usuarios de una sola vez:
+
+  ./03-security-oauth2/scripts/keycloak-setup.sh
+
+Consola web:  http://localhost:8090     (admin / admin)
+Comprobacion: curl http://localhost:8090/realms/academy/.well-known/openid-configuration
+
+Las siguientes veces basta con:  docker start keycloak-academy
+
+----------------------------------------------------------------
+ MAPA DE PUERTOS
+----------------------------------------------------------------
+  3306   MySQL
+  8070   proyecto 16 con MySQL (sin seguridad)
+  8071   01-security-basic
+  8072   02-security-jwt
+  8073   03-security-oauth2
+  8081   proyecto 16 con MongoDB
+  8082   mongo-express (del proyecto 16 MongoDB)
+  8090   Keycloak
+  27017  MongoDB
+
+Keycloak va en el 8090 a proposito: el 8080 lo usa el contenedor tomcat9 y
+el 8081/8082 son del proyecto 16 con MongoDB.

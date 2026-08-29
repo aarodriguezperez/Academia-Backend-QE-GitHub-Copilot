@@ -1,0 +1,989 @@
+<meta charset="utf-8">
+<title>Seguridad 03 — OAuth2</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&family=Zilla+Slab:wght@600;700&display=swap">
+<style>
+:root{
+  --bg:#f4f6f8;
+  --surface:#ffffff;
+  --surface-2:#eef1f5;
+  --ink:#12161c;
+  --ink-2:#4d5866;
+  --ink-3:#77828f;
+  --rule:#dce2ea;
+  --accent:#23456e;
+  --accent-soft:#e4ecf6;
+
+  --term-bg:#12161c;
+  --term-ink:#dbe2ea;
+  --term-dim:#7c8899;
+  --term-prompt:#5f9ea0;
+  --term-out:#a8b3c0;
+  --term-rule:#2a323d;
+
+  --get:#1f5b96;
+  --post:#2b6f47;
+  --put:#8f5a12;
+  --patch:#186b6b;
+  --delete:#a33636;
+
+  --get-bg:#e3edf8;
+  --post-bg:#e2f0e7;
+  --put-bg:#f7ecdb;
+  --patch-bg:#ddf0ef;
+  --delete-bg:#f8e5e4;
+
+  --step:clamp(1.9rem,1.4rem + 1.6vw,2.6rem);
+  --h2:clamp(1.45rem,1.2rem + 1vw,1.9rem);
+  --h3:1.1rem;
+  --body:1rem;
+  --small:.86rem;
+  --tiny:.76rem;
+  --radius:10px;
+  --maxw:1180px;
+}
+
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --bg:#0e1116;
+    --surface:#161a21;
+    --surface-2:#1c222b;
+    --ink:#e7ecf2;
+    --ink-2:#a2adbb;
+    --ink-3:#7b8694;
+    --rule:#262d38;
+    --accent:#89b0e0;
+    --accent-soft:#1a2531;
+
+    --term-bg:#080a0e;
+    --term-ink:#dbe2ea;
+    --term-dim:#6d7887;
+    --term-prompt:#6fb3b5;
+    --term-out:#98a4b2;
+    --term-rule:#222932;
+
+    --get:#7fb0e8;
+    --post:#74c294;
+    --put:#dfa955;
+    --patch:#5fc0bd;
+    --delete:#e8908b;
+
+    --get-bg:#16243a;
+    --post-bg:#152a1f;
+    --put-bg:#2e2312;
+    --patch-bg:#12292a;
+    --delete-bg:#2f1a1a;
+  }
+}
+
+:root[data-theme="dark"]{
+  --bg:#0e1116;
+  --surface:#161a21;
+  --surface-2:#1c222b;
+  --ink:#e7ecf2;
+  --ink-2:#a2adbb;
+  --ink-3:#7b8694;
+  --rule:#262d38;
+  --accent:#89b0e0;
+  --accent-soft:#1a2531;
+
+  --term-bg:#080a0e;
+  --term-ink:#dbe2ea;
+  --term-dim:#6d7887;
+  --term-prompt:#6fb3b5;
+  --term-out:#98a4b2;
+  --term-rule:#222932;
+
+  --get:#7fb0e8;
+  --post:#74c294;
+  --put:#dfa955;
+  --patch:#5fc0bd;
+  --delete:#e8908b;
+
+  --get-bg:#16243a;
+  --post-bg:#152a1f;
+  --put-bg:#2e2312;
+  --patch-bg:#12292a;
+  --delete-bg:#2f1a1a;
+}
+
+*{box-sizing:border-box}
+
+body{
+  margin:0;
+  background:var(--bg);
+  color:var(--ink);
+  font-family:"IBM Plex Sans",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  font-size:var(--body);
+  line-height:1.62;
+  -webkit-font-smoothing:antialiased;
+}
+
+html{scroll-behavior:smooth}
+@media (prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  *{animation-duration:.01ms !important;transition-duration:.01ms !important}
+}
+
+a{color:var(--accent);text-decoration-thickness:1px;text-underline-offset:2px}
+a:focus-visible,button:focus-visible,summary:focus-visible{
+  outline:2px solid var(--accent);outline-offset:2px;border-radius:3px;
+}
+
+code,kbd,pre,.mono{font-family:"JetBrains Mono",ui-monospace,SFMono-Regular,Menlo,monospace}
+
+/* ---------- shell ---------- */
+
+.wrap{max-width:var(--maxw);margin:0 auto;padding:0 clamp(1rem,3vw,2.5rem)}
+
+.masthead{
+  border-bottom:1px solid var(--rule);
+  background:var(--surface);
+}
+.masthead .wrap{
+  padding-top:clamp(2.4rem,5vw,4rem);
+  padding-bottom:clamp(1.8rem,4vw,2.8rem);
+  display:flex;flex-direction:column;gap:1.1rem;
+}
+.eyebrow{
+  font-family:"JetBrains Mono",monospace;
+  font-size:var(--tiny);
+  letter-spacing:.13em;
+  text-transform:uppercase;
+  color:var(--ink-3);
+  margin:0;
+}
+h1{
+  font-family:"Zilla Slab",Georgia,serif;
+  font-weight:700;
+  font-size:clamp(2.3rem,1.6rem + 3vw,3.6rem);
+  line-height:1.06;
+  letter-spacing:-.015em;
+  margin:0;
+  text-wrap:balance;
+}
+.lede{
+  margin:0;
+  max-width:60ch;
+  font-size:clamp(1.02rem,.98rem + .3vw,1.16rem);
+  color:var(--ink-2);
+}
+.facts{
+  display:flex;flex-wrap:wrap;gap:.5rem .45rem;
+  margin-top:.3rem;padding:0;list-style:none;
+}
+.facts li{
+  font-family:"JetBrains Mono",monospace;
+  font-size:var(--tiny);
+  color:var(--ink-2);
+  background:var(--surface-2);
+  border:1px solid var(--rule);
+  border-radius:99px;
+  padding:.2rem .62rem;
+}
+
+/* ---------- layout ---------- */
+
+.shell{
+  display:grid;
+  grid-template-columns:210px minmax(0,1fr);
+  gap:clamp(1.5rem,4vw,3.5rem);
+  padding-top:clamp(1.6rem,3vw,2.6rem);
+  padding-bottom:4rem;
+  align-items:start;
+}
+@media (max-width:900px){
+  .shell{grid-template-columns:minmax(0,1fr);gap:1.6rem}
+}
+
+/* ---------- nav ---------- */
+
+nav.toc{position:sticky;top:1.5rem}
+@media (max-width:900px){
+  nav.toc{position:static;background:var(--surface);border:1px solid var(--rule);border-radius:var(--radius);padding:1rem 1.1rem}
+}
+.toc h2{
+  font-family:"JetBrains Mono",monospace;
+  font-size:var(--tiny);letter-spacing:.13em;text-transform:uppercase;
+  color:var(--ink-3);margin:0 0 .7rem;font-weight:500;
+}
+.toc ol,.toc ul{list-style:none;margin:0 0 1.3rem;padding:0;display:flex;flex-direction:column;gap:.08rem}
+.toc a{
+  display:flex;gap:.55rem;align-items:baseline;
+  padding:.26rem .45rem;margin-left:-.45rem;
+  border-radius:5px;
+  text-decoration:none;
+  color:var(--ink-2);
+  font-size:.87rem;line-height:1.35;
+  transition:background .15s,color .15s;
+}
+.toc a:hover{background:var(--surface-2);color:var(--ink)}
+.toc a.on{background:var(--accent-soft);color:var(--accent);font-weight:600}
+.toc .n{
+  font-family:"JetBrains Mono",monospace;font-size:.72rem;
+  color:var(--ink-3);flex:none;
+}
+.toc a.on .n{color:var(--accent)}
+
+/* ---------- sections ---------- */
+
+section{scroll-margin-top:1.5rem;margin-bottom:3.2rem}
+.rubric{
+  font-family:"JetBrains Mono",monospace;
+  font-size:var(--tiny);letter-spacing:.13em;text-transform:uppercase;
+  color:var(--ink-3);
+  display:flex;align-items:center;gap:.7rem;
+  margin:0 0 1.4rem;
+}
+.rubric::after{content:"";flex:1;height:1px;background:var(--rule)}
+
+h2.sec{
+  font-family:"Zilla Slab",Georgia,serif;
+  font-weight:600;font-size:var(--h2);line-height:1.15;
+  margin:0 0 .5rem;letter-spacing:-.01em;text-wrap:balance;
+  display:flex;gap:.7rem;align-items:baseline;
+}
+h2.sec .num{
+  font-family:"JetBrains Mono",monospace;
+  font-size:.8em;color:var(--ink-3);font-weight:400;flex:none;
+}
+h3{
+  font-family:"IBM Plex Sans",sans-serif;
+  font-weight:600;font-size:var(--h3);
+  margin:1.9rem 0 .5rem;line-height:1.3;text-wrap:balance;
+}
+p{margin:0 0 .9rem;max-width:68ch}
+ul.prose,ol.prose{margin:0 0 1rem;padding-left:1.2rem;max-width:66ch}
+ul.prose li,ol.prose li{margin-bottom:.4rem}
+strong{font-weight:600}
+p code,li code,td code,.tag{
+  font-size:.87em;
+  background:var(--surface-2);
+  border:1px solid var(--rule);
+  border-radius:4px;
+  padding:.08em .34em;
+  word-break:break-word;
+}
+
+/* ---------- terminal ---------- */
+
+.term{
+  position:relative;
+  background:var(--term-bg);
+  border:1px solid var(--term-rule);
+  border-radius:var(--radius);
+  margin:0 0 1.1rem;
+  overflow:hidden;
+}
+.term pre{
+  margin:0;
+  padding:1rem 1.1rem;
+  overflow-x:auto;
+  font-size:.83rem;
+  line-height:1.72;
+  color:var(--term-ink);
+  tab-size:2;
+}
+.term .p{color:var(--term-prompt);user-select:none}
+.term .cmd{color:var(--term-ink)}
+.term .out{color:var(--term-out)}
+.term .cm{color:var(--term-dim);font-style:italic}
+.term .ok{color:#74c294}
+.term .bad{color:#e8908b}
+.copy{
+  position:absolute;top:.55rem;right:.55rem;
+  font-family:"JetBrains Mono",monospace;font-size:.68rem;
+  letter-spacing:.06em;text-transform:uppercase;
+  color:var(--term-dim);
+  background:transparent;
+  border:1px solid var(--term-rule);
+  border-radius:5px;
+  padding:.24rem .55rem;
+  cursor:pointer;
+  transition:color .15s,border-color .15s,background .15s;
+}
+.copy:hover{color:var(--term-ink);border-color:var(--term-dim);background:rgba(255,255,255,.05)}
+
+/* ---------- endpoint cards ---------- */
+
+.ep{
+  background:var(--surface);
+  border:1px solid var(--rule);
+  border-radius:var(--radius);
+  padding:1.2rem 1.3rem 1.1rem;
+  margin-bottom:1.3rem;
+}
+.ep-head{display:flex;flex-wrap:wrap;align-items:center;gap:.6rem;margin-bottom:.7rem}
+.verb{
+  font-family:"JetBrains Mono",monospace;
+  font-size:.7rem;font-weight:700;letter-spacing:.1em;
+  padding:.24rem .55rem;border-radius:5px;flex:none;
+}
+.verb.get{color:var(--get);background:var(--get-bg)}
+.verb.post{color:var(--post);background:var(--post-bg)}
+.verb.put{color:var(--put);background:var(--put-bg)}
+.verb.patch{color:var(--patch);background:var(--patch-bg)}
+.verb.delete{color:var(--delete);background:var(--delete-bg)}
+.path{font-family:"JetBrains Mono",monospace;font-size:.9rem;font-weight:500;word-break:break-all}
+.src{
+  font-family:"JetBrains Mono",monospace;font-size:var(--tiny);
+  color:var(--ink-3);margin-left:auto;flex:none;
+}
+.ep p{margin-bottom:.85rem}
+.ep p:last-child{margin-bottom:0}
+
+.note{
+  border-left:2px solid var(--accent);
+  padding:.15rem 0 .15rem .85rem;
+  margin:.9rem 0 1.1rem;
+  font-size:var(--small);
+  color:var(--ink-2);
+  max-width:66ch;
+}
+.note strong{color:var(--ink)}
+.note.warn{border-left-color:var(--put)}
+.note.warn strong{color:var(--put)}
+
+/* ---------- tables ---------- */
+
+.tw{overflow-x:auto;margin:0 0 1.2rem;border:1px solid var(--rule);border-radius:var(--radius);background:var(--surface)}
+table{border-collapse:collapse;width:100%;font-size:var(--small);min-width:520px}
+th,td{text-align:left;padding:.62rem .85rem;border-bottom:1px solid var(--rule);vertical-align:top}
+tbody tr:last-child td{border-bottom:none}
+th{
+  font-family:"JetBrains Mono",monospace;
+  font-size:var(--tiny);letter-spacing:.08em;text-transform:uppercase;
+  color:var(--ink-3);font-weight:500;
+  background:var(--surface-2);
+  white-space:nowrap;
+}
+td:first-child{white-space:nowrap}
+td.wrap-ok:first-child{white-space:normal}
+.num-col{font-variant-numeric:tabular-nums}
+
+/* ---------- checklist ---------- */
+
+.check{list-style:none;margin:0 0 1.2rem;padding:0;display:flex;flex-direction:column;gap:.55rem}
+.check li{
+  display:grid;grid-template-columns:auto minmax(0,1fr);gap:.7rem;align-items:baseline;
+  background:var(--surface);border:1px solid var(--rule);border-radius:var(--radius);
+  padding:.7rem .9rem;font-size:var(--small);
+}
+.check .box{
+  font-family:"JetBrains Mono",monospace;color:var(--ink-3);font-size:.9em;flex:none;
+}
+.check b{font-weight:600;display:block;margin-bottom:.1rem;font-size:1rem}
+
+/* ---------- details ---------- */
+
+details{
+  background:var(--surface);border:1px solid var(--rule);border-radius:var(--radius);
+  padding:.75rem 1rem;margin:0 0 1.2rem;
+}
+details[open]{padding-bottom:1rem}
+summary{
+  cursor:pointer;font-weight:600;font-size:var(--small);
+  list-style:none;display:flex;align-items:center;gap:.5rem;
+}
+summary::-webkit-details-marker{display:none}
+summary::before{
+  content:"+";font-family:"JetBrains Mono",monospace;color:var(--ink-3);
+  font-weight:400;
+}
+details[open] summary::before{content:"\2212"}
+details > *:not(summary){margin-top:.9rem}
+
+/* ---------- footer ---------- */
+
+footer{
+  border-top:1px solid var(--rule);
+  background:var(--surface);
+  padding:1.8rem 0 2.4rem;
+}
+footer .wrap{
+  display:flex;flex-wrap:wrap;gap:.6rem 1.5rem;justify-content:space-between;
+  font-size:var(--tiny);color:var(--ink-3);
+  font-family:"JetBrains Mono",monospace;
+}
+</style>
+<style>
+/* ---------- añadidos de la serie de seguridad ---------- */
+.role{
+  font-family:"JetBrains Mono",monospace;
+  font-size:.7rem;font-weight:700;letter-spacing:.08em;
+  padding:.2rem .5rem;border-radius:5px;white-space:nowrap;
+}
+.role.emp{color:var(--get);background:var(--get-bg)}
+.role.mgr{color:var(--put);background:var(--put-bg)}
+.role.adm{color:var(--delete);background:var(--delete-bg)}
+.code-ok{color:var(--post);font-weight:600;font-family:"JetBrains Mono",monospace}
+.code-bad{color:var(--delete);font-weight:600;font-family:"JetBrains Mono",monospace}
+.flow{
+  background:var(--surface);border:1px solid var(--rule);border-radius:var(--radius);
+  padding:1.1rem;margin:0 0 1.2rem;overflow-x:auto;
+}
+.flow svg{display:block;width:100%;min-width:600px;height:auto}
+.flow .fig{
+  font-size:var(--tiny);color:var(--ink-3);margin:.7rem 0 0;
+  font-family:"JetBrains Mono",monospace;
+}
+.pill-row{display:flex;flex-wrap:wrap;gap:.4rem;margin:0 0 1rem}
+.stage{
+  display:grid;grid-template-columns:auto minmax(0,1fr);gap:.8rem;align-items:start;
+  background:var(--surface);border:1px solid var(--rule);border-radius:var(--radius);
+  padding:.85rem 1rem;margin-bottom:.6rem;font-size:var(--small);
+}
+.stage .k{
+  font-family:"JetBrains Mono",monospace;font-size:.75rem;font-weight:700;
+  color:var(--accent);background:var(--accent-soft);
+  border-radius:5px;padding:.22rem .5rem;white-space:nowrap;
+}
+.stage b{display:block;margin-bottom:.15rem;font-size:.95rem}
+.stage.now{border-color:var(--accent);border-left-width:3px}
+figure.poster{
+  margin:0 0 1.4rem;
+  background:var(--surface);
+  border:1px solid var(--rule);
+  border-radius:var(--radius);
+  padding:.9rem;
+}
+figure.poster img{display:block;width:100%;height:auto;border-radius:6px}
+figure.poster figcaption{
+  font-family:"JetBrains Mono",monospace;
+  font-size:var(--tiny);color:var(--ink-3);
+  margin-top:.7rem;line-height:1.5;
+}
+.toc a.cur{color:var(--ink);font-weight:600;background:var(--surface-2)}
+.toc a.cur .n{color:var(--ink-2)}
+</style>
+
+<header class="masthead">
+  <div class="wrap">
+    <p class="eyebrow">Spring Boot 4.1 &middot; Spring Security 7.1 &middot; Guía de laboratorio &middot; 03 de 03</p>
+    <h1>Delegar: OAuth2 y OIDC</h1>
+    <p class="lede">En esta etapa tu API <em>pierde</em> cosas: se le va el controlador de login, las llaves RSA y hasta la tabla de usuarios. Y queda más segura que nunca. Los tokens los emite Keycloak; tu API se limita a validarlos, y esa línea divisoria es todo el tema.</p>
+    <ul class="facts">
+      <li>~75 min</li>
+      <li>Java 21</li>
+      <li>Keycloak 26 en Docker</li>
+      <li>localhost:8073</li>
+      <li>Keycloak en :8090</li>
+    </ul>
+  </div>
+</header>
+
+<div class="wrap shell">
+
+<nav class="toc" aria-label="Contenido">
+  <h2>La ruta</h2>
+  <ol>
+    <li><a href="#empezar"><span class="n">00</span> Poner en marcha</a></li>
+    <li><a href="#herencia"><span class="n">01</span> Lo que arrastra JWT propio</a></li>
+    <li><a href="#actores"><span class="n">02</span> Los cuatro actores</a></li>
+    <li><a href="#flujo"><span class="n">03</span> El flujo de verdad</a></li>
+    <li><a href="#oidc"><span class="n">04</span> OAuth2 no es OIDC</a></li>
+    <li><a href="#codigo"><span class="n">05</span> El código que desaparece</a></li>
+    <li><a href="#probar"><span class="n">06</span> Probarlo</a></li>
+    <li><a href="#confianza"><span class="n">07</span> Dónde vive la confianza</a></li>
+  </ol>
+  <h2>Referencia</h2>
+  <ul>
+    <li><a href="#comparativa">Las tres etapas</a></li>
+    <li><a href="#trampas">Trampas de Keycloak</a></li>
+    <li><a href="#errores">Errores comunes</a></li>
+    <li><a href="#ejercicios">Ejercicios</a></li>
+  </ul>
+  <h2>La serie</h2>
+  <ul>
+    <li><a href="guia-00-las-tres-ideas.html"><span class="n">00</span> Las tres ideas</a></li>
+    <li><a href="guia-01-basic.html"><span class="n">01</span> HTTP Basic</a></li>
+    <li><a href="guia-02-jwt.html"><span class="n">02</span> JWT</a></li>
+    <li><a href="guia-03-oauth2.html" class="cur"><span class="n">03</span> OAuth2</a></li>
+  </ul>
+</nav>
+
+<main>
+
+<section id="empezar">
+  <p class="rubric">Antes de empezar</p>
+  <h2 class="sec"><span class="num">00</span> Poner en marcha</h2>
+
+  <p class="note warn"><strong>Aquí el orden importa, y es la causa número uno de que la clase se atore.</strong> Esta API descarga la configuración de Keycloak <em>al arrancar</em>. Si Keycloak no está listo todavía, la aplicación <strong>no arranca</strong> — no es que falle una petición: no levanta. Primero Keycloak, después la API.</p>
+
+  <ul class="check">
+    <li><span class="box">[ ]</span><span><b>Java 21 y Docker</b> <code>java -version</code> debe decir <code>21</code> o más, y <code>docker ps</code> debe responder sin errores.</span></li>
+    <li><span class="box">[ ]</span><span><b>Aquí no hacen falta las tablas de usuarios</b> — y esa ausencia es justo el tema de esta etapa.</span></li>
+  </ul>
+
+  <div class="term">
+    <button class="copy" type="button">Copiar</button>
+<pre><code><span class="cm"># 1. Keycloak PRIMERO (solo la primera vez; tarda ~15 s en estar listo)</span>
+<span class="p">$</span> <span class="cmd">docker run --name keycloak-academy -p 8090:8080 \</span>
+<span class="cmd">    -e KC_BOOTSTRAP_ADMIN_USERNAME=admin \</span>
+<span class="cmd">    -e KC_BOOTSTRAP_ADMIN_PASSWORD=admin \</span>
+<span class="cmd">    -d quay.io/keycloak/keycloak:26.4 start-dev</span>
+
+<span class="cm"># las siguientes veces basta con:  docker start keycloak-academy</span>
+
+<span class="cm"># 2. crear el realm, el client, los roles y los usuarios (solo la primera vez)</span>
+<span class="p">$</span> <span class="cmd">./scripts/keycloak-setup.sh</span>
+
+<span class="cm"># 3. comprobar que Keycloak responde ANTES de seguir</span>
+<span class="p">$</span> <span class="cmd">curl -s http://localhost:8090/realms/academy/.well-known/openid-configuration | head -c 80</span>
+<span class="out ok">{"issuer":"http://localhost:8090/realms/academy",...</span>
+
+<span class="cm"># 4. la base de datos de empleados</span>
+<span class="p">$</span> <span class="cmd">docker start mysql-9.7</span>
+
+<span class="cm"># 5. ahora sí, arrancar la API — escucha en el 8073</span>
+<span class="p">$</span> <span class="cmd">cd 03-security-oauth2</span>
+<span class="p">$</span> <span class="cmd">./mvnw spring-boot:run</span></code></pre>
+  </div>
+
+  <p class="note">Keycloak trae consola web en <a href="http://localhost:8090">http://localhost:8090</a> (usuario <code>admin</code>, contraseña <code>admin</code>). Vale la pena abrirla y pasearse: ahí vas a ver los usuarios, los roles y el client que creó el script del paso 2. Todo el detalle está en <code>17-seguridad-autenticacion/instalacion.txt</code>.</p>
+  <p class="note warn"><strong>Si trabajas en Windows.</strong> Los comandos de arriba son de macOS y Linux. En PowerShell: usa <code>mvnw.cmd spring-boot:run</code> en lugar de <code>./mvnw</code>, y si un comando ocupa varias líneas, la barra <code>\</code> del final se cambia por acento grave <code>`</code>. Los scripts <code>.sh</code> de la carpeta <code>scripts/</code> necesitan <strong>Git Bash</strong> o <strong>WSL</strong>; en <code>instalacion.txt</code> están las versiones para PowerShell.</p>
+
+</section>
+
+<section id="herencia">
+  <p class="rubric">De dónde venimos</p>
+  <h2 class="sec"><span class="num">01</span> Lo que arrastra JWT propio</h2>
+  <p>El proyecto 02 quedó bien: tokens firmados, caducidad, roles dentro del token. Pero tu API seguía siendo la dueña de algo incómodo: <strong>las contraseñas de todo el mundo</strong>. Y eso trae problemas que no se arreglan con código:</p>
+
+  <ul class="prose">
+    <li><strong>Cada API con su propia tabla de usuarios.</strong> Cinco servicios, cinco tablas, cinco sitios donde se puede filtrar una contraseña, cinco procesos de “olvidé mi clave”.</li>
+    <li><strong>No puedes delegar sin dar la llave completa.</strong> Si una app de terceros quiere leer tus empleados, la única forma es darle usuario y contraseña. Con eso puede leer… y borrar.</li>
+    <li><strong>El SSO es imposible.</strong> Entrar una vez y quedar dentro de todas las aplicaciones requiere que alguien centralice la identidad.</li>
+    <li><strong>Nada de multifactor.</strong> ¿Vas a implementar tú los códigos por SMS, las apps de autenticación y las llaves de seguridad?</li>
+  </ul>
+
+  <p class="note"><strong>La idea de OAuth2 en una frase:</strong> saca la identidad de tu aplicación y ponla en un servicio dedicado. Tu API deja de preguntar “¿cuál es tu contraseña?” y pasa a preguntar “¿quién te avala?”. Es exactamente lo que ya haces cuando entras a un sitio con “Continuar con Google”: ese sitio nunca ve tu contraseña de Google.</p>
+</section>
+
+<section id="actores">
+  <p class="rubric">El concepto</p>
+  <h2 class="sec"><span class="num">02</span> Los cuatro actores</h2>
+  <p>OAuth2 tiene un vocabulario propio que suena abstracto hasta que lo aterrizas. Piensa en un hotel:</p>
+
+  <div class="tw">
+  <table>
+    <thead><tr><th>En el hotel</th><th>En OAuth2</th><th>En este proyecto</th></tr></thead>
+    <tbody>
+      <tr><td>El huésped</td><td><strong>Resource Owner</strong><br>el dueño de los datos</td><td>john, mary, susan</td></tr>
+      <tr><td>La recepción</td><td><strong>Authorization Server</strong><br>comprueba identidad y emite</td><td>Keycloak (:8090)</td></tr>
+      <tr><td>La tarjeta-llave</td><td><strong>Access token</strong><br>la prueba, temporal y acotada</td><td>el JWT de Keycloak</td></tr>
+      <tr><td>La puerta de la habitación</td><td><strong>Resource Server</strong><br>valida y deja pasar</td><td>tu API (:8073)</td></tr>
+      <tr><td>Quien quiere entrar</td><td><strong>Client</strong><br>la app que pide en tu nombre</td><td>curl, o una app web</td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <p>Y ahora el detalle que hace clic: <strong>la puerta de tu habitación no llama a recepción cada vez que metes la tarjeta.</strong> La puerta sabe reconocer una tarjeta legítima por sí sola. Eso es exactamente lo que hace tu API con la firma del token — y es la razón por la que un Resource Server escala sin convertir al Authorization Server en un cuello de botella.</p>
+
+  <p class="note warn"><strong>Fíjate en quién NO aparece nunca.</strong> En todo el flujo, la contraseña de john jamás toca tu API. Solo la ve Keycloak. Si mañana te hackean la API, no hay contraseñas que robar — porque no las tienes.</p>
+
+  <figure class="poster">
+    <img src="img/fig-03-oauth2-flujo.png"
+         alt="Dos edificios separados. El de la izquierda, rotulado KEYCLOAK, es una recepción de hotel: john entrega por el mostrador una tarjeta con un candado y una contraseña oculta, y una flecha roja muestra que entra y se queda ahí. Detrás de la recepcionista hay una estantería grande llena de cajas de fichas: ahí viven las identidades. De la recepción sale una tarjeta llave con el nombre john, el rol EMPLOYEE y un sello dorado. El de la derecha, rotulado YOUR API, es una habitación: john acerca la tarjeta a un lector y una flecha verde sube desde el lector hasta un tablón público colgado en la pared que muestra ese mismo sello dorado, así que la puerta decide sola. Detrás de la puerta abierta solo hay una caja fuerte verde con fichas de empleados: ninguna estantería de personas. Abajo a la derecha, en un recuadro aparte, una tarjeta roja a nombre de maria con un sello distinto es rechazada por el lector con una equis.">
+    <figcaption>Fig. 1 — La contraseña entra en Keycloak y no sale de ahí; las fichas de personas están en el edificio izquierdo y en el derecho no hay ninguna. La puerta valida contra el sello publicado en el tablón (el JWKS), sin preguntarle nada a recepción. Fíjate en maria: <strong>mismo rol que john</strong> y aun así no entra — lo que falla no es el permiso, es el emisor.</figcaption>
+  </figure>
+</section>
+
+<section id="flujo">
+  <p class="rubric">El mecanismo</p>
+  <h2 class="sec"><span class="num">03</span> El flujo de verdad</h2>
+  <p>El flujo estándar se llama <strong>Authorization Code + PKCE</strong>. Es el que ocurre cuando pulsas “Continuar con Google”:</p>
+
+  <div class="flow">
+    <svg viewBox="0 0 860 400" role="img" aria-label="Flujo Authorization Code con PKCE">
+      <defs>
+        <marker id="a3" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+          <path d="M 0 0 L 10 5 L 0 10 z" fill="var(--ink-3)"/>
+        </marker>
+      </defs>
+      <g font-family="JetBrains Mono, monospace">
+        <rect x="20" y="20" width="150" height="40" rx="7" fill="var(--surface-2)" stroke="var(--rule)"/>
+        <text x="95" y="45" text-anchor="middle" font-size="12" fill="var(--ink)">Client (la app)</text>
+
+        <rect x="355" y="20" width="150" height="40" rx="7" fill="var(--accent-soft)" stroke="var(--accent)"/>
+        <text x="430" y="45" text-anchor="middle" font-size="12" fill="var(--accent)">Keycloak</text>
+
+        <rect x="690" y="20" width="150" height="40" rx="7" fill="var(--surface-2)" stroke="var(--rule)"/>
+        <text x="765" y="45" text-anchor="middle" font-size="12" fill="var(--ink)">tu API :8073</text>
+
+        <path d="M 95 62 L 95 380" stroke="var(--rule)" stroke-width="1" stroke-dasharray="3 4"/>
+        <path d="M 430 62 L 430 380" stroke="var(--rule)" stroke-width="1" stroke-dasharray="3 4"/>
+        <path d="M 765 62 L 765 380" stroke="var(--rule)" stroke-width="1" stroke-dasharray="3 4"/>
+
+        <path d="M 95 96 L 424 96" stroke="var(--ink-3)" stroke-width="1.5" marker-end="url(#a3)" fill="none"/>
+        <text x="106" y="90" font-size="11" fill="var(--ink-2)">1 · te mando al login (con un reto PKCE)</text>
+
+        <rect x="300" y="112" width="262" height="34" rx="6" fill="var(--surface)" stroke="var(--rule)"/>
+        <text x="431" y="133" text-anchor="middle" font-size="11" fill="var(--ink-2)">2 · john teclea su contraseña AQUÍ</text>
+
+        <path d="M 424 176 L 101 176" stroke="var(--ink-3)" stroke-width="1.5" marker-end="url(#a3)" fill="none"/>
+        <text x="106" y="170" font-size="11" fill="var(--ink-2)">3 · vuelve un código de un solo uso</text>
+
+        <path d="M 95 216 L 424 216" stroke="var(--ink-3)" stroke-width="1.5" marker-end="url(#a3)" fill="none"/>
+        <text x="106" y="210" font-size="11" fill="var(--ink-2)">4 · cambio el código por el token</text>
+
+        <path d="M 424 256 L 101 256" stroke="var(--post)" stroke-width="1.5" marker-end="url(#a3)" fill="none"/>
+        <text x="106" y="250" font-size="11" font-weight="700" fill="var(--post)">5 · access token (+ refresh token)</text>
+
+        <path d="M 95 300 L 759 300" stroke="var(--ink-3)" stroke-width="1.5" marker-end="url(#a3)" fill="none"/>
+        <text x="106" y="294" font-size="11" fill="var(--ink-2)">6 · Authorization: Bearer &lt;token&gt;</text>
+
+        <rect x="560" y="316" width="280" height="48" rx="7" fill="var(--put-bg)" stroke="var(--put)"/>
+        <text x="700" y="336" text-anchor="middle" font-size="11" font-weight="700" fill="var(--put)">7 · valida la firma con el JWKS</text>
+        <text x="700" y="354" text-anchor="middle" font-size="10" fill="var(--put)">sin preguntarle nada a Keycloak</text>
+      </g>
+    </svg>
+    <p class="fig">Fig. 2 — Los siete pasos del flujo real. La contraseña solo aparece en el paso 2, y solo dentro de Keycloak.</p>
+  </div>
+
+  <p><strong>¿Por qué un código intermedio y no el token directo?</strong> Porque el paso 3 viaja por el navegador (queda en el historial, en los logs, en la barra de direcciones). Un código de un solo uso y vida de segundos no sirve de nada si se filtra. El token va por el paso 4, que es una llamada directa de servidor a servidor. <strong>PKCE</strong> añade que quien canjea el código demuestre ser el mismo que lo pidió.</p>
+
+  <p class="note warn"><strong>Y entonces, ¿por qué en clase usamos <code>grant_type=password</code>?</strong> Porque el flujo de arriba necesita un navegador y no se puede hacer con <code>curl</code> en una línea. Ese atajo (<em>Direct Access Grant</em>) está <strong>desaconsejado en OAuth 2.1</strong> justamente porque devuelve la contraseña al client — lo que OAuth vino a evitar. Lo habilitamos solo para practicar desde la terminal. En una aplicación real: Authorization Code + PKCE, siempre.</p>
+</section>
+
+<section id="oidc">
+  <p class="rubric">El concepto</p>
+  <h2 class="sec"><span class="num">04</span> OAuth2 no es OIDC</h2>
+  <p>Esta es la confusión número uno del tema, y se resuelve con una frase: <strong>OAuth2 es autorización; OpenID Connect es autenticación</strong>.</p>
+
+  <div class="tw">
+  <table>
+    <thead><tr><th></th><th>OAuth2</th><th>OpenID Connect (OIDC)</th></tr></thead>
+    <tbody>
+      <tr><td>Responde</td><td>¿Qué puede hacer el portador?</td><td>¿Quién es esta persona?</td></tr>
+      <tr><td>Te da</td><td><code>access_token</code></td><td>además un <code>id_token</code></td></tr>
+      <tr><td>Para</td><td>llamar a una API</td><td>saber el nombre, el correo, la foto</td></tr>
+      <tr><td>Analogía</td><td>la tarjeta-llave</td><td>la credencial con tu foto</td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <p>OIDC es una <em>capa encima</em> de OAuth2, no un competidor. Keycloak habla los dos, y por eso la URL de descubrimiento se llama <code>/.well-known/<strong>openid-configuration</strong></code>. Nuestra API solo usa la parte OAuth2: recibe un <code>access_token</code> y comprueba permisos. El <code>id_token</code> lo usaría el frontend para pintar “Hola, john”.</p>
+
+  <p class="note"><strong>Regla para no equivocarse:</strong> si vas a mandar el token a una API, es un <code>access_token</code> y estás haciendo OAuth2. Si lo abres para leer quién es el usuario y saludarlo, es un <code>id_token</code> y estás haciendo OIDC. Mandar un <code>id_token</code> a una API es un error clásico.</p>
+</section>
+
+<section id="codigo">
+  <p class="rubric">Manos a la obra</p>
+  <h2 class="sec"><span class="num">05</span> El código que desaparece</h2>
+  <p>Compara el <code>SecurityConfig</code> del proyecto 02 con el de este. La lista interesante es la de lo que <strong>ya no está</strong>:</p>
+
+  <div class="tw">
+  <table>
+    <thead><tr><th>En el proyecto 02</th><th>Aquí</th><th>Por qué</th></tr></thead>
+    <tbody>
+      <tr><td><code>UserDetailsService</code></td><td>eliminado</td><td>los usuarios viven en Keycloak</td></tr>
+      <tr><td><code>JwtEncoder</code></td><td>eliminado</td><td>esta API ya no emite tokens</td></tr>
+      <tr><td><code>JwtDecoder</code></td><td>eliminado</td><td>lo construye Spring desde el <code>issuer-uri</code></td></tr>
+      <tr><td><code>private.pem</code> / <code>public.pem</code></td><td>eliminados</td><td>la llave se descarga del JWKS</td></tr>
+      <tr><td><code>AuthController</code></td><td>eliminado</td><td>el login pasa en Keycloak</td></tr>
+      <tr><td>tablas <code>members</code> y <code>roles</code></td><td>sin usar</td><td>la identidad ya no es asunto de esta API</td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <p>Y lo que entra a cambio es <strong>una línea de configuración</strong>:</p>
+
+  <div class="term">
+    <button class="copy" type="button">Copiar</button>
+<pre><code><span class="cmd">spring.security.oauth2.resourceserver.jwt.issuer-uri=http://localhost:8090/realms/academy</span></code></pre>
+  </div>
+
+  <p>Con eso, al arrancar, Spring va solo a esa URL, lee <code>/.well-known/openid-configuration</code>, saca de ahí la dirección del <code>jwks_uri</code>, y de ahí descarga la llave pública. Cero criptografía escrita a mano:</p>
+
+  <div class="term">
+    <button class="copy" type="button">Copiar</button>
+<pre><code><span class="p">$</span> <span class="cmd">curl -s http://localhost:8090/realms/academy/.well-known/openid-configuration</span>
+<span class="out">  issuer:         http://localhost:8090/realms/academy</span>
+<span class="out">  token_endpoint: http://localhost:8090/realms/academy/protocol/openid-connect/token</span>
+<span class="out ok">  jwks_uri:       http://localhost:8090/realms/academy/protocol/openid-connect/certs</span>
+
+<span class="p">$</span> <span class="cmd">curl -s http://localhost:8090/realms/academy/protocol/openid-connect/certs</span>
+<span class="out">  kid=USoiHqQNllGxYhCC... alg=RS256 use=sig kty=RSA</span></code></pre>
+  </div>
+
+  <p class="note"><strong>El <code>kid</code> es la pieza que faltaba.</strong> El header del token de Keycloak trae <code>"kid"</code> (key id); el JWKS publica varias llaves, cada una con el suyo. Así el emisor puede <em>rotar</em> sus llaves sin romper nada: publica la nueva, los tokens nuevos apuntan a ella, y los viejos siguen validándose con la anterior hasta caducar. Tu API se entera sola. Ese problema, en el proyecto 02, lo tenías que resolver a mano parando el servidor.</p>
+
+  <h3>La única traducción necesaria</h3>
+  <p>Keycloak no pone los roles donde Spring los busca. Los mete anidados y sin prefijo:</p>
+
+  <div class="term">
+<pre><code><span class="out">"realm_access": { "roles": ["default-roles-academy", "EMPLOYEE", "offline_access", "uma_authorization"] }</span></code></pre>
+  </div>
+
+  <div class="term">
+    <button class="copy" type="button">Copiar</button>
+<pre><code><span class="cmd">private static Collection&lt;GrantedAuthority&gt; extraerRoles(Jwt jwt) {</span>
+<span class="cmd">    Map&lt;String, Object&gt; realmAccess = jwt.getClaim("realm_access");</span>
+<span class="cmd">    if (realmAccess == null || realmAccess.get("roles") == null) return List.of();</span>
+<span class="cmd">    List&lt;String&gt; roles = (List&lt;String&gt;) realmAccess.get("roles");</span>
+<span class="cmd">    return roles.stream()</span>
+<span class="cmd">            .map(role -&gt; (GrantedAuthority) new SimpleGrantedAuthority("ROLE_" + role))</span>
+<span class="cmd">            .toList();</span>
+<span class="cmd">}</span></code></pre>
+  </div>
+
+  <p>Baja dos niveles y añade el prefijo <code>ROLE_</code>. Gracias a esas seis líneas, las reglas de autorización del proyecto siguen siendo <strong>exactamente las mismas de los proyectos 01 y 02</strong>: <code>hasRole("EMPLOYEE")</code>, <code>hasRole("ADMIN")</code>. Tres formas distintas de autenticar, un único control de acceso.</p>
+</section>
+
+<section id="probar">
+  <p class="rubric">Comprobación</p>
+  <h2 class="sec"><span class="num">06</span> Probarlo</h2>
+
+  <div class="term">
+    <button class="copy" type="button">Copiar</button>
+<pre><code><span class="cm"># 1. el token se le pide A KEYCLOAK, no a tu API</span>
+<span class="p">$</span> <span class="cmd">TOKEN=$(curl -s -X POST http://localhost:8090/realms/academy/protocol/openid-connect/token \</span>
+<span class="cmd">        -d grant_type=password -d client_id=employee-api \</span>
+<span class="cmd">        -d username=john -d password=test123 \</span>
+<span class="cmd">        | python3 -c "import json,sys;print(json.load(sys.stdin)['access_token'])")</span>
+
+<span class="cm"># 2. y se usa contra tu API, que nunca vio esa contraseña</span>
+<span class="p">$</span> <span class="cmd">curl -H "Authorization: Bearer $TOKEN" http://localhost:8073/api/employees</span>
+<span class="out ok">[{"firstName":"Patrobas","lastName":"Filologo", ...}]</span></code></pre>
+  </div>
+
+  <p>El token de Keycloak medido en este proyecto: <strong>1367 caracteres</strong>, frente a los ~490 del proyecto 02. Y hay diferencias de fondo en el payload:</p>
+
+  <div class="tw">
+  <table>
+    <thead><tr><th>Claim</th><th>Proyecto 02</th><th>Keycloak</th></tr></thead>
+    <tbody>
+      <tr><td><code>iss</code></td><td><code>security-jwt</code></td><td><code>http://localhost:8090/realms/academy</code></td></tr>
+      <tr><td><code>sub</code></td><td><code>john</code></td><td><code>19c4dfd4-ac82-...</code> (un UUID)</td></tr>
+      <tr><td>usuario legible</td><td>el propio <code>sub</code></td><td><code>preferred_username</code></td></tr>
+      <tr><td>roles</td><td><code>roles</code> (plano)</td><td><code>realm_access.roles</code> (anidado)</td></tr>
+      <tr><td>vida</td><td>3600 s</td><td>300 s + refresh de 1800 s</td></tr>
+      <tr><td>total de claims</td><td>5</td><td>20</td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <p class="note warn"><strong>El <code>sub</code> es un UUID, no el nombre.</strong> Es a propósito: john puede cambiar de nombre de usuario o de correo, pero su identificador interno no cambia nunca. Si guardas en tu base de datos “de quién es este registro”, guarda el <code>sub</code> — nunca el <code>preferred_username</code>.</p>
+
+  <h3>La matriz completa</h3>
+  <p>El script <code>scripts/test-endpoints.sh</code> corre las ocho comprobaciones, incluida la del token del emisor equivocado:</p>
+  <div class="term">
+    <button class="copy" type="button">Copiar</button>
+<pre><code><span class="p">$</span> <span class="cmd">./scripts/test-endpoints.sh</span>
+<span class="out ok">OK  token de john (EMPLOYEE) GET                     -&gt; HTTP 200  (esperado 200)</span>
+<span class="out ok">OK  token de john POST                               -&gt; HTTP 403  (esperado 403)</span>
+<span class="out ok">OK  curl -u susan:test123                            -&gt; HTTP 401  (esperado 401)</span>
+<span class="out ok">OK  DELETE con token de mary (MANAGER)               -&gt; HTTP 403  (esperado 403)</span>
+<span class="out ok">OK  DELETE con token de susan (ADMIN)                -&gt; HTTP 200  (esperado 200)</span>
+<span class="out ok">OK  token emitido por el proyecto 02                 -&gt; HTTP 401  (esperado 401)</span></code></pre>
+  </div>
+</section>
+
+<section id="confianza">
+  <p class="rubric">La lección</p>
+  <h2 class="sec"><span class="num">07</span> Dónde vive la confianza</h2>
+  <p>Arranca el proyecto 02 en el 8072 y el 03 en el 8073 a la vez. Pide un token al 02 — es un JWT impecable: bien formado, firmado con RSA, sin caducar, con <code>ROLE_EMPLOYEE</code> dentro. Mándalo al 03:</p>
+
+  <div class="term">
+<pre><code><span class="p">$</span> <span class="cmd">curl -H "Authorization: Bearer $TOKEN_DEL_02" http://localhost:8073/api/employees</span>
+<span class="out bad">HTTP 401</span>
+<span class="out bad">WWW-Authenticate: Bearer error="invalid_token",</span>
+<span class="out bad">  error_description="Signed JWT rejected: Invalid signature"</span></code></pre>
+  </div>
+
+  <p>Rechazado. Y aquí está la idea con la que hay que cerrar el tema:</p>
+
+  <p class="note"><strong>La confianza no está en “es un JWT”. Está en <em>quién lo firmó</em>.</strong> Tu API no confía en tokens: confía en <strong>un emisor</strong>, el del <code>issuer-uri</code>, y en la llave pública que ese emisor publica. Cualquier token de cualquier otro origen es basura para ella, por perfecto que sea su formato. Ese es el motivo por el que un atacante no gana nada montando su propio servidor de tokens.</p>
+
+  <h3>Lo que ganaste, en concreto</h3>
+  <ul class="prose">
+    <li><strong>Tu API no guarda contraseñas.</strong> Si te la comprometen, no hay credenciales que filtrar.</li>
+    <li><strong>El multifactor es gratis.</strong> Se activa en Keycloak; tu código no cambia ni una línea.</li>
+    <li><strong>SSO real.</strong> Diez APIs apuntando al mismo <code>issuer-uri</code>: un solo login para todas.</li>
+    <li><strong>Rotación de llaves automática.</strong> Keycloak publica la nueva, tus APIs se enteran solas por el JWKS.</li>
+    <li><strong>Revocación de verdad.</strong> Desactiva a john en Keycloak y su <em>refresh</em> deja de funcionar; su access token muere en 5 minutos, no en una hora.</li>
+  </ul>
+
+  <p class="note warn"><strong>Y lo que cuesta:</strong> una pieza más de infraestructura que hay que levantar, actualizar y respaldar; y un punto único de fallo — si Keycloak se cae, nadie entra a ninguna aplicación. OAuth2 no es “la versión buena” de las otras dos etapas: es la que resuelve el problema de <em>varias</em> aplicaciones. Para una API interna con tres usuarios, Basic con HTTPS sigue siendo una respuesta correcta.</p>
+</section>
+
+<section id="comparativa">
+  <p class="rubric">Referencia</p>
+  <h2 class="sec">Las tres etapas, una al lado de la otra</h2>
+
+  <div class="tw">
+  <table>
+    <thead><tr><th></th><th>01 · Basic</th><th>02 · JWT</th><th>03 · OAuth2</th></tr></thead>
+    <tbody>
+      <tr><td>Qué viaja</td><td>usuario:contraseña<br>en cada petición</td><td>token propio</td><td>token de un tercero</td></tr>
+      <tr><td>Quién emite</td><td>nadie</td><td>tu API</td><td>Keycloak</td></tr>
+      <tr><td>Dónde viven los usuarios</td><td>tabla <code>members</code></td><td>tabla <code>members</code></td><td>Keycloak</td></tr>
+      <tr><td>Consulta a la BD por petición</td><td>sí (+ BCrypt)</td><td>no</td><td>no</td></tr>
+      <tr><td>Caduca</td><td>nunca</td><td><code>exp</code> del token</td><td>300 s + refresh</td></tr>
+      <tr><td>Se puede revocar</td><td>cambiando la contraseña</td><td>no, hasta que caduque</td><td>sí, en Keycloak</td></tr>
+      <tr><td>Multifactor</td><td>no</td><td>lo escribes tú</td><td>configuración</td></tr>
+      <tr><td>Sirve para SSO</td><td>no</td><td>no</td><td>sí</td></tr>
+      <tr><td>Complejidad</td><td>1 clase</td><td>2 clases + llaves</td><td>1 clase + Keycloak</td></tr>
+      <tr><td class="wrap-ok"><strong>Cuándo usarlo</strong></td><td class="wrap-ok">scripts internos, APIs pequeñas, siempre con HTTPS</td><td class="wrap-ok">una API con su propio frontend</td><td class="wrap-ok">varias apps, usuarios externos, empresa</td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <p class="note"><strong>Lo que no cambió en ninguna de las tres:</strong> las reglas de autorización. <code>hasRole("ADMIN")</code> para borrar, <code>hasRole("MANAGER")</code> para crear. Abre los tres <code>SecurityConfig</code> uno al lado del otro y compruébalo — esa es la moraleja del tema completo. <strong>Autenticar y autorizar son problemas separados, y solo el primero cambió tres veces.</strong></p>
+</section>
+
+<section id="trampas">
+  <p class="rubric">Referencia</p>
+  <h2 class="sec">Trampas de Keycloak</h2>
+
+  <h3>1. <code>Account is not fully set up</code></h3>
+  <p>Creas el usuario, le pones contraseña, pides el token y Keycloak responde <code>invalid_grant</code> con ese mensaje. La causa: la contraseña quedó marcada como <em>temporal</em>, así que Keycloak exige cambiarla en el primer login — algo imposible por <code>curl</code>. La solución está en el script:</p>
+  <div class="term">
+<pre><code><span class="cmd">kcadm.sh set-password -r academy --username john --new-password test123 --temporary=false</span></code></pre>
+  </div>
+
+  <h3>2. Roles que tú no pusiste</h3>
+  <p>El token de john trae cuatro roles, y tú solo le diste uno:</p>
+  <div class="term">
+<pre><code><span class="out">"roles": ["default-roles-academy", <span class="ok">"EMPLOYEE"</span>, "offline_access", "uma_authorization"]</span></code></pre>
+  </div>
+  <p>Los otros tres se los pone Keycloak. Se convierten en <code>ROLE_offline_access</code> y compañía, y ahí se quedan sin estorbar — pero explican por qué la lista de autoridades es más larga de lo que esperas al depurar.</p>
+
+  <h3>3. El <code>issuer-uri</code> tiene que coincidir <em>exactamente</em></h3>
+  <p>Spring compara el claim <code>iss</code> del token contra tu <code>issuer-uri</code> carácter por carácter. <code>localhost</code> y <code>127.0.0.1</code> son cosas distintas; una barra final de más, también. Si no coinciden: <code>401</code>.</p>
+
+  <h3>4. Keycloak tiene que estar arriba cuando arranca tu API</h3>
+  <p>Spring descarga la configuración del emisor <em>al arrancar</em>. Si Keycloak no responde todavía, la aplicación falla al iniciar. Arranca primero el contenedor y espera esos ~15 segundos.</p>
+</section>
+
+<section id="errores">
+  <p class="rubric">Referencia</p>
+  <h2 class="sec">Errores comunes</h2>
+
+  <div class="tw">
+  <table>
+    <thead><tr><th>Síntoma</th><th>Causa</th><th>Arreglo</th></tr></thead>
+    <tbody>
+      <tr>
+        <td class="wrap-ok">La API no arranca: error conectando al <code>issuer-uri</code></td>
+        <td>Keycloak apagado o todavía arrancando.</td>
+        <td><code>docker start keycloak-academy</code> y espera ~15 s.</td>
+      </tr>
+      <tr>
+        <td class="wrap-ok"><code>invalid_grant</code>: <em>Account is not fully set up</em></td>
+        <td>Contraseña marcada como temporal.</td>
+        <td><code>set-password ... --temporary=false</code></td>
+      </tr>
+      <tr>
+        <td class="wrap-ok"><span class="code-bad">401</span> <em>Invalid signature</em></td>
+        <td>El token lo emitió otro servidor (o borraste y recreaste el realm, que regenera las llaves).</td>
+        <td>Pide un token nuevo al emisor correcto.</td>
+      </tr>
+      <tr>
+        <td class="wrap-ok"><span class="code-bad">401</span> <em>The iss claim is not valid</em></td>
+        <td>El <code>issuer-uri</code> no coincide exacto con el claim <code>iss</code>.</td>
+        <td>Compara los dos textos carácter por carácter, barra final incluida.</td>
+      </tr>
+      <tr>
+        <td class="wrap-ok"><span class="code-bad">403</span> en todo con un token válido</td>
+        <td>Los roles no se extrajeron: falta el converter de <code>realm_access</code>, o al usuario no le asignaste el rol.</td>
+        <td>Decodifica el payload y mira qué hay en <code>realm_access.roles</code>.</td>
+      </tr>
+      <tr>
+        <td class="wrap-ok"><span class="code-bad">401</span> a los 5 minutos, sin haber tocado nada</td>
+        <td>El token de Keycloak dura 300 s por defecto.</td>
+        <td>Pide otro, o usa el <code>refresh_token</code>. Es el comportamiento correcto.</td>
+      </tr>
+      <tr>
+        <td class="wrap-ok"><code>unauthorized_client</code> al pedir el token</td>
+        <td>El client no tiene habilitado <em>Direct Access Grants</em>.</td>
+        <td>Actívalo (lo hace <code>keycloak-setup.sh</code>) o usa el flujo con navegador.</td>
+      </tr>
+    </tbody>
+  </table>
+  </div>
+</section>
+
+<section id="ejercicios">
+  <p class="rubric">Referencia</p>
+  <h2 class="sec">Ejercicios</h2>
+
+  <ul class="check">
+    <li><span class="box">[ ]</span><span><b>1. Sigue el rastro de la llave</b> Partiendo solo del <code>issuer-uri</code>, llega con <code>curl</code> hasta la llave pública. Después compara el <code>kid</code> del header de un token con los del JWKS: ¿cuál de las dos llaves lo validó, y cómo lo sabes?</span></li>
+    <li><span class="box">[ ]</span><span><b>2. Asciende a john</b> Dale <code>MANAGER</code> en la consola de Keycloak (<code>http://localhost:8090</code>). Prueba un POST con su token <em>viejo</em>: ¿funciona? Pide un token nuevo y vuelve a probar. Explica la diferencia.</span></li>
+    <li><span class="box">[ ]</span><span><b>3. Desactívalo</b> Desactiva a susan en Keycloak y usa su token ya emitido. ¿Sigue entrando? Explícalo con lo que aprendiste en el proyecto 02 sobre la revocación.</span></li>
+    <li><span class="box">[ ]</span><span><b>4. El flujo de verdad</b> Abre en el navegador la URL de <code>authorization_endpoint</code> con <code>client_id=employee-api</code>, <code>response_type=code</code> y <code>redirect_uri=http://localhost:8073/</code>. Entra como john y mira la barra de direcciones: ahí está el <code>code</code> del paso 3 de la Fig. 2.</span></li>
+    <li><span class="box">[ ]</span><span><b>5. Rompe el issuer</b> Cambia <code>localhost</code> por <code>127.0.0.1</code> en el <code>issuer-uri</code>, reinicia y prueba. Anota el mensaje exacto del error: vas a reconocerlo el resto de tu carrera.</span></li>
+    <li><span class="box">[ ]</span><span><b>6. Cierra el tema</b> Abre los tres <code>SecurityConfig</code> a la vez. En una tabla de dos columnas escribe qué cambió y qué no. Después responde en tres renglones: para una API interna del equipo, con cinco usuarios, ¿cuál de las tres etapas elegirías y por qué?</span></li>
+  </ul>
+</section>
+
+</main>
+</div>
+
+<footer>
+  <div class="wrap">
+    <span>Academia MTY &middot; Seguridad y autenticación 03/03</span>
+    <span>Spring Boot 4.1.0 &middot; Spring Security 7.1.0 &middot; Keycloak 26.4</span>
+  </div>
+</footer>
+<script>
+document.querySelectorAll(".term").forEach(function (term) {
+  var btn = term.querySelector(".copy");
+  if (!btn) return;
+
+  btn.addEventListener("click", function () {
+    var lines = Array.prototype.map.call(
+      term.querySelectorAll(".cmd"),
+      function (n) { return n.textContent; }
+    );
+    var text = lines.join("\n");
+
+    var flash = function (msg) {
+      btn.textContent = msg;
+      setTimeout(function () { btn.textContent = "Copiar"; }, 1800);
+    };
+
+    var fallback = function () {
+      var ta = document.createElement("textarea");
+      ta.value = text;
+      ta.setAttribute("readonly", "");
+      ta.style.position = "fixed";
+      ta.style.opacity = "0";
+      document.body.appendChild(ta);
+      ta.select();
+      var ok = false;
+      try { ok = document.execCommand("copy"); } catch (e) { ok = false; }
+      document.body.removeChild(ta);
+      flash(ok ? "Copiado" : "Selecciónalo");
+    };
+
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(text).then(function () {
+        flash("Copiado");
+      }, fallback);
+    } else {
+      fallback();
+    }
+  });
+});
+
+var links = Array.prototype.slice.call(document.querySelectorAll(".toc a"));
+var byId = {};
+links.forEach(function (a) { byId[a.getAttribute("href").slice(1)] = a; });
+
+if ("IntersectionObserver" in window) {
+  var obs = new IntersectionObserver(function (entries) {
+    entries.forEach(function (e) {
+      if (!e.isIntersecting) return;
+      links.forEach(function (a) { a.classList.remove("on"); });
+      var a = byId[e.target.id];
+      if (a) a.classList.add("on");
+    });
+  }, { rootMargin: "-10% 0px -75% 0px", threshold: 0 });
+
+  document.querySelectorAll("section[id]").forEach(function (s) { obs.observe(s); });
+}
+</script>

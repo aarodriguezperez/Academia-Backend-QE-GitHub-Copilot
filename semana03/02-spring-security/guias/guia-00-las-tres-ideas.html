@@ -1,0 +1,724 @@
+<meta charset="utf-8">
+<title>Las tres ideas</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&family=Zilla+Slab:wght@600;700&display=swap">
+<style>
+:root{
+  --bg:#f4f6f8;
+  --surface:#ffffff;
+  --surface-2:#eef1f5;
+  --ink:#12161c;
+  --ink-2:#4d5866;
+  --ink-3:#77828f;
+  --rule:#dce2ea;
+  --accent:#23456e;
+  --accent-soft:#e4ecf6;
+
+  --term-bg:#12161c;
+  --term-ink:#dbe2ea;
+  --term-dim:#7c8899;
+  --term-prompt:#5f9ea0;
+  --term-out:#a8b3c0;
+  --term-rule:#2a323d;
+
+  --get:#1f5b96;
+  --post:#2b6f47;
+  --put:#8f5a12;
+  --patch:#186b6b;
+  --delete:#a33636;
+
+  --get-bg:#e3edf8;
+  --post-bg:#e2f0e7;
+  --put-bg:#f7ecdb;
+  --patch-bg:#ddf0ef;
+  --delete-bg:#f8e5e4;
+
+  --step:clamp(1.9rem,1.4rem + 1.6vw,2.6rem);
+  --h2:clamp(1.45rem,1.2rem + 1vw,1.9rem);
+  --h3:1.1rem;
+  --body:1rem;
+  --small:.86rem;
+  --tiny:.76rem;
+  --radius:10px;
+  --maxw:1180px;
+}
+
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --bg:#0e1116;
+    --surface:#161a21;
+    --surface-2:#1c222b;
+    --ink:#e7ecf2;
+    --ink-2:#a2adbb;
+    --ink-3:#7b8694;
+    --rule:#262d38;
+    --accent:#89b0e0;
+    --accent-soft:#1a2531;
+
+    --term-bg:#080a0e;
+    --term-ink:#dbe2ea;
+    --term-dim:#6d7887;
+    --term-prompt:#6fb3b5;
+    --term-out:#98a4b2;
+    --term-rule:#222932;
+
+    --get:#7fb0e8;
+    --post:#74c294;
+    --put:#dfa955;
+    --patch:#5fc0bd;
+    --delete:#e8908b;
+
+    --get-bg:#16243a;
+    --post-bg:#152a1f;
+    --put-bg:#2e2312;
+    --patch-bg:#12292a;
+    --delete-bg:#2f1a1a;
+  }
+}
+
+:root[data-theme="dark"]{
+  --bg:#0e1116;
+  --surface:#161a21;
+  --surface-2:#1c222b;
+  --ink:#e7ecf2;
+  --ink-2:#a2adbb;
+  --ink-3:#7b8694;
+  --rule:#262d38;
+  --accent:#89b0e0;
+  --accent-soft:#1a2531;
+
+  --term-bg:#080a0e;
+  --term-ink:#dbe2ea;
+  --term-dim:#6d7887;
+  --term-prompt:#6fb3b5;
+  --term-out:#98a4b2;
+  --term-rule:#222932;
+
+  --get:#7fb0e8;
+  --post:#74c294;
+  --put:#dfa955;
+  --patch:#5fc0bd;
+  --delete:#e8908b;
+
+  --get-bg:#16243a;
+  --post-bg:#152a1f;
+  --put-bg:#2e2312;
+  --patch-bg:#12292a;
+  --delete-bg:#2f1a1a;
+}
+
+*{box-sizing:border-box}
+
+body{
+  margin:0;
+  background:var(--bg);
+  color:var(--ink);
+  font-family:"IBM Plex Sans",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  font-size:var(--body);
+  line-height:1.62;
+  -webkit-font-smoothing:antialiased;
+}
+
+html{scroll-behavior:smooth}
+@media (prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  *{animation-duration:.01ms !important;transition-duration:.01ms !important}
+}
+
+a{color:var(--accent);text-decoration-thickness:1px;text-underline-offset:2px}
+a:focus-visible,button:focus-visible,summary:focus-visible{
+  outline:2px solid var(--accent);outline-offset:2px;border-radius:3px;
+}
+
+code,kbd,pre,.mono{font-family:"JetBrains Mono",ui-monospace,SFMono-Regular,Menlo,monospace}
+
+/* ---------- shell ---------- */
+
+.wrap{max-width:var(--maxw);margin:0 auto;padding:0 clamp(1rem,3vw,2.5rem)}
+
+.masthead{
+  border-bottom:1px solid var(--rule);
+  background:var(--surface);
+}
+.masthead .wrap{
+  padding-top:clamp(2.4rem,5vw,4rem);
+  padding-bottom:clamp(1.8rem,4vw,2.8rem);
+  display:flex;flex-direction:column;gap:1.1rem;
+}
+.eyebrow{
+  font-family:"JetBrains Mono",monospace;
+  font-size:var(--tiny);
+  letter-spacing:.13em;
+  text-transform:uppercase;
+  color:var(--ink-3);
+  margin:0;
+}
+h1{
+  font-family:"Zilla Slab",Georgia,serif;
+  font-weight:700;
+  font-size:clamp(2.3rem,1.6rem + 3vw,3.6rem);
+  line-height:1.06;
+  letter-spacing:-.015em;
+  margin:0;
+  text-wrap:balance;
+}
+.lede{
+  margin:0;
+  max-width:60ch;
+  font-size:clamp(1.02rem,.98rem + .3vw,1.16rem);
+  color:var(--ink-2);
+}
+.facts{
+  display:flex;flex-wrap:wrap;gap:.5rem .45rem;
+  margin-top:.3rem;padding:0;list-style:none;
+}
+.facts li{
+  font-family:"JetBrains Mono",monospace;
+  font-size:var(--tiny);
+  color:var(--ink-2);
+  background:var(--surface-2);
+  border:1px solid var(--rule);
+  border-radius:99px;
+  padding:.2rem .62rem;
+}
+
+/* ---------- layout ---------- */
+
+.shell{
+  display:grid;
+  grid-template-columns:210px minmax(0,1fr);
+  gap:clamp(1.5rem,4vw,3.5rem);
+  padding-top:clamp(1.6rem,3vw,2.6rem);
+  padding-bottom:4rem;
+  align-items:start;
+}
+@media (max-width:900px){
+  .shell{grid-template-columns:minmax(0,1fr);gap:1.6rem}
+}
+
+/* ---------- nav ---------- */
+
+nav.toc{position:sticky;top:1.5rem}
+@media (max-width:900px){
+  nav.toc{position:static;background:var(--surface);border:1px solid var(--rule);border-radius:var(--radius);padding:1rem 1.1rem}
+}
+.toc h2{
+  font-family:"JetBrains Mono",monospace;
+  font-size:var(--tiny);letter-spacing:.13em;text-transform:uppercase;
+  color:var(--ink-3);margin:0 0 .7rem;font-weight:500;
+}
+.toc ol,.toc ul{list-style:none;margin:0 0 1.3rem;padding:0;display:flex;flex-direction:column;gap:.08rem}
+.toc a{
+  display:flex;gap:.55rem;align-items:baseline;
+  padding:.26rem .45rem;margin-left:-.45rem;
+  border-radius:5px;
+  text-decoration:none;
+  color:var(--ink-2);
+  font-size:.87rem;line-height:1.35;
+  transition:background .15s,color .15s;
+}
+.toc a:hover{background:var(--surface-2);color:var(--ink)}
+.toc a.on{background:var(--accent-soft);color:var(--accent);font-weight:600}
+.toc .n{
+  font-family:"JetBrains Mono",monospace;font-size:.72rem;
+  color:var(--ink-3);flex:none;
+}
+.toc a.on .n{color:var(--accent)}
+
+/* ---------- sections ---------- */
+
+section{scroll-margin-top:1.5rem;margin-bottom:3.2rem}
+.rubric{
+  font-family:"JetBrains Mono",monospace;
+  font-size:var(--tiny);letter-spacing:.13em;text-transform:uppercase;
+  color:var(--ink-3);
+  display:flex;align-items:center;gap:.7rem;
+  margin:0 0 1.4rem;
+}
+.rubric::after{content:"";flex:1;height:1px;background:var(--rule)}
+
+h2.sec{
+  font-family:"Zilla Slab",Georgia,serif;
+  font-weight:600;font-size:var(--h2);line-height:1.15;
+  margin:0 0 .5rem;letter-spacing:-.01em;text-wrap:balance;
+  display:flex;gap:.7rem;align-items:baseline;
+}
+h2.sec .num{
+  font-family:"JetBrains Mono",monospace;
+  font-size:.8em;color:var(--ink-3);font-weight:400;flex:none;
+}
+h3{
+  font-family:"IBM Plex Sans",sans-serif;
+  font-weight:600;font-size:var(--h3);
+  margin:1.9rem 0 .5rem;line-height:1.3;text-wrap:balance;
+}
+p{margin:0 0 .9rem;max-width:68ch}
+ul.prose,ol.prose{margin:0 0 1rem;padding-left:1.2rem;max-width:66ch}
+ul.prose li,ol.prose li{margin-bottom:.4rem}
+strong{font-weight:600}
+p code,li code,td code,.tag{
+  font-size:.87em;
+  background:var(--surface-2);
+  border:1px solid var(--rule);
+  border-radius:4px;
+  padding:.08em .34em;
+  word-break:break-word;
+}
+
+/* ---------- terminal ---------- */
+
+.term{
+  position:relative;
+  background:var(--term-bg);
+  border:1px solid var(--term-rule);
+  border-radius:var(--radius);
+  margin:0 0 1.1rem;
+  overflow:hidden;
+}
+.term pre{
+  margin:0;
+  padding:1rem 1.1rem;
+  overflow-x:auto;
+  font-size:.83rem;
+  line-height:1.72;
+  color:var(--term-ink);
+  tab-size:2;
+}
+.term .p{color:var(--term-prompt);user-select:none}
+.term .cmd{color:var(--term-ink)}
+.term .out{color:var(--term-out)}
+.term .cm{color:var(--term-dim);font-style:italic}
+.term .ok{color:#74c294}
+.term .bad{color:#e8908b}
+.copy{
+  position:absolute;top:.55rem;right:.55rem;
+  font-family:"JetBrains Mono",monospace;font-size:.68rem;
+  letter-spacing:.06em;text-transform:uppercase;
+  color:var(--term-dim);
+  background:transparent;
+  border:1px solid var(--term-rule);
+  border-radius:5px;
+  padding:.24rem .55rem;
+  cursor:pointer;
+  transition:color .15s,border-color .15s,background .15s;
+}
+.copy:hover{color:var(--term-ink);border-color:var(--term-dim);background:rgba(255,255,255,.05)}
+
+/* ---------- endpoint cards ---------- */
+
+.ep{
+  background:var(--surface);
+  border:1px solid var(--rule);
+  border-radius:var(--radius);
+  padding:1.2rem 1.3rem 1.1rem;
+  margin-bottom:1.3rem;
+}
+.ep-head{display:flex;flex-wrap:wrap;align-items:center;gap:.6rem;margin-bottom:.7rem}
+.verb{
+  font-family:"JetBrains Mono",monospace;
+  font-size:.7rem;font-weight:700;letter-spacing:.1em;
+  padding:.24rem .55rem;border-radius:5px;flex:none;
+}
+.verb.get{color:var(--get);background:var(--get-bg)}
+.verb.post{color:var(--post);background:var(--post-bg)}
+.verb.put{color:var(--put);background:var(--put-bg)}
+.verb.patch{color:var(--patch);background:var(--patch-bg)}
+.verb.delete{color:var(--delete);background:var(--delete-bg)}
+.path{font-family:"JetBrains Mono",monospace;font-size:.9rem;font-weight:500;word-break:break-all}
+.src{
+  font-family:"JetBrains Mono",monospace;font-size:var(--tiny);
+  color:var(--ink-3);margin-left:auto;flex:none;
+}
+.ep p{margin-bottom:.85rem}
+.ep p:last-child{margin-bottom:0}
+
+.note{
+  border-left:2px solid var(--accent);
+  padding:.15rem 0 .15rem .85rem;
+  margin:.9rem 0 1.1rem;
+  font-size:var(--small);
+  color:var(--ink-2);
+  max-width:66ch;
+}
+.note strong{color:var(--ink)}
+.note.warn{border-left-color:var(--put)}
+.note.warn strong{color:var(--put)}
+
+/* ---------- tables ---------- */
+
+.tw{overflow-x:auto;margin:0 0 1.2rem;border:1px solid var(--rule);border-radius:var(--radius);background:var(--surface)}
+table{border-collapse:collapse;width:100%;font-size:var(--small);min-width:520px}
+th,td{text-align:left;padding:.62rem .85rem;border-bottom:1px solid var(--rule);vertical-align:top}
+tbody tr:last-child td{border-bottom:none}
+th{
+  font-family:"JetBrains Mono",monospace;
+  font-size:var(--tiny);letter-spacing:.08em;text-transform:uppercase;
+  color:var(--ink-3);font-weight:500;
+  background:var(--surface-2);
+  white-space:nowrap;
+}
+td:first-child{white-space:nowrap}
+td.wrap-ok:first-child{white-space:normal}
+.num-col{font-variant-numeric:tabular-nums}
+
+/* ---------- checklist ---------- */
+
+.check{list-style:none;margin:0 0 1.2rem;padding:0;display:flex;flex-direction:column;gap:.55rem}
+.check li{
+  display:grid;grid-template-columns:auto minmax(0,1fr);gap:.7rem;align-items:baseline;
+  background:var(--surface);border:1px solid var(--rule);border-radius:var(--radius);
+  padding:.7rem .9rem;font-size:var(--small);
+}
+.check .box{
+  font-family:"JetBrains Mono",monospace;color:var(--ink-3);font-size:.9em;flex:none;
+}
+.check b{font-weight:600;display:block;margin-bottom:.1rem;font-size:1rem}
+
+/* ---------- details ---------- */
+
+details{
+  background:var(--surface);border:1px solid var(--rule);border-radius:var(--radius);
+  padding:.75rem 1rem;margin:0 0 1.2rem;
+}
+details[open]{padding-bottom:1rem}
+summary{
+  cursor:pointer;font-weight:600;font-size:var(--small);
+  list-style:none;display:flex;align-items:center;gap:.5rem;
+}
+summary::-webkit-details-marker{display:none}
+summary::before{
+  content:"+";font-family:"JetBrains Mono",monospace;color:var(--ink-3);
+  font-weight:400;
+}
+details[open] summary::before{content:"\2212"}
+details > *:not(summary){margin-top:.9rem}
+
+/* ---------- footer ---------- */
+
+footer{
+  border-top:1px solid var(--rule);
+  background:var(--surface);
+  padding:1.8rem 0 2.4rem;
+}
+footer .wrap{
+  display:flex;flex-wrap:wrap;gap:.6rem 1.5rem;justify-content:space-between;
+  font-size:var(--tiny);color:var(--ink-3);
+  font-family:"JetBrains Mono",monospace;
+}
+</style>
+<style>
+/* ---------- añadidos de la serie de seguridad ---------- */
+.role{
+  font-family:"JetBrains Mono",monospace;
+  font-size:.7rem;font-weight:700;letter-spacing:.08em;
+  padding:.2rem .5rem;border-radius:5px;white-space:nowrap;
+}
+.role.emp{color:var(--get);background:var(--get-bg)}
+.role.mgr{color:var(--put);background:var(--put-bg)}
+.role.adm{color:var(--delete);background:var(--delete-bg)}
+.code-ok{color:var(--post);font-weight:600;font-family:"JetBrains Mono",monospace}
+.code-bad{color:var(--delete);font-weight:600;font-family:"JetBrains Mono",monospace}
+.flow{
+  background:var(--surface);border:1px solid var(--rule);border-radius:var(--radius);
+  padding:1.1rem;margin:0 0 1.2rem;overflow-x:auto;
+}
+.flow svg{display:block;width:100%;min-width:600px;height:auto}
+.flow .fig{
+  font-size:var(--tiny);color:var(--ink-3);margin:.7rem 0 0;
+  font-family:"JetBrains Mono",monospace;
+}
+.pill-row{display:flex;flex-wrap:wrap;gap:.4rem;margin:0 0 1rem}
+.stage{
+  display:grid;grid-template-columns:auto minmax(0,1fr);gap:.8rem;align-items:start;
+  background:var(--surface);border:1px solid var(--rule);border-radius:var(--radius);
+  padding:.85rem 1rem;margin-bottom:.6rem;font-size:var(--small);
+}
+.stage .k{
+  font-family:"JetBrains Mono",monospace;font-size:.75rem;font-weight:700;
+  color:var(--accent);background:var(--accent-soft);
+  border-radius:5px;padding:.22rem .5rem;white-space:nowrap;
+}
+.stage b{display:block;margin-bottom:.15rem;font-size:.95rem}
+.stage.now{border-color:var(--accent);border-left-width:3px}
+figure.poster{
+  margin:0 0 1.4rem;
+  background:var(--surface);
+  border:1px solid var(--rule);
+  border-radius:var(--radius);
+  padding:.9rem;
+}
+figure.poster img{display:block;width:100%;height:auto;border-radius:6px}
+figure.poster figcaption{
+  font-family:"JetBrains Mono",monospace;
+  font-size:var(--tiny);color:var(--ink-3);
+  margin-top:.7rem;line-height:1.5;
+}
+.toc a.cur{color:var(--ink);font-weight:600;background:var(--surface-2)}
+.toc a.cur .n{color:var(--ink-2)}
+</style>
+
+<header class="masthead">
+  <div class="wrap">
+    <p class="eyebrow">Seguridad y autenticación &middot; Antes de empezar</p>
+    <h1>Las tres ideas, antes del código</h1>
+    <p class="lede">Este documento no tiene una sola línea de Java. Son las tres ideas del tema contadas con tres imágenes, y está pensado para leerse <em>antes</em> de tocar nada. Diez minutos. Cuando termines, la guía 01 va a parecerte obvia — que es justo el objetivo.</p>
+    <ul class="facts">
+      <li>~10 min</li>
+      <li>Sin código</li>
+      <li>Sin instalar nada</li>
+      <li>Léelo antes de la guía 01</li>
+    </ul>
+  </div>
+</header>
+
+<div class="wrap shell">
+
+<nav class="toc" aria-label="Contenido">
+  <h2>La ruta</h2>
+  <ol>
+    <li><a href="#pregunta"><span class="n">01</span> La pregunta</a></li>
+    <li><a href="#gritar"><span class="n">02</span> Gritar la contraseña</a></li>
+    <li><a href="#pase"><span class="n">03</span> Cambiarla por un pase</a></li>
+    <li><a href="#otro"><span class="n">04</span> Que la guarde otro</a></li>
+    <li><a href="#juntas"><span class="n">05</span> Las tres juntas</a></li>
+    <li><a href="#nombres"><span class="n">06</span> Cómo se llaman</a></li>
+  </ol>
+  <h2>La serie</h2>
+  <ul>
+    <li><a href="guia-00-las-tres-ideas.html" class="cur"><span class="n">00</span> Las tres ideas</a></li>
+    <li><a href="guia-01-basic.html"><span class="n">01</span> HTTP Basic</a></li>
+    <li><a href="guia-02-jwt.html"><span class="n">02</span> JWT</a></li>
+    <li><a href="guia-03-oauth2.html"><span class="n">03</span> OAuth2</a></li>
+  </ul>
+</nav>
+
+<main>
+
+<section id="pregunta">
+  <p class="rubric">El punto de partida</p>
+  <h2 class="sec"><span class="num">01</span> Una pregunta, tres respuestas</h2>
+
+  <p>Tienes una API. Alguien le habla. Y hay una pregunta que hay que resolver antes que ninguna otra:</p>
+
+  <p class="note"><strong>¿Cómo le demuestras a un servidor que eres tú?</strong></p>
+
+  <p>Parece una pregunta pequeña y no lo es. Todo el tema son <strong>tres respuestas distintas</strong> a esa misma pregunta, y cada una nace de un defecto de la anterior. No son tres tecnologías que compiten: son tres escalones, y hay que subirlos en orden para que el tercero tenga sentido.</p>
+
+  <p>Antes de seguir, una distinción que se confunde constantemente y que conviene tener clara desde ya. Son <em>dos</em> preguntas, no una:</p>
+
+  <div class="tw">
+  <table>
+    <thead><tr><th>La pregunta</th><th>Se llama</th><th>Ejemplo</th></tr></thead>
+    <tbody>
+      <tr><td><strong>¿Quién eres?</strong></td><td>Autenticación</td><td>“Soy john, y esta es mi contraseña.”</td></tr>
+      <tr><td><strong>¿Qué puedes hacer?</strong></td><td>Autorización</td><td>“john puede leer, pero no borrar.”</td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <p>Guarda esto, porque es la moraleja del tema entero y la vas a comprobar tú mismo al final: <strong>de las dos, solo la primera cambia tres veces</strong>. La segunda se queda igual en los tres escalones.</p>
+</section>
+
+<section id="gritar">
+  <p class="rubric">Escalón uno</p>
+  <h2 class="sec"><span class="num">02</span> Gritar la contraseña cada vez</h2>
+
+  <p>La respuesta más directa: cada vez que pides algo, mandas tu usuario y tu contraseña junto con la petición. El servidor las comprueba y te deja pasar. Simple, funciona, y se usa desde 1996.</p>
+
+  <figure class="poster">
+    <img src="img/fig-01-basic-flujo.png" alt="Un portátil envía una petición dibujada como una postal abierta con el usuario y la contraseña legibles, apoyada en un cristal transparente. Debajo, escondido tras un muro, alguien con prismáticos lee la misma contraseña. La petición entra en un recinto rotulado SERVER y atraviesa dos puertas de control; de cada una sale una flecha roja de rechazo. Quien supera las dos llega a una caja fuerte con las fichas de los empleados.">
+    <figcaption>Fig. 1 — La petición lleva las credenciales a la vista y atraviesa dos controles distintos.</figcaption>
+  </figure>
+
+  <p>Fíjate en tres cosas del dibujo, en este orden.</p>
+
+  <p><strong>La postal va abierta.</strong> Eso no es una licencia del ilustrador: es literal. Lo que viaja no está cifrado, va empaquetado en un formato que cualquiera revierte en un segundo. El del arbusto no está descifrando nada — está <em>leyendo</em>.</p>
+
+  <p><strong>Hay dos puertas, no una.</strong> La primera pregunta quién eres; la segunda, si te toca. Son controles independientes, y por eso hay dos formas distintas de que te echen: porque no sabe quién eres, o porque lo sabe perfectamente y aun así no. Ese par vuelve en los tres escalones.</p>
+
+  <p><strong>Todo eso pasa dentro del servidor</strong>, antes de que tu código se entere. El programa que devuelve los empleados no sabe que existe la seguridad.</p>
+
+  <p class="note warn"><strong>El defecto que arrastra:</strong> la prueba de que eres tú <em>es</em> tu contraseña. Y viaja entera, en cada petición, mil veces al día. No caduca, no se puede anular, y no puedes darle a nadie un permiso recortado — o le das la contraseña completa, o no le das nada.</p>
+</section>
+
+<section id="pase">
+  <p class="rubric">Escalón dos</p>
+  <h2 class="sec"><span class="num">03</span> Cambiarla por un pase</h2>
+
+  <p>Si el problema es que la contraseña viaja siempre, la solución es que viaje <strong>una sola vez</strong>. La entregas al principio y te la cambian por otra cosa: un pase.</p>
+
+  <figure class="poster">
+    <img src="img/fig-02-jwt-flujo.png" alt="Dos bandas. Arriba, rotulada ONCE: alguien entrega una contraseña en la ventanilla de una taquilla; la tarjeta se queda dentro y el empleado consulta un archivador; de la taquilla sale un pase con un nombre, un rol, un reloj y un sello de cera. Abajo, rotulada EVERY REQUEST: la misma persona cruza tres torniquetes seguidos enseñando solo el pase, y al final el archivador aparece cerrado con cadena. Aparte, un encapuchado lee el contenido del pase, y su copia falsificada con el sello de cera partido es rechazada.">
+    <figcaption>Fig. 2 — Arriba pasa una vez. Abajo pasa siempre. Esa es toda la diferencia.</figcaption>
+  </figure>
+
+  <p><strong>Arriba y abajo son momentos distintos en el tiempo</strong>, no dos caminos. Arriba ocurre una vez al día; abajo, cada vez que haces algo.</p>
+
+  <p>El pase lleva escrito quién eres, qué puedes hacer y hasta qué hora vale. Y lleva un sello de cera. <strong>El sello de cera no esconde el contenido</strong> — mira al encapuchado: lee el pase perfectamente. Lo que hace el sello de cera es delatar si alguien lo ha tocado. Su copia falsa tiene el sello de cera partido, y por eso rebota.</p>
+
+  <p>Esa distinción es la que más cuesta y la que más rinde: <strong>el pase es de lectura pública y de escritura imposible</strong>. Cualquiera lo lee; nadie puede fabricar uno.</p>
+
+  <p>Y hay un detalle silencioso en el dibujo que vale mucho: <strong>el archivador está encadenado</strong>. Una vez emitido el pase, nadie vuelve a consultar la lista. La puerta decide sola. Por eso esto escala.</p>
+
+  <p class="note warn"><strong>El defecto que arrastra:</strong> ese archivador encadenado es también la debilidad. Si despides a alguien, su pase sigue funcionando hasta que caduque, porque nadie va a preguntar. Y algo más incómodo: la taquilla es tuya, o sea que <strong>sigues siendo tú quien guarda las contraseñas de todo el mundo</strong>.</p>
+</section>
+
+<section id="otro">
+  <p class="rubric">Escalón tres</p>
+  <h2 class="sec"><span class="num">04</span> Que la guarde otro</h2>
+
+  <p>Empecemos por algo que ya has hecho cien veces. Entras a una web nueva y en vez de inventarte otra contraseña pulsas <strong>“Continuar con Google”</strong>. Se abre una pantalla de Google, escribes ahí tu contraseña, y vuelves a la web original ya identificado.</p>
+
+  <p>Piensa un segundo en lo que acaba de pasar: <strong>esa web nunca vio tu contraseña de Google</strong>. Y sin embargo sabe quién eres. Eso es este tercer escalón, y lo llevas usando años.</p>
+
+  <p>Los dos anteriores mejoraban <em>cómo</em> viaja la prueba. Este cambia <strong>quién la emite</strong>.</p>
+
+  <figure class="poster">
+    <img src="img/fig-03-oauth2-flujo.png" alt="Dos edificios separados. El de la izquierda es una recepción de hotel donde alguien entrega su contraseña por el mostrador; la contraseña se queda dentro y detrás de la recepcionista hay una estantería llena de fichas de personas. De la recepción sale una tarjeta llave con un nombre, un rol y un sello. El de la derecha es una habitación: la persona acerca la tarjeta a un lector, que la compara con un tablón público que muestra ese mismo sello. Detrás de la puerta solo hay una caja fuerte con fichas de empleados, ninguna estantería de personas. Aparte, una tarjeta de otro hotel es rechazada.">
+    <figcaption>Fig. 3 — Dos edificios distintos. La contraseña no cruza de uno al otro.</figcaption>
+  </figure>
+
+  <p><strong>Cuenta las estanterías.</strong> A la izquierda hay un mueble entero lleno de fichas de personas. A la derecha no hay ninguna: solo una caja fuerte con datos de trabajo. Esa asimetría es todo el escalón.</p>
+
+  <p>Tu aplicación deja de saber contraseñas. No es que las guarde mejor: <strong>no las tiene</strong>. Si mañana te la comprometen, no hay credenciales que filtrar, porque no había.</p>
+
+  <h3>Una llave, muchas puertas</h3>
+
+  <p>Y aquí aparece la ventaja que justifica todo el montaje. En un hotel no te dan una llave por habitación, por el gimnasio y otra por la piscina: te dan <strong>una</strong>, y todas las puertas se fían de la misma recepción.</p>
+
+  <p>Traducido: si tienes cinco aplicaciones y las cinco apuntan al mismo emisor, el usuario entra <strong>una vez</strong> y las cinco lo reconocen. No hay cinco registros de usuarios que mantener, ni cinco formularios de “olvidé mi contraseña”, ni cinco sitios donde se pueda filtrar. Eso es lo que la gente llama <em>inicio de sesión único</em>.</p>
+
+  <h3>Prestar la llave sin prestar tu identidad</h3>
+
+  <p>Hay un segundo uso, y es el problema para el que se invent&oacute; todo esto. Imagina que una aplicación de fotos quiere leer tus archivos de la nube. Con los escalones anteriores solo tenías una opción: <strong>darle tu contraseña</strong>. Y con ella podría leer, borrar y cambiarte la clave.</p>
+
+  <p>Con este esquema le das una tarjeta acotada: sirve <em>solo</em> para leer fotos, caduca, y la puedes anular cuando quieras — sin que esa aplicación haya sabido nunca tu contraseña. Es la diferencia entre <strong>prestarle a alguien la llave de tu casa o abrirle solo el buzón</strong>.</p>
+
+  <p>¿Y cómo confía la puerta en una tarjeta que no ha emitido? Por el tablón de la pared. El emisor publica su sello a la vista de todos, y la puerta compara. No necesita llamar a recepción, ni preguntar nada: el sello o cuadra o no cuadra.</p>
+
+  <p>Mira ahora la tarjeta rechazada de la esquina. Tiene el <strong>mismo rol</strong> que la buena. No la rechazan por falta de permisos: la rechazan porque <strong>la emitió otro hotel</strong>. Ahí está la idea con la que cierra el tema — la confianza no está en el papel, está en quién lo firmó.</p>
+
+  <p class="note warn"><strong>Lo que cuesta:</strong> una pieza más de infraestructura que hay que levantar y mantener, y un punto único de fallo — si se cae recepción, no entra nadie a ninguna parte. Esto no es “la versión buena”: es la que resuelve el problema de <em>varias</em> aplicaciones a la vez.</p>
+</section>
+
+<section id="juntas">
+  <p class="rubric">La foto completa</p>
+  <h2 class="sec"><span class="num">05</span> Las tres, una al lado de la otra</h2>
+
+  <div class="tw">
+  <table>
+    <thead><tr><th></th><th>Gritar la contraseña</th><th>Cambiarla por un pase</th><th>Que la guarde otro</th></tr></thead>
+    <tbody>
+      <tr><td>Qué viaja</td><td>tu contraseña, siempre</td><td>un pase que emites tú</td><td>un pase que emite un tercero</td></tr>
+      <tr><td>Cuántas veces viaja la contraseña</td><td>en cada petición</td><td>una vez al día</td><td>nunca llega a tu aplicación</td></tr>
+      <tr><td>¿Caduca?</td><td>no</td><td>sí</td><td>sí, y además se puede anular</td></tr>
+      <tr><td>¿Quién guarda las contraseñas?</td><td>tú</td><td>tú</td><td>el tercero</td></tr>
+      <tr><td>Se consulta la lista de usuarios</td><td>en cada petición</td><td>solo al emitir el pase</td><td>ni eso</td></tr>
+      <tr><td>Un solo acceso para varias apps</td><td>no</td><td>no</td><td>sí</td></tr>
+      <tr><td>Dar acceso parcial a un tercero</td><td>imposible sin dar la contraseña</td><td>imposible sin dar la contraseña</td><td>sí, acotado y revocable</td></tr>
+      <tr class="wrap-ok"><td><strong>Cuándo elegirlo</strong></td><td>algo interno y pequeño, siempre con HTTPS</td><td>una aplicación con su propio frontend</td><td>varias aplicaciones, o usuarios de fuera</td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <p class="note"><strong>Ninguna de las tres sustituye a la anterior.</strong> Es la trampa habitual al aprender esto: creer que la tercera es la buena y las otras dos son antiguas. Para una API interna con cinco usuarios, el primer escalón con HTTPS es una respuesta perfectamente profesional. El tercero, ahí, sería montar un aeropuerto para cruzar la calle.</p>
+</section>
+
+<section id="nombres">
+  <p class="rubric">El premio</p>
+  <h2 class="sec"><span class="num">06</span> Cómo se llaman de verdad</h2>
+
+  <p>Has llegado hasta aquí sin una sola palabra técnica. Aquí están:</p>
+
+  <div class="tw">
+  <table>
+    <thead><tr><th>Lo que entendiste</th><th>Su nombre</th><th>Su guía</th></tr></thead>
+    <tbody>
+      <tr><td>Gritar la contraseña cada vez</td><td><strong>HTTP Basic</strong></td><td><a href="guia-01-basic.html">Guía 01</a></td></tr>
+      <tr><td>Cambiarla por un pase sellado</td><td><strong>JWT</strong></td><td><a href="guia-02-jwt.html">Guía 02</a></td></tr>
+      <tr><td>Que la guarde un tercero</td><td><strong>OAuth2</strong> y <strong>OIDC</strong></td><td><a href="guia-03-oauth2.html">Guía 03</a></td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <p>Y tres palabras más que vas a ver enseguida y que ya sabes lo que significan, aunque nadie te las haya dicho todavía:</p>
+
+  <ul class="prose">
+    <li><strong>Token</strong> — el pase.</li>
+    <li><strong>Firma</strong> — el sello de cera.</li>
+    <li><strong>Claim</strong> — cada cosa que va escrita en el pase: tu nombre, tu rol, la hora de caducidad.</li>
+  </ul>
+
+  <p class="note"><strong>Y ahora la comprobación que promete la sección 01.</strong> Cuando termines las tres guías, abre los tres archivos <code>SecurityConfig.java</code> uno al lado del otro. Vas a encontrar tres formas distintas de responder <em>“¿quién eres?”</em>… y exactamente la misma respuesta, línea por línea, a <em>“¿qué puedes hacer?”</em>.</p>
+
+  <p><strong>Siguiente parada:</strong> <a href="guia-01-basic.html">guía 01 — HTTP Basic</a>. Empieza con un comando que borra un empleado sin pedir permiso a nadie.</p>
+</section>
+
+</main>
+</div>
+
+<footer>
+  <div class="wrap">
+    <span>Academia MTY &middot; Seguridad y autenticación &middot; Introducción</span>
+    <span>Sin código &middot; Léelo antes de la guía 01</span>
+  </div>
+</footer>
+<script>
+document.querySelectorAll(".term").forEach(function (term) {
+  var btn = term.querySelector(".copy");
+  if (!btn) return;
+
+  btn.addEventListener("click", function () {
+    var lines = Array.prototype.map.call(
+      term.querySelectorAll(".cmd"),
+      function (n) { return n.textContent; }
+    );
+    var text = lines.join("\n");
+
+    var flash = function (msg) {
+      btn.textContent = msg;
+      setTimeout(function () { btn.textContent = "Copiar"; }, 1800);
+    };
+
+    var fallback = function () {
+      var ta = document.createElement("textarea");
+      ta.value = text;
+      ta.setAttribute("readonly", "");
+      ta.style.position = "fixed";
+      ta.style.opacity = "0";
+      document.body.appendChild(ta);
+      ta.select();
+      var ok = false;
+      try { ok = document.execCommand("copy"); } catch (e) { ok = false; }
+      document.body.removeChild(ta);
+      flash(ok ? "Copiado" : "Selecciónalo");
+    };
+
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(text).then(function () {
+        flash("Copiado");
+      }, fallback);
+    } else {
+      fallback();
+    }
+  });
+});
+
+var links = Array.prototype.slice.call(document.querySelectorAll(".toc a"));
+var byId = {};
+links.forEach(function (a) { byId[a.getAttribute("href").slice(1)] = a; });
+
+if ("IntersectionObserver" in window) {
+  var obs = new IntersectionObserver(function (entries) {
+    entries.forEach(function (e) {
+      if (!e.isIntersecting) return;
+      links.forEach(function (a) { a.classList.remove("on"); });
+      var a = byId[e.target.id];
+      if (a) a.classList.add("on");
+    });
+  }, { rootMargin: "-10% 0px -75% 0px", threshold: 0 });
+
+  document.querySelectorAll("section[id]").forEach(function (s) { obs.observe(s); });
+}
+</script>

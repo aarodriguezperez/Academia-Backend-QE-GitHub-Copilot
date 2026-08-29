@@ -1,0 +1,1053 @@
+<meta charset="utf-8">
+<title>Seguridad 02 — JWT</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&family=Zilla+Slab:wght@600;700&display=swap">
+<style>
+:root{
+  --bg:#f4f6f8;
+  --surface:#ffffff;
+  --surface-2:#eef1f5;
+  --ink:#12161c;
+  --ink-2:#4d5866;
+  --ink-3:#77828f;
+  --rule:#dce2ea;
+  --accent:#23456e;
+  --accent-soft:#e4ecf6;
+
+  --term-bg:#12161c;
+  --term-ink:#dbe2ea;
+  --term-dim:#7c8899;
+  --term-prompt:#5f9ea0;
+  --term-out:#a8b3c0;
+  --term-rule:#2a323d;
+
+  --get:#1f5b96;
+  --post:#2b6f47;
+  --put:#8f5a12;
+  --patch:#186b6b;
+  --delete:#a33636;
+
+  --get-bg:#e3edf8;
+  --post-bg:#e2f0e7;
+  --put-bg:#f7ecdb;
+  --patch-bg:#ddf0ef;
+  --delete-bg:#f8e5e4;
+
+  --step:clamp(1.9rem,1.4rem + 1.6vw,2.6rem);
+  --h2:clamp(1.45rem,1.2rem + 1vw,1.9rem);
+  --h3:1.1rem;
+  --body:1rem;
+  --small:.86rem;
+  --tiny:.76rem;
+  --radius:10px;
+  --maxw:1180px;
+}
+
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --bg:#0e1116;
+    --surface:#161a21;
+    --surface-2:#1c222b;
+    --ink:#e7ecf2;
+    --ink-2:#a2adbb;
+    --ink-3:#7b8694;
+    --rule:#262d38;
+    --accent:#89b0e0;
+    --accent-soft:#1a2531;
+
+    --term-bg:#080a0e;
+    --term-ink:#dbe2ea;
+    --term-dim:#6d7887;
+    --term-prompt:#6fb3b5;
+    --term-out:#98a4b2;
+    --term-rule:#222932;
+
+    --get:#7fb0e8;
+    --post:#74c294;
+    --put:#dfa955;
+    --patch:#5fc0bd;
+    --delete:#e8908b;
+
+    --get-bg:#16243a;
+    --post-bg:#152a1f;
+    --put-bg:#2e2312;
+    --patch-bg:#12292a;
+    --delete-bg:#2f1a1a;
+  }
+}
+
+:root[data-theme="dark"]{
+  --bg:#0e1116;
+  --surface:#161a21;
+  --surface-2:#1c222b;
+  --ink:#e7ecf2;
+  --ink-2:#a2adbb;
+  --ink-3:#7b8694;
+  --rule:#262d38;
+  --accent:#89b0e0;
+  --accent-soft:#1a2531;
+
+  --term-bg:#080a0e;
+  --term-ink:#dbe2ea;
+  --term-dim:#6d7887;
+  --term-prompt:#6fb3b5;
+  --term-out:#98a4b2;
+  --term-rule:#222932;
+
+  --get:#7fb0e8;
+  --post:#74c294;
+  --put:#dfa955;
+  --patch:#5fc0bd;
+  --delete:#e8908b;
+
+  --get-bg:#16243a;
+  --post-bg:#152a1f;
+  --put-bg:#2e2312;
+  --patch-bg:#12292a;
+  --delete-bg:#2f1a1a;
+}
+
+*{box-sizing:border-box}
+
+body{
+  margin:0;
+  background:var(--bg);
+  color:var(--ink);
+  font-family:"IBM Plex Sans",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  font-size:var(--body);
+  line-height:1.62;
+  -webkit-font-smoothing:antialiased;
+}
+
+html{scroll-behavior:smooth}
+@media (prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  *{animation-duration:.01ms !important;transition-duration:.01ms !important}
+}
+
+a{color:var(--accent);text-decoration-thickness:1px;text-underline-offset:2px}
+a:focus-visible,button:focus-visible,summary:focus-visible{
+  outline:2px solid var(--accent);outline-offset:2px;border-radius:3px;
+}
+
+code,kbd,pre,.mono{font-family:"JetBrains Mono",ui-monospace,SFMono-Regular,Menlo,monospace}
+
+/* ---------- shell ---------- */
+
+.wrap{max-width:var(--maxw);margin:0 auto;padding:0 clamp(1rem,3vw,2.5rem)}
+
+.masthead{
+  border-bottom:1px solid var(--rule);
+  background:var(--surface);
+}
+.masthead .wrap{
+  padding-top:clamp(2.4rem,5vw,4rem);
+  padding-bottom:clamp(1.8rem,4vw,2.8rem);
+  display:flex;flex-direction:column;gap:1.1rem;
+}
+.eyebrow{
+  font-family:"JetBrains Mono",monospace;
+  font-size:var(--tiny);
+  letter-spacing:.13em;
+  text-transform:uppercase;
+  color:var(--ink-3);
+  margin:0;
+}
+h1{
+  font-family:"Zilla Slab",Georgia,serif;
+  font-weight:700;
+  font-size:clamp(2.3rem,1.6rem + 3vw,3.6rem);
+  line-height:1.06;
+  letter-spacing:-.015em;
+  margin:0;
+  text-wrap:balance;
+}
+.lede{
+  margin:0;
+  max-width:60ch;
+  font-size:clamp(1.02rem,.98rem + .3vw,1.16rem);
+  color:var(--ink-2);
+}
+.facts{
+  display:flex;flex-wrap:wrap;gap:.5rem .45rem;
+  margin-top:.3rem;padding:0;list-style:none;
+}
+.facts li{
+  font-family:"JetBrains Mono",monospace;
+  font-size:var(--tiny);
+  color:var(--ink-2);
+  background:var(--surface-2);
+  border:1px solid var(--rule);
+  border-radius:99px;
+  padding:.2rem .62rem;
+}
+
+/* ---------- layout ---------- */
+
+.shell{
+  display:grid;
+  grid-template-columns:210px minmax(0,1fr);
+  gap:clamp(1.5rem,4vw,3.5rem);
+  padding-top:clamp(1.6rem,3vw,2.6rem);
+  padding-bottom:4rem;
+  align-items:start;
+}
+@media (max-width:900px){
+  .shell{grid-template-columns:minmax(0,1fr);gap:1.6rem}
+}
+
+/* ---------- nav ---------- */
+
+nav.toc{position:sticky;top:1.5rem}
+@media (max-width:900px){
+  nav.toc{position:static;background:var(--surface);border:1px solid var(--rule);border-radius:var(--radius);padding:1rem 1.1rem}
+}
+.toc h2{
+  font-family:"JetBrains Mono",monospace;
+  font-size:var(--tiny);letter-spacing:.13em;text-transform:uppercase;
+  color:var(--ink-3);margin:0 0 .7rem;font-weight:500;
+}
+.toc ol,.toc ul{list-style:none;margin:0 0 1.3rem;padding:0;display:flex;flex-direction:column;gap:.08rem}
+.toc a{
+  display:flex;gap:.55rem;align-items:baseline;
+  padding:.26rem .45rem;margin-left:-.45rem;
+  border-radius:5px;
+  text-decoration:none;
+  color:var(--ink-2);
+  font-size:.87rem;line-height:1.35;
+  transition:background .15s,color .15s;
+}
+.toc a:hover{background:var(--surface-2);color:var(--ink)}
+.toc a.on{background:var(--accent-soft);color:var(--accent);font-weight:600}
+.toc .n{
+  font-family:"JetBrains Mono",monospace;font-size:.72rem;
+  color:var(--ink-3);flex:none;
+}
+.toc a.on .n{color:var(--accent)}
+
+/* ---------- sections ---------- */
+
+section{scroll-margin-top:1.5rem;margin-bottom:3.2rem}
+.rubric{
+  font-family:"JetBrains Mono",monospace;
+  font-size:var(--tiny);letter-spacing:.13em;text-transform:uppercase;
+  color:var(--ink-3);
+  display:flex;align-items:center;gap:.7rem;
+  margin:0 0 1.4rem;
+}
+.rubric::after{content:"";flex:1;height:1px;background:var(--rule)}
+
+h2.sec{
+  font-family:"Zilla Slab",Georgia,serif;
+  font-weight:600;font-size:var(--h2);line-height:1.15;
+  margin:0 0 .5rem;letter-spacing:-.01em;text-wrap:balance;
+  display:flex;gap:.7rem;align-items:baseline;
+}
+h2.sec .num{
+  font-family:"JetBrains Mono",monospace;
+  font-size:.8em;color:var(--ink-3);font-weight:400;flex:none;
+}
+h3{
+  font-family:"IBM Plex Sans",sans-serif;
+  font-weight:600;font-size:var(--h3);
+  margin:1.9rem 0 .5rem;line-height:1.3;text-wrap:balance;
+}
+p{margin:0 0 .9rem;max-width:68ch}
+ul.prose,ol.prose{margin:0 0 1rem;padding-left:1.2rem;max-width:66ch}
+ul.prose li,ol.prose li{margin-bottom:.4rem}
+strong{font-weight:600}
+p code,li code,td code,.tag{
+  font-size:.87em;
+  background:var(--surface-2);
+  border:1px solid var(--rule);
+  border-radius:4px;
+  padding:.08em .34em;
+  word-break:break-word;
+}
+
+/* ---------- terminal ---------- */
+
+.term{
+  position:relative;
+  background:var(--term-bg);
+  border:1px solid var(--term-rule);
+  border-radius:var(--radius);
+  margin:0 0 1.1rem;
+  overflow:hidden;
+}
+.term pre{
+  margin:0;
+  padding:1rem 1.1rem;
+  overflow-x:auto;
+  font-size:.83rem;
+  line-height:1.72;
+  color:var(--term-ink);
+  tab-size:2;
+}
+.term .p{color:var(--term-prompt);user-select:none}
+.term .cmd{color:var(--term-ink)}
+.term .out{color:var(--term-out)}
+.term .cm{color:var(--term-dim);font-style:italic}
+.term .ok{color:#74c294}
+.term .bad{color:#e8908b}
+.copy{
+  position:absolute;top:.55rem;right:.55rem;
+  font-family:"JetBrains Mono",monospace;font-size:.68rem;
+  letter-spacing:.06em;text-transform:uppercase;
+  color:var(--term-dim);
+  background:transparent;
+  border:1px solid var(--term-rule);
+  border-radius:5px;
+  padding:.24rem .55rem;
+  cursor:pointer;
+  transition:color .15s,border-color .15s,background .15s;
+}
+.copy:hover{color:var(--term-ink);border-color:var(--term-dim);background:rgba(255,255,255,.05)}
+
+/* ---------- endpoint cards ---------- */
+
+.ep{
+  background:var(--surface);
+  border:1px solid var(--rule);
+  border-radius:var(--radius);
+  padding:1.2rem 1.3rem 1.1rem;
+  margin-bottom:1.3rem;
+}
+.ep-head{display:flex;flex-wrap:wrap;align-items:center;gap:.6rem;margin-bottom:.7rem}
+.verb{
+  font-family:"JetBrains Mono",monospace;
+  font-size:.7rem;font-weight:700;letter-spacing:.1em;
+  padding:.24rem .55rem;border-radius:5px;flex:none;
+}
+.verb.get{color:var(--get);background:var(--get-bg)}
+.verb.post{color:var(--post);background:var(--post-bg)}
+.verb.put{color:var(--put);background:var(--put-bg)}
+.verb.patch{color:var(--patch);background:var(--patch-bg)}
+.verb.delete{color:var(--delete);background:var(--delete-bg)}
+.path{font-family:"JetBrains Mono",monospace;font-size:.9rem;font-weight:500;word-break:break-all}
+.src{
+  font-family:"JetBrains Mono",monospace;font-size:var(--tiny);
+  color:var(--ink-3);margin-left:auto;flex:none;
+}
+.ep p{margin-bottom:.85rem}
+.ep p:last-child{margin-bottom:0}
+
+.note{
+  border-left:2px solid var(--accent);
+  padding:.15rem 0 .15rem .85rem;
+  margin:.9rem 0 1.1rem;
+  font-size:var(--small);
+  color:var(--ink-2);
+  max-width:66ch;
+}
+.note strong{color:var(--ink)}
+.note.warn{border-left-color:var(--put)}
+.note.warn strong{color:var(--put)}
+
+/* ---------- tables ---------- */
+
+.tw{overflow-x:auto;margin:0 0 1.2rem;border:1px solid var(--rule);border-radius:var(--radius);background:var(--surface)}
+table{border-collapse:collapse;width:100%;font-size:var(--small);min-width:520px}
+th,td{text-align:left;padding:.62rem .85rem;border-bottom:1px solid var(--rule);vertical-align:top}
+tbody tr:last-child td{border-bottom:none}
+th{
+  font-family:"JetBrains Mono",monospace;
+  font-size:var(--tiny);letter-spacing:.08em;text-transform:uppercase;
+  color:var(--ink-3);font-weight:500;
+  background:var(--surface-2);
+  white-space:nowrap;
+}
+td:first-child{white-space:nowrap}
+td.wrap-ok:first-child{white-space:normal}
+.num-col{font-variant-numeric:tabular-nums}
+
+/* ---------- checklist ---------- */
+
+.check{list-style:none;margin:0 0 1.2rem;padding:0;display:flex;flex-direction:column;gap:.55rem}
+.check li{
+  display:grid;grid-template-columns:auto minmax(0,1fr);gap:.7rem;align-items:baseline;
+  background:var(--surface);border:1px solid var(--rule);border-radius:var(--radius);
+  padding:.7rem .9rem;font-size:var(--small);
+}
+.check .box{
+  font-family:"JetBrains Mono",monospace;color:var(--ink-3);font-size:.9em;flex:none;
+}
+.check b{font-weight:600;display:block;margin-bottom:.1rem;font-size:1rem}
+
+/* ---------- details ---------- */
+
+details{
+  background:var(--surface);border:1px solid var(--rule);border-radius:var(--radius);
+  padding:.75rem 1rem;margin:0 0 1.2rem;
+}
+details[open]{padding-bottom:1rem}
+summary{
+  cursor:pointer;font-weight:600;font-size:var(--small);
+  list-style:none;display:flex;align-items:center;gap:.5rem;
+}
+summary::-webkit-details-marker{display:none}
+summary::before{
+  content:"+";font-family:"JetBrains Mono",monospace;color:var(--ink-3);
+  font-weight:400;
+}
+details[open] summary::before{content:"\2212"}
+details > *:not(summary){margin-top:.9rem}
+
+/* ---------- footer ---------- */
+
+footer{
+  border-top:1px solid var(--rule);
+  background:var(--surface);
+  padding:1.8rem 0 2.4rem;
+}
+footer .wrap{
+  display:flex;flex-wrap:wrap;gap:.6rem 1.5rem;justify-content:space-between;
+  font-size:var(--tiny);color:var(--ink-3);
+  font-family:"JetBrains Mono",monospace;
+}
+</style>
+<style>
+/* ---------- añadidos de la serie de seguridad ---------- */
+.role{
+  font-family:"JetBrains Mono",monospace;
+  font-size:.7rem;font-weight:700;letter-spacing:.08em;
+  padding:.2rem .5rem;border-radius:5px;white-space:nowrap;
+}
+.role.emp{color:var(--get);background:var(--get-bg)}
+.role.mgr{color:var(--put);background:var(--put-bg)}
+.role.adm{color:var(--delete);background:var(--delete-bg)}
+.code-ok{color:var(--post);font-weight:600;font-family:"JetBrains Mono",monospace}
+.code-bad{color:var(--delete);font-weight:600;font-family:"JetBrains Mono",monospace}
+.flow{
+  background:var(--surface);border:1px solid var(--rule);border-radius:var(--radius);
+  padding:1.1rem;margin:0 0 1.2rem;overflow-x:auto;
+}
+.flow svg{display:block;width:100%;min-width:600px;height:auto}
+.flow .fig{
+  font-size:var(--tiny);color:var(--ink-3);margin:.7rem 0 0;
+  font-family:"JetBrains Mono",monospace;
+}
+.pill-row{display:flex;flex-wrap:wrap;gap:.4rem;margin:0 0 1rem}
+.stage{
+  display:grid;grid-template-columns:auto minmax(0,1fr);gap:.8rem;align-items:start;
+  background:var(--surface);border:1px solid var(--rule);border-radius:var(--radius);
+  padding:.85rem 1rem;margin-bottom:.6rem;font-size:var(--small);
+}
+.stage .k{
+  font-family:"JetBrains Mono",monospace;font-size:.75rem;font-weight:700;
+  color:var(--accent);background:var(--accent-soft);
+  border-radius:5px;padding:.22rem .5rem;white-space:nowrap;
+}
+.stage b{display:block;margin-bottom:.15rem;font-size:.95rem}
+.stage.now{border-color:var(--accent);border-left-width:3px}
+figure.poster{
+  margin:0 0 1.4rem;
+  background:var(--surface);
+  border:1px solid var(--rule);
+  border-radius:var(--radius);
+  padding:.9rem;
+}
+figure.poster img{display:block;width:100%;height:auto;border-radius:6px}
+figure.poster figcaption{
+  font-family:"JetBrains Mono",monospace;
+  font-size:var(--tiny);color:var(--ink-3);
+  margin-top:.7rem;line-height:1.5;
+}
+.toc a.cur{color:var(--ink);font-weight:600;background:var(--surface-2)}
+.toc a.cur .n{color:var(--ink-2)}
+</style>
+
+<header class="masthead">
+  <div class="wrap">
+    <p class="eyebrow">Spring Boot 4.1 &middot; Spring Security 7.1 &middot; Guía de laboratorio &middot; 02 de 03</p>
+    <h1>El pase: JWT</h1>
+    <p class="lede">En el proyecto 01 la contraseña viajaba en cada petición. Aquí viaja <em>una sola vez</em>: la cambias por un pase firmado con fecha de caducidad. Las tablas, los roles y las reglas de autorización se quedan exactamente como estaban — solo cambia lo que llevas en la cabecera.</p>
+    <ul class="facts">
+      <li>~60 min</li>
+      <li>Java 21</li>
+      <li>MySQL 9.7 en Docker</li>
+      <li>localhost:8072</li>
+      <li>RSA 2048 · RS256</li>
+    </ul>
+  </div>
+</header>
+
+<div class="wrap shell">
+
+<nav class="toc" aria-label="Contenido">
+  <h2>La ruta</h2>
+  <ol>
+    <li><a href="#empezar"><span class="n">00</span> Poner en marcha</a></li>
+    <li><a href="#herencia"><span class="n">01</span> Lo que arrastra Basic</a></li>
+    <li><a href="#anatomia"><span class="n">02</span> Anatomía de un JWT</a></li>
+    <li><a href="#firmar"><span class="n">03</span> Firmar no es cifrar</a></li>
+    <li><a href="#flujo"><span class="n">04</span> Taquilla y torniquete</a></li>
+    <li><a href="#codigo"><span class="n">05</span> El código</a></li>
+    <li><a href="#probar"><span class="n">06</span> Probarlo</a></li>
+    <li><a href="#romper"><span class="n">07</span> Romperlo</a></li>
+  </ol>
+  <h2>Referencia</h2>
+  <ul>
+    <li><a href="#caducidad">Caducidad y los 60 s</a></li>
+    <li><a href="#trampas">Trampas de Security 7</a></li>
+    <li><a href="#errores">Errores comunes</a></li>
+    <li><a href="#ejercicios">Ejercicios</a></li>
+  </ul>
+  <h2>La serie</h2>
+  <ul>
+    <li><a href="guia-00-las-tres-ideas.html"><span class="n">00</span> Las tres ideas</a></li>
+    <li><a href="guia-01-basic.html"><span class="n">01</span> HTTP Basic</a></li>
+    <li><a href="guia-02-jwt.html" class="cur"><span class="n">02</span> JWT</a></li>
+    <li><a href="guia-03-oauth2.html"><span class="n">03</span> OAuth2</a></li>
+  </ul>
+</nav>
+
+<main>
+
+<section id="empezar">
+  <p class="rubric">Antes de empezar</p>
+  <h2 class="sec"><span class="num">00</span> Poner en marcha</h2>
+
+  <ul class="check">
+    <li><span class="box">[ ]</span><span><b>Java 21 y Docker</b> <code>java -version</code> debe decir <code>21</code> o más, y <code>docker ps</code> debe responder sin errores.</span></li>
+    <li><span class="box">[ ]</span><span><b>Las tablas del proyecto 01</b> — este proyecto usa <em>las mismas</em> <code>members</code> y <code>roles</code>. Si ya hiciste la etapa 01, no hay nada que crear.</span></li>
+    <li><span class="box">[ ]</span><span><b>Las llaves RSA</b> ya vienen dentro del proyecto (<code>src/main/resources/certs/</code>). Para generar las tuyas: <code>instalacion.txt</code>.</span></li>
+  </ul>
+
+  <div class="term">
+    <button class="copy" type="button">Copiar</button>
+<pre><code><span class="cm"># 1. la base de datos</span>
+<span class="p">$</span> <span class="cmd">docker start mysql-9.7</span>
+
+<span class="cm"># 2. solo si NO hiciste la etapa 01: crear las tablas de usuarios</span>
+<span class="p">$</span> <span class="cmd">docker exec -i mysql-9.7 mysql -uroot -pTU_PASSWORD employee_directory &lt; ../sql-scripts/01-security-tables.sql</span>
+
+<span class="cm"># 3. arrancar esta aplicación — escucha en el 8072</span>
+<span class="p">$</span> <span class="cmd">cd 02-security-jwt</span>
+<span class="p">$</span> <span class="cmd">./mvnw spring-boot:run</span>
+
+<span class="cm"># 4. comprobar: esto debe devolverte un token</span>
+<span class="p">$</span> <span class="cmd">curl -u john:test123 -X POST http://localhost:8072/api/auth/login</span>
+<span class="out ok">{"accessToken":"eyJhbGciOiJSUzI1NiJ9...","tokenType":"Bearer","expiresIn":3600,"user":"john"}</span></code></pre>
+  </div>
+
+  <p class="note">Puedes tener la etapa 01 (<code>8071</code>) y esta (<code>8072</code>) corriendo <strong>a la vez</strong>: usan puertos distintos a propósito, para que compares la misma llamada contra las dos.</p>
+  <p class="note warn"><strong>Si trabajas en Windows.</strong> Los comandos de arriba son de macOS y Linux. En PowerShell: usa <code>mvnw.cmd spring-boot:run</code> en lugar de <code>./mvnw</code>, y si un comando ocupa varias líneas, la barra <code>\</code> del final se cambia por acento grave <code>`</code>. Los scripts <code>.sh</code> de la carpeta <code>scripts/</code> necesitan <strong>Git Bash</strong> o <strong>WSL</strong>; en <code>instalacion.txt</code> están las versiones para PowerShell.</p>
+
+</section>
+
+<section id="herencia">
+  <p class="rubric">De dónde venimos</p>
+  <h2 class="sec"><span class="num">01</span> Lo que arrastra Basic</h2>
+  <p>El proyecto 01 quedó funcionando y seguro… mientras uses HTTPS. Pero tenía cuatro defectos que no se arreglan con más configuración, porque nacen todos de la misma raíz: <strong>la prueba de identidad era el secreto mismo</strong>.</p>
+
+  <div class="tw">
+  <table>
+    <thead><tr><th>Defecto de Basic</th><th>Qué hace JWT</th></tr></thead>
+    <tbody>
+      <tr><td>La contraseña viaja en <em>cada</em> petición</td><td>Viaja una vez, en el login. Después viaja un token.</td></tr>
+      <tr><td>No caduca nunca</td><td>El token trae fecha de expiración dentro (<code>exp</code>).</td></tr>
+      <tr><td>No hay logout posible</td><td>Tiras el token. Y como dura poco, la ventana es corta.</td></tr>
+      <tr><td>No se puede acotar</td><td>El token dice qué puedes hacer: puedes emitir uno limitado.</td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <p class="note"><strong>Lo que NO cambia.</strong> Las tablas <code>members</code> y <code>roles</code> son las mismas — este proyecto usa el mismo script SQL del 01. Los usuarios son los mismos (<code>john</code>, <code>mary</code>, <code>susan</code>, todos con <code>test123</code>). Y las reglas de autorización son idénticas, línea por línea. Guarda esa idea: al terminar vas a poder comparar los dos <code>SecurityConfig</code> y ver que la parte de <em>quién puede qué</em> no se tocó.</p>
+</section>
+
+<section id="anatomia">
+  <p class="rubric">El concepto</p>
+  <h2 class="sec"><span class="num">02</span> Anatomía de un JWT</h2>
+  <p>Un JWT es un texto largo con <strong>dos puntos</strong> que lo parten en tres. Eso es todo:</p>
+
+  <div class="term">
+<pre><code><span class="out">eyJhbGciOiJSUzI1NiJ9</span><span class="bad">.</span><span class="out ok">eyJpc3MiOiJzZWN1cml0eS1qd3QiLCJzdWIiOiJqb2huIiwi...</span><span class="bad">.</span><span class="out cm">Aiw4Heg6MZJTHpCTKkXWcTPOTJ0EYp43oC9D54tJ1_hIr6Z8...</span>
+<span class="cm">└──── HEADER ────┘ └──────── PAYLOAD ────────┘ └──────── FIRMA ────────┘</span></code></pre>
+  </div>
+
+  <p>Las tres partes son <strong>base64</strong> — el mismo base64 del proyecto 01. Así que se leen con el mismo comando, sin ninguna llave:</p>
+
+  <div class="term">
+    <button class="copy" type="button">Copiar</button>
+<pre><code><span class="cm"># el HEADER dice con qué algoritmo se firmó</span>
+<span class="p">$</span> <span class="cmd">echo 'eyJhbGciOiJSUzI1NiJ9' | base64 -d</span>
+<span class="out">{"alg":"RS256"}</span>
+
+<span class="cm"># el PAYLOAD es el contenido: quién eres y qué puedes hacer</span>
+<span class="p">$</span> <span class="cmd">echo $TOKEN | cut -d. -f2 | base64 -d</span>
+<span class="out">{
+  "iss": "security-jwt",
+  "sub": "john",
+  "exp": 1787352693,
+  "iat": 1787349093,
+  "roles": ["ROLE_EMPLOYEE"]
+}</span></code></pre>
+  </div>
+
+  <p class="note warn"><strong>Léelo dos veces: acabas de abrir el token sin ninguna contraseña.</strong> Un JWT <em>no está cifrado</em>. Cualquiera que lo intercepte lee su contenido completo. Por eso jamás se mete ahí una contraseña, un número de tarjeta ni nada privado. Lo que un JWT garantiza no es el secreto: es que <strong>nadie pudo modificarlo</strong>.</p>
+
+  <h3>Los claims que importan</h3>
+  <div class="tw">
+  <table>
+    <thead><tr><th>Claim</th><th>Significa</th><th>En nuestro token</th></tr></thead>
+    <tbody>
+      <tr><td><code>iss</code></td><td><em>issuer</em>: quién lo emitió</td><td><code>security-jwt</code></td></tr>
+      <tr><td><code>sub</code></td><td><em>subject</em>: de quién es</td><td><code>john</code></td></tr>
+      <tr><td><code>iat</code></td><td><em>issued at</em>: cuándo se emitió</td><td>timestamp Unix</td></tr>
+      <tr><td><code>exp</code></td><td><em>expires</em>: hasta cuándo vale</td><td><code>iat</code> + 3600</td></tr>
+      <tr><td><code>roles</code></td><td>claim propio nuestro</td><td><code>["ROLE_EMPLOYEE"]</code></td></tr>
+    </tbody>
+  </table>
+  </div>
+  <p>Los cuatro primeros son estándar (RFC 7519); <code>roles</code> nos lo inventamos nosotros. Un JWT admite los claims que quieras — con la condición de que quepan, porque el token viaja en una cabecera HTTP en <em>cada</em> petición.</p>
+</section>
+
+<section id="firmar">
+  <p class="rubric">El concepto</p>
+  <h2 class="sec"><span class="num">03</span> Firmar no es cifrar</h2>
+  <p>Si cualquiera puede leer el payload… ¿qué impide que lo reescriba y se ponga <code>ROLE_ADMIN</code>? La tercera parte del token: <strong>la firma</strong>.</p>
+
+  <p>Este proyecto usa <strong>RS256</strong> = RSA + SHA-256, que trabaja con <em>dos</em> llaves distintas:</p>
+
+  <div class="tw">
+  <table>
+    <thead><tr><th>Llave</th><th>Quién la tiene</th><th>Para qué sirve</th></tr></thead>
+    <tbody>
+      <tr><td><code>private.pem</code></td><td>Solo el servidor que emite</td><td><strong>Firmar</strong> tokens nuevos</td></tr>
+      <tr><td><code>public.pem</code></td><td>Cualquiera, sin problema</td><td><strong>Validar</strong> que una firma es auténtica</td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <p>Esa asimetría es todo el truco: <strong>validar y firmar son operaciones distintas, con llaves distintas</strong>. Puedes repartir la llave pública al mundo entero y nadie podrá emitir un token falso con ella. Si reescribes el payload, la firma deja de corresponder y el servidor lo detecta al instante.</p>
+
+  <p class="note"><strong>¿Y por qué no una sola contraseña compartida (HS256)?</strong> También existe y es más simple: un único secreto que firma y valida. El problema es que <em>todo el que puede validar, puede falsificar</em>. Con RSA puedes tener veinte servicios validando tokens y uno solo capaz de emitirlos. Esa es exactamente la arquitectura del proyecto 03, así que empezamos ya con RSA.</p>
+
+  <h3>Generar el par de llaves</h3>
+  <div class="term">
+    <button class="copy" type="button">Copiar</button>
+<pre><code><span class="p">$</span> <span class="cmd">mkdir -p src/main/resources/certs</span>
+<span class="p">$</span> <span class="cmd">openssl genpkey -algorithm RSA -pkeyopt rsa_keygen_bits:2048 -out src/main/resources/certs/private.pem</span>
+<span class="p">$</span> <span class="cmd">openssl rsa -pubout -in src/main/resources/certs/private.pem -out src/main/resources/certs/public.pem</span></code></pre>
+  </div>
+
+  <p class="note warn"><strong>En un proyecto real, <code>private.pem</code> NUNCA se sube a git.</strong> Aquí está dentro del repositorio a propósito, para que la clase funcione sin pasos extra. En producción va en una variable de entorno, en un gestor de secretos o en un almacén de llaves — y el <code>.gitignore</code> la excluye. Si tu llave privada se filtra, cualquiera puede emitir tokens válidos con el rol que se le antoje.</p>
+</section>
+
+<section id="flujo">
+  <p class="rubric">El mecanismo</p>
+  <h2 class="sec"><span class="num">04</span> Taquilla y torniquete</h2>
+  <p>Con JWT la aplicación tiene <strong>dos puertas distintas</strong>, y por eso el <code>SecurityConfig</code> tiene dos cadenas de filtros. Piensa en un concierto: compras el boleto una vez en la taquilla, y luego lo enseñas en el torniquete cada vez que entras.</p>
+
+  <figure class="poster">
+    <img src="img/fig-02-jwt-flujo.png"
+         alt="Dos bandas horizontales. Arriba, rotulada ONCE: john entrega en la ventanilla de una taquilla una tarjeta con una llave y una contraseña oculta; la tarjeta se queda dentro, marcada con una flecha roja que apunta al interior. El empleado consulta un archivador abierto lleno de fichas y de la taquilla sale un pase que muestra el nombre john, el rol EMPLOYEE, un reloj con 60:00 y un sello de cera roja estampado con la palabra SEALED. Abajo, rotulada EVERY REQUEST: john cruza tres torniquetes seguidos enseñando solo el pase, sin ninguna contraseña, y al final el mismo archivador aparece cerrado con cadena y candado. En un recuadro punteado aparte, a la izquierda, el encapuchado con prismáticos lee el contenido del pase en un globo de pensamiento, y debajo su copia falsificada tiene el sello de cera partido en dos y una equis roja la rechaza.">
+    <figcaption>Fig. 1 — La contraseña entra en la taquilla y se queda ahí; a partir de entonces solo circula el pase. El archivador se consulta una vez y luego queda encadenado: validar el token no toca la base de datos. Ojo con el rincón del fisgón: lo que se rechaza es la <strong>falsificación</strong>, la del sello de cera roto. Un pase <strong>robado intacto</strong> sí funciona — hasta que el reloj llega a cero.</figcaption>
+  </figure>
+
+  <div class="flow">
+    <svg viewBox="0 0 860 440" role="img" aria-label="Flujo de login y uso del token">
+      <defs>
+        <marker id="a2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+          <path d="M 0 0 L 10 5 L 0 10 z" fill="var(--ink-3)"/>
+        </marker>
+      </defs>
+      <g font-family="JetBrains Mono, monospace">
+
+        <rect x="14" y="14" width="832" height="176" rx="9" fill="var(--accent-soft)" stroke="var(--accent)" stroke-dasharray="4 3"/>
+        <text x="30" y="36" font-size="11" fill="var(--accent)" letter-spacing="1.5">1 · LOGIN — UNA SOLA VEZ</text>
+
+        <rect x="30" y="52" width="132" height="52" rx="7" fill="var(--surface)" stroke="var(--rule)"/>
+        <text x="96" y="74" text-anchor="middle" font-size="12" fill="var(--ink)">cliente</text>
+        <text x="96" y="92" text-anchor="middle" font-size="10" fill="var(--ink-2)">-u john:test123</text>
+
+        <path d="M 164 78 L 196 78" stroke="var(--ink-3)" stroke-width="1.5" marker-end="url(#a2)" fill="none"/>
+
+        <rect x="200" y="52" width="170" height="52" rx="7" fill="var(--surface)" stroke="var(--rule)"/>
+        <text x="285" y="74" text-anchor="middle" font-size="12" font-weight="700" fill="var(--ink)">cadena 1</text>
+        <text x="285" y="92" text-anchor="middle" font-size="10" fill="var(--ink-2)">HTTP Basic · /api/auth/**</text>
+
+        <path d="M 372 78 L 404 78" stroke="var(--ink-3)" stroke-width="1.5" marker-end="url(#a2)" fill="none"/>
+
+        <rect x="408" y="52" width="150" height="52" rx="7" fill="var(--surface-2)" stroke="var(--rule)"/>
+        <text x="483" y="74" text-anchor="middle" font-size="12" fill="var(--ink)">members / roles</text>
+        <text x="483" y="92" text-anchor="middle" font-size="10" fill="var(--ink-2)">BCrypt · MySQL</text>
+
+        <path d="M 560 78 L 592 78" stroke="var(--ink-3)" stroke-width="1.5" marker-end="url(#a2)" fill="none"/>
+
+        <rect x="596" y="52" width="228" height="52" rx="7" fill="var(--surface)" stroke="var(--accent)"/>
+        <text x="710" y="74" text-anchor="middle" font-size="12" font-weight="700" fill="var(--ink)">JwtEncoder</text>
+        <text x="710" y="92" text-anchor="middle" font-size="10" fill="var(--accent)">firma con la llave PRIVADA</text>
+
+        <path d="M 710 106 L 710 138" stroke="var(--ink-3)" stroke-width="1.5" marker-end="url(#a2)" fill="none"/>
+        <rect x="596" y="142" width="228" height="34" rx="7" fill="var(--post-bg)" stroke="var(--post)"/>
+        <text x="710" y="164" text-anchor="middle" font-size="11" font-weight="700" fill="var(--post)">token &#8594; al cliente</text>
+
+        <rect x="14" y="204" width="832" height="180" rx="9" fill="var(--surface-2)" stroke="var(--rule)" stroke-dasharray="4 3"/>
+        <text x="30" y="226" font-size="11" fill="var(--ink-3)" letter-spacing="1.5">2 · CADA PETICIÓN — YA SIN CONTRASEÑA</text>
+
+        <rect x="30" y="242" width="132" height="52" rx="7" fill="var(--surface)" stroke="var(--rule)"/>
+        <text x="96" y="264" text-anchor="middle" font-size="12" fill="var(--ink)">cliente</text>
+        <text x="96" y="282" text-anchor="middle" font-size="10" fill="var(--ink-2)">Bearer &lt;token&gt;</text>
+
+        <path d="M 164 268 L 196 268" stroke="var(--ink-3)" stroke-width="1.5" marker-end="url(#a2)" fill="none"/>
+
+        <rect x="200" y="242" width="228" height="52" rx="7" fill="var(--surface)" stroke="var(--accent)"/>
+        <text x="314" y="264" text-anchor="middle" font-size="12" font-weight="700" fill="var(--ink)">JwtDecoder</text>
+        <text x="314" y="282" text-anchor="middle" font-size="10" fill="var(--accent)">valida con la llave PÚBLICA</text>
+
+        <path d="M 430 268 L 462 268" stroke="var(--ink-3)" stroke-width="1.5" marker-end="url(#a2)" fill="none"/>
+
+        <rect x="466" y="242" width="190" height="52" rx="7" fill="var(--surface)" stroke="var(--rule)"/>
+        <text x="561" y="264" text-anchor="middle" font-size="12" font-weight="700" fill="var(--ink)">AuthorizationFilter</text>
+        <text x="561" y="282" text-anchor="middle" font-size="10" fill="var(--ink-2)">roles del claim, no de la BD</text>
+
+        <path d="M 658 268 L 690 268" stroke="var(--ink-3)" stroke-width="1.5" marker-end="url(#a2)" fill="none"/>
+
+        <rect x="694" y="242" width="130" height="52" rx="7" fill="var(--surface-2)" stroke="var(--rule)"/>
+        <text x="759" y="270" text-anchor="middle" font-size="11" fill="var(--ink)">Controller</text>
+
+        <rect x="200" y="312" width="456" height="46" rx="7" fill="var(--put-bg)" stroke="var(--put)"/>
+        <text x="428" y="332" text-anchor="middle" font-size="11" font-weight="700" fill="var(--put)">La base de datos NO se consulta aquí.</text>
+        <text x="428" y="350" text-anchor="middle" font-size="10" fill="var(--put)">Todo lo que hace falta ya viene firmado dentro del token.</text>
+      </g>
+    </svg>
+    <p class="fig">Fig. 2 — El mismo reparto, con los nombres reales: qué cadena de filtros atiende cada puerta y con qué llave.</p>
+  </div>
+
+  <p>Ese recuadro de abajo es la ventaja operativa que hace famoso a JWT: <strong>validar un token no toca la base de datos</strong>. Con Basic, cada petición era una consulta a <code>members</code> más un cálculo de BCrypt (que, recuérdalo, es lento a propósito). Con JWT es una verificación de firma en memoria. Por eso escala.</p>
+
+  <p class="note warn"><strong>Y ese mismo recuadro es su gran desventaja.</strong> Si borras a john de la base de datos o le quitas <code>ROLE_ADMIN</code>, su token sigue funcionando hasta que caduque — porque nadie va a preguntarle nada a la base de datos. Un JWT no se puede “apagar”. Por eso se emiten con vida corta, y por eso existen los <em>refresh tokens</em> y las listas de revocación.</p>
+</section>
+
+<section id="codigo">
+  <p class="rubric">Manos a la obra</p>
+  <h2 class="sec"><span class="num">05</span> El código</h2>
+
+  <h3>La dependencia</h3>
+  <div class="term">
+    <button class="copy" type="button">Copiar</button>
+<pre><code><span class="cmd">&lt;dependency&gt;</span>
+<span class="cmd">    &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;</span>
+<span class="cmd">    &lt;artifactId&gt;spring-boot-starter-security-oauth2-resource-server&lt;/artifactId&gt;</span>
+<span class="cmd">&lt;/dependency&gt;</span></code></pre>
+  </div>
+
+  <p class="note warn"><strong>Sí, dice “oauth2” aunque todavía no estemos haciendo OAuth2.</strong> No es un error de copiar y pegar. JWT nació dentro del ecosistema OAuth2 y Spring metió ahí todo el soporte de tokens. Esa misma dependencia es la que usarás sin cambios en el proyecto 03 — lo único que cambiará es de dónde viene la llave. Ojo también con el nombre: en Spring Boot 3 era <code>spring-boot-starter-oauth2-resource-server</code>, <em>sin</em> el <code>security-</code>.</p>
+
+  <h3>Dos cadenas, porque hay dos puertas</h3>
+  <div class="term">
+    <button class="copy" type="button">Copiar</button>
+<pre><code><span class="cm">// CADENA 1 — la taquilla: solo /api/auth/**, y con contraseña</span>
+<span class="cmd">@Bean</span>
+<span class="cmd">@Order(1)</span>
+<span class="cmd">public SecurityFilterChain loginFilterChain(HttpSecurity http) throws Exception {</span>
+<span class="cmd">    http.securityMatcher("/api/auth/**");</span>
+<span class="cmd">    http.authorizeHttpRequests(c -&gt; c.anyRequest().authenticated());</span>
+<span class="cmd">    http.httpBasic(Customizer.withDefaults());</span>
+<span class="cmd">    ...</span>
+<span class="cmd">}</span>
+
+<span class="cm">// CADENA 2 — el torniquete: todo lo demás, y solo con token</span>
+<span class="cmd">@Bean</span>
+<span class="cmd">@Order(2)</span>
+<span class="cmd">public SecurityFilterChain apiFilterChain(HttpSecurity http) throws Exception {</span>
+<span class="cmd">    http.authorizeHttpRequests(c -&gt; c</span>
+<span class="cmd">            .requestMatchers(HttpMethod.GET,    "/api/employees").hasRole("EMPLOYEE")</span>
+<span class="cmd">            .requestMatchers(HttpMethod.DELETE, "/api/employees/**").hasRole("ADMIN")</span>
+<span class="cmd">            ...);</span>
+<span class="cmd">    http.oauth2ResourceServer(oauth2 -&gt; oauth2.jwt(...));</span>
+<span class="cmd">    ...</span>
+<span class="cmd">}</span></code></pre>
+  </div>
+
+  <p><code>securityMatcher</code> es la pieza nueva: acota una cadena a unas rutas. Con <code>@Order(1)</code> Spring prueba primero la de login; si la ruta no encaja, pasa a la siguiente. Las reglas de roles de la cadena 2 son un copiar y pegar del proyecto 01 — <strong>ni una coma distinta</strong>.</p>
+
+  <h3>Las dos llaves, en dos beans</h3>
+  <div class="term">
+    <button class="copy" type="button">Copiar</button>
+<pre><code><span class="cm">// FIRMAR: llave privada. Solo este servidor emite tokens.</span>
+<span class="cmd">@Bean</span>
+<span class="cmd">public JwtEncoder jwtEncoder() {</span>
+<span class="cmd">    JWK jwk = new RSAKey.Builder(publicKey).privateKey(privateKey).build();</span>
+<span class="cmd">    return new NimbusJwtEncoder(new ImmutableJWKSet&lt;&gt;(new JWKSet(jwk)));</span>
+<span class="cmd">}</span>
+
+<span class="cm">// VALIDAR: llave pública. Cualquiera podría validar; nadie más puede firmar.</span>
+<span class="cmd">@Bean</span>
+<span class="cmd">public JwtDecoder jwtDecoder() {</span>
+<span class="cmd">    return NimbusJwtDecoder.withPublicKey(publicKey).build();</span>
+<span class="cmd">}</span></code></pre>
+  </div>
+
+  <p>Las llaves se inyectan solas desde <code>application.properties</code> con <code>@Value</code>: Spring convierte el archivo <code>.pem</code> en un objeto <code>RSAPublicKey</code> sin que escribas una línea de parseo.</p>
+
+  <h3>El login</h3>
+  <div class="term">
+    <button class="copy" type="button">Copiar</button>
+<pre><code><span class="cmd">@PostMapping("/login")</span>
+<span class="cmd">public TokenResponse login(Authentication authentication) {</span>
+<span class="cmd"></span>
+<span class="cmd">    JwtClaimsSet claims = JwtClaimsSet.builder()</span>
+<span class="cmd">            .issuer("security-jwt")</span>
+<span class="cmd">            .issuedAt(ahora)</span>
+<span class="cmd">            .expiresAt(ahora.plusSeconds(ttlSeconds))</span>
+<span class="cmd">            .subject(authentication.getName())</span>
+<span class="cmd">            .claim("roles", roles)</span>
+<span class="cmd">            .build();</span>
+<span class="cmd"></span>
+<span class="cmd">    return new TokenResponse(jwtEncoder.encode(...).getTokenValue(), "Bearer", ttlSeconds, ...);</span>
+<span class="cmd">}</span></code></pre>
+  </div>
+
+  <p class="note"><strong>Fíjate en lo que este método NO recibe.</strong> No hay <code>@RequestBody</code> con usuario y contraseña, ni comparación de hashes, ni consulta SQL. Cuando este código se ejecuta, la cadena 1 <em>ya</em> validó el HTTP Basic contra la base de datos, y Spring nos entrega el resultado en el parámetro <code>Authentication</code>. Si las credenciales fueran malas, la ejecución nunca habría llegado aquí. Es la cadena de filtros del proyecto 01, reutilizada tal cual.</p>
+</section>
+
+<section id="probar">
+  <p class="rubric">Comprobación</p>
+  <h2 class="sec"><span class="num">06</span> Probarlo</h2>
+
+  <div class="term">
+    <button class="copy" type="button">Copiar</button>
+<pre><code><span class="cm"># 1. la taquilla: la ÚNICA vez que viaja la contraseña</span>
+<span class="p">$</span> <span class="cmd">TOKEN=$(curl -s -u john:test123 -X POST http://localhost:8072/api/auth/login \</span>
+<span class="cmd">        | python3 -c "import json,sys;print(json.load(sys.stdin)['accessToken'])")</span>
+
+<span class="cm"># 2. el torniquete: a partir de aquí, solo el token</span>
+<span class="p">$</span> <span class="cmd">curl -H "Authorization: Bearer $TOKEN" http://localhost:8072/api/employees</span>
+<span class="out ok">[{"firstName":"Patrobas","lastName":"Filologo","email":"patrobas@gmail.com","id":1}, ...]</span>
+
+<span class="cm"># 3. john sigue siendo EMPLOYEE: los roles viajan DENTRO del token</span>
+<span class="p">$</span> <span class="cmd">curl -H "Authorization: Bearer $TOKEN" -X DELETE http://localhost:8072/api/employees/1</span>
+<span class="out bad">{"status":403,"error":"Forbidden"}</span>
+
+<span class="cm"># 4. y esto ya NO funciona — esta es la lección del proyecto</span>
+<span class="p">$</span> <span class="cmd">curl -u susan:test123 http://localhost:8072/api/employees</span>
+<span class="out bad">HTTP 401</span></code></pre>
+  </div>
+
+  <p class="note warn"><strong>Trampa de zsh (el shell por defecto del Mac).</strong> Si escribes <code>curl -u "$USUARIO:test123"</code> con una variable, zsh interpreta el <code>:t</code> como un modificador de historia y te manda <code>johnest123</code> como nombre de usuario. Vas a ver un <code>401</code> desconcertante y una petición de contraseña interactiva. La forma correcta es con llaves: <code>"${USUARIO}:test123"</code>.</p>
+
+  <h3>La matriz completa</h3>
+  <p>El script <code>scripts/test-endpoints.sh</code> corre 11 comprobaciones, incluida la de manipular el token:</p>
+
+  <div class="term">
+    <button class="copy" type="button">Copiar</button>
+<pre><code><span class="p">$</span> <span class="cmd">./scripts/test-endpoints.sh</span>
+<span class="out ok">OK  GET con token de john                            -&gt; HTTP 200  (esperado 200)</span>
+<span class="out ok">OK  POST con token de john (EMPLOYEE)                -&gt; HTTP 403  (esperado 403)</span>
+<span class="out ok">OK  HTTP Basic contra /api/employees                 -&gt; HTTP 401  (esperado 401)</span>
+<span class="out ok">OK  firma alterada (1 caracter del medio)            -&gt; HTTP 401  (esperado 401)</span>
+<span class="out ok">OK  payload reescrito a ROLE_ADMIN                   -&gt; HTTP 401  (esperado 401)</span>
+<span class="out ok">OK  DELETE con token de susan (ADMIN)                -&gt; HTTP 200  (esperado 200)</span></code></pre>
+  </div>
+</section>
+
+<section id="romper">
+  <p class="rubric">La lección</p>
+  <h2 class="sec"><span class="num">07</span> Romperlo</h2>
+
+  <h3>Ascenderse a ADMIN</h3>
+  <p>El payload se lee sin llaves… así que reescríbelo. Cambia <code>ROLE_EMPLOYEE</code> por <code>ROLE_ADMIN</code>, vuelve a codificarlo en base64, pégale la firma original y mándalo:</p>
+
+  <div class="term">
+<pre><code><span class="p">$</span> <span class="cmd">curl -X DELETE -H "Authorization: Bearer $TOKEN_FALSIFICADO" .../api/employees/1</span>
+<span class="out bad">HTTP 401  invalid_token</span></code></pre>
+  </div>
+
+  <p>La firma se calculó sobre el payload <em>original</em>. Al cambiar una letra, deja de corresponder — y sin la llave privada no puedes recalcularla. <strong>Ese es el valor entero de un JWT: es de lectura pública y de escritura imposible.</strong></p>
+
+  <p class="note warn"><strong>La demo que sale mal en clase.</strong> Casi todos los tutoriales dicen “cambia un carácter del token y verás que falla”. Si cambias el <strong>último</strong>, hay una posibilidad real de que <em>siga funcionando</em>: la firma son 2048 bits pero ocupa 342 caracteres base64, que dan para 2052 — al último carácter le sobran 4 bits. Medido en este proyecto: <strong>15 de los 63 caracteres posibles (~24%) producen exactamente la misma firma</strong>. No es un fallo de seguridad, son bits que no se usan. Cambia siempre un carácter <em>del medio</em>.</p>
+
+  <h3>Robar el token</h3>
+  <p>Un token robado funciona. No hay contraseña que adivinar: quien lo tenga, <em>es</em> john hasta que el token caduque. De ahí salen las tres reglas prácticas:</p>
+  <ul class="prose">
+    <li><strong>HTTPS igual que en Basic.</strong> El token viaja en claro en la cabecera; interceptarlo es tan fácil como interceptar la contraseña.</li>
+    <li><strong>Vida corta.</strong> Minutos, no días. La caducidad es tu única defensa automática.</li>
+    <li><strong>No lo guardes en <code>localStorage</code> si tu página tiene riesgo de XSS</strong> — cualquier script inyectado lo lee. La alternativa es una cookie <code>HttpOnly</code>, que a cambio te devuelve el problema de CSRF. No hay opción gratis; hay que elegir con criterio.</li>
+  </ul>
+</section>
+
+<section id="caducidad">
+  <p class="rubric">Referencia</p>
+  <h2 class="sec">La caducidad y los 60 segundos</h2>
+  <p>Para ver caducar un token en vivo, arranca con un TTL corto:</p>
+
+  <div class="term">
+    <button class="copy" type="button">Copiar</button>
+<pre><code><span class="p">$</span> <span class="cmd">java -jar target/security-jwt-0.0.1-SNAPSHOT.jar --jwt.ttl-seconds=3</span></code></pre>
+  </div>
+
+  <p>Y entonces pasa algo que descoloca a todo el mundo. Esto está medido en este proyecto, con un token de 3 segundos:</p>
+
+  <div class="term">
+<pre><code><span class="out">t = 0s    -&gt; 200</span>
+<span class="out">t = 10s   -&gt; 200</span>  <span class="cm">← ¡caducó hace 7 segundos y sigue entrando!</span>
+<span class="out bad">t = 65s   -&gt; 401</span>  <span class="cm">← ahora sí</span>
+<span class="out bad">WWW-Authenticate: Bearer error="invalid_token",</span>
+<span class="out bad">  error_description="Jwt expired at 2026-08-21T21:54:13Z"</span></code></pre>
+  </div>
+
+  <p class="note"><strong>No es un bug: es tolerancia de reloj.</strong> <code>JwtTimestampValidator</code> acepta por defecto <strong>60 segundos</strong> de desfase, porque el servidor que firma y el que valida suelen ser máquinas distintas y sus relojes nunca están perfectamente sincronizados. Sin esa holgura, unos pocos segundos de deriva causarían rechazos aleatorios imposibles de depurar. Si quieres que caduque puntualmente, hay que configurar el validador a mano — es el ejercicio 4.</p>
+</section>
+
+<section id="trampas">
+  <p class="rubric">Referencia</p>
+  <h2 class="sec">Trampas de Spring Security 7</h2>
+  <p>Tres cosas que este proyecto hace de una forma concreta, y que ningún tutorial de Boot 3 te va a explicar porque en Boot 3 no pasaban:</p>
+
+  <h3>1. El rol fantasma <code>FACTOR_PASSWORD</code></h3>
+  <p>Spring Security 7 añade autoridades que describen <em>cómo</em> te autenticaste (soporte de multifactor). Si vuelcas <code>authentication.getAuthorities()</code> tal cual dentro del token, sale esto:</p>
+  <div class="term">
+<pre><code><span class="out">"roles": ["ROLE_EMPLOYEE", <span class="bad">"FACTOR_PASSWORD"</span>]</span></code></pre>
+  </div>
+  <p>No rompe nada, pero es información interna del servidor filtrándose a un token que viaja al cliente. Por eso el <code>AuthController</code> filtra:</p>
+  <div class="term">
+<pre><code><span class="cmd">.filter(authority -&gt; authority.startsWith("ROLE_"))</span></code></pre>
+  </div>
+
+  <h3>2. El prefijo <code>SCOPE_</code></h3>
+  <p>Por defecto Spring lee el claim <code>scope</code> y le antepone <code>SCOPE_</code>, con lo que <code>hasRole("EMPLOYEE")</code> dejaría de funcionar y tendrías <code>403</code> en todo. Como nuestro claim se llama <code>roles</code> y ya trae el prefijo <code>ROLE_</code>, se lo decimos explícitamente:</p>
+  <div class="term">
+<pre><code><span class="cmd">authoritiesConverter.setAuthoritiesClaimName("roles");</span>
+<span class="cmd">authoritiesConverter.setAuthorityPrefix("");</span></code></pre>
+  </div>
+  <p>Gracias a esas dos líneas, las reglas de autorización del proyecto 01 funcionan aquí sin tocarlas. En el proyecto 03 volverás a encontrarte este mismo problema, porque Keycloak coloca los roles en otro sitio distinto.</p>
+
+  <h3>3. El nombre del starter</h3>
+  <p>Boot 4 renombró el starter a <code>spring-boot-starter-security-oauth2-resource-server</code>. El nombre viejo (<code>spring-boot-starter-oauth2-resource-server</code>) todavía existe, así que copiar de un tutorial de Boot 3 puede <em>parecer</em> que funciona. Usa el nuevo.</p>
+</section>
+
+<section id="errores">
+  <p class="rubric">Referencia</p>
+  <h2 class="sec">Errores comunes</h2>
+
+  <div class="tw">
+  <table>
+    <thead><tr><th>Síntoma</th><th>Causa</th><th>Arreglo</th></tr></thead>
+    <tbody>
+      <tr>
+        <td class="wrap-ok">El login pide contraseña interactivamente y devuelve <span class="code-bad">401</span></td>
+        <td>zsh se comió parte del argumento: <code>"$U:test123"</code> aplica el modificador <code>:t</code>.</td>
+        <td>Escribe <code>"${U}:test123"</code>, con llaves.</td>
+      </tr>
+      <tr>
+        <td class="wrap-ok"><span class="code-bad">403</span> en todo, con un token que parece correcto</td>
+        <td>Los roles no llegaron como autoridades: falta el <code>JwtAuthenticationConverter</code>, o el claim se llama distinto.</td>
+        <td>Decodifica el payload y comprueba que el claim <code>roles</code> existe y trae <code>ROLE_*</code>.</td>
+      </tr>
+      <tr>
+        <td class="wrap-ok"><span class="code-bad">401</span> <code>invalid_token</code> justo después de reiniciar</td>
+        <td>Regeneraste las llaves: los tokens viejos se firmaron con la privada anterior.</td>
+        <td>Vuelve a hacer login. Es el comportamiento correcto.</td>
+      </tr>
+      <tr>
+        <td class="wrap-ok">El token caducado sigue entrando</td>
+        <td>Los 60 segundos de tolerancia de reloj.</td>
+        <td>Espera 60 s más, o configura el validador (ejercicio 4).</td>
+      </tr>
+      <tr>
+        <td class="wrap-ok">Cambié un carácter del token y sigue funcionando</td>
+        <td>Cambiaste el <em>último</em>: le sobran 4 bits (~24% de las sustituciones no cambian nada).</td>
+        <td>Cambia uno del medio de la firma.</td>
+      </tr>
+      <tr>
+        <td class="wrap-ok"><code>Failed to load ApplicationContext</code> mencionando <code>RSAPrivateKey</code></td>
+        <td>Falta el archivo <code>.pem</code>, la ruta está mal, o la llave no es PKCS#8.</td>
+        <td>Debe empezar por <code>-----BEGIN PRIVATE KEY-----</code>. Si dice <code>RSA PRIVATE KEY</code> es PKCS#1: regenérala con <code>openssl genpkey</code>.</td>
+      </tr>
+      <tr>
+        <td class="wrap-ok">Cambié el código y no pasa nada</td>
+        <td><code>mvn spring-boot:run</code> con devtools solo reinicia cuando cambia <code>target/classes</code>, y Maven no recompila solo.</td>
+        <td>Reinicia, o recompila desde el IDE.</td>
+      </tr>
+    </tbody>
+  </table>
+  </div>
+</section>
+
+<section id="ejercicios">
+  <p class="rubric">Referencia</p>
+  <h2 class="sec">Ejercicios</h2>
+
+  <ul class="check">
+    <li><span class="box">[ ]</span><span><b>1. Lee tu propio token</b> Haz login como <code>susan</code> y decodifica el payload. ¿Cuántos roles trae? Compara con el de <code>john</code> y explica de dónde salió la diferencia.</span></li>
+    <li><span class="box">[ ]</span><span><b>2. Falsifica (y fracasa)</b> Reescribe el payload de john poniéndole <code>ROLE_ADMIN</code>, recodifícalo y úsalo para borrar un empleado. Anota el código y explica en una frase por qué no funcionó.</span></li>
+    <li><span class="box">[ ]</span><span><b>3. Rompe la firma bien</b> Cambia el último carácter del token y prueba. Ahora cambia uno del medio. Explica por qué los resultados pueden ser distintos.</span></li>
+    <li><span class="box">[ ]</span><span><b>4. Caducidad puntual</b> Haz que el token caduque exactamente en su <code>exp</code>, sin los 60 s de gracia. Pista: <code>NimbusJwtDecoder.setJwtValidator(...)</code> con un <code>JwtTimestampValidator(Duration.ofSeconds(0))</code>. Después argumenta si te parece buena idea en producción.</span></li>
+    <li><span class="box">[ ]</span><span><b>5. Revocación imposible</b> Haz login como susan, guarda el token, y BORRA a susan de la tabla <code>members</code>. Usa el token otra vez. ¿Funciona? Explica por qué, y propón dos formas de arreglarlo.</span></li>
+    <li><span class="box">[ ]</span><span><b>6. Compara los dos proyectos</b> Abre lado a lado el <code>SecurityConfig</code> del 01 y el del 02. Haz una lista de lo que cambió y otra de lo que no. La segunda lista es más larga: esa es la idea.</span></li>
+  </ul>
+
+  <p class="note"><strong>Siguiente parada:</strong> <a href="guia-03-oauth2.html">etapa 03 — OAuth2</a>. El <code>AuthController</code>, las llaves RSA y hasta la tabla de usuarios van a <em>desaparecer</em>: los tokens los emitirá Keycloak y tu API se limitará a validarlos. El <code>oauth2ResourceServer(...)</code> que escribiste hoy se queda casi igual — solo cambia de dónde sale la llave pública.</p>
+</section>
+
+</main>
+</div>
+
+<footer>
+  <div class="wrap">
+    <span>Academia MTY &middot; Seguridad y autenticación 02/03</span>
+    <span>Spring Boot 4.1.0 &middot; Spring Security 7.1.0 &middot; Java 21</span>
+  </div>
+</footer>
+<script>
+document.querySelectorAll(".term").forEach(function (term) {
+  var btn = term.querySelector(".copy");
+  if (!btn) return;
+
+  btn.addEventListener("click", function () {
+    var lines = Array.prototype.map.call(
+      term.querySelectorAll(".cmd"),
+      function (n) { return n.textContent; }
+    );
+    var text = lines.join("\n");
+
+    var flash = function (msg) {
+      btn.textContent = msg;
+      setTimeout(function () { btn.textContent = "Copiar"; }, 1800);
+    };
+
+    var fallback = function () {
+      var ta = document.createElement("textarea");
+      ta.value = text;
+      ta.setAttribute("readonly", "");
+      ta.style.position = "fixed";
+      ta.style.opacity = "0";
+      document.body.appendChild(ta);
+      ta.select();
+      var ok = false;
+      try { ok = document.execCommand("copy"); } catch (e) { ok = false; }
+      document.body.removeChild(ta);
+      flash(ok ? "Copiado" : "Selecciónalo");
+    };
+
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(text).then(function () {
+        flash("Copiado");
+      }, fallback);
+    } else {
+      fallback();
+    }
+  });
+});
+
+var links = Array.prototype.slice.call(document.querySelectorAll(".toc a"));
+var byId = {};
+links.forEach(function (a) { byId[a.getAttribute("href").slice(1)] = a; });
+
+if ("IntersectionObserver" in window) {
+  var obs = new IntersectionObserver(function (entries) {
+    entries.forEach(function (e) {
+      if (!e.isIntersecting) return;
+      links.forEach(function (a) { a.classList.remove("on"); });
+      var a = byId[e.target.id];
+      if (a) a.classList.add("on");
+    });
+  }, { rootMargin: "-10% 0px -75% 0px", threshold: 0 });
+
+  document.querySelectorAll("section[id]").forEach(function (s) { obs.observe(s); });
+}
+</script>
