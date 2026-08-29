@@ -495,21 +495,4 @@ Los comandos fueron probados en la terminal de Windows PowerShell.
 
 ---
 
-## Resumen
-
-En este proyecto se trabajaron diferentes herramientas del Core avanzado de Java.
-
-El **threading** permite ejecutar tareas de manera concurrente, aunque requiere controlar el acceso a recursos compartidos para evitar condiciones de carrera.
-
-El **manejo de archivos** demuestra diferentes formas de leer y escribir información utilizando `java.nio.file.Files`, streams y `try-with-resources`.
-
-La **serialización** permite guardar objetos `Gorilla` en disco utilizando `ObjectOutputStream` y recuperarlos posteriormente mediante `ObjectInputStream`.
-
-También se demuestra que:
-
-- `serialVersionUID` permite controlar la compatibilidad entre versiones de una clase serializable.
-- Un atributo marcado como `transient` no se almacena durante la serialización.
-
----
-
 [← Volver a Semana 03](../README.md)
