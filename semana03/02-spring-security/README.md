@@ -1,10 +1,8 @@
 # Spring Security - HTTP Basic, JWT y OAuth2
 
-En este proyecto se trabajan tres mecanismos de autenticación y autorización utilizando **Spring Security**: HTTP Basic, JWT y OAuth2.
+En este proyecto se trabajan tres mecanismos de autenticación y autorización con **Spring Security**: HTTP Basic, JWT y OAuth2.
 
-Los tres buscan resolver el mismo problema general: evitar que cualquier usuario pueda acceder libremente a los recursos de una API. La diferencia está en la forma en que se identifica al usuario y en cómo se demuestra su identidad en cada petición.
-
-Los ejemplos se encuentran separados en:
+Los ejemplos están separados en:
 
 ```text
 02-spring-security/
@@ -14,7 +12,7 @@ Los ejemplos se encuentran separados en:
 └── sql-scripts/
 ```
 
-Cada proyecto muestra una evolución en la forma de proteger la API.
+Los tres buscan proteger los recursos de una API, pero utilizan diferentes formas de identificar y autorizar al usuario.
 
 ---
 
@@ -22,15 +20,9 @@ Cada proyecto muestra una evolución en la forma de proteger la API.
 
 ### ¿Qué es y qué problema resuelve?
 
-HTTP Basic es una de las formas más sencillas de autenticación.
+HTTP Basic permite proteger una API enviando el usuario y contraseña en cada petición.
 
-El cliente envía su usuario y contraseña en cada petición.
-
-Spring Security recibe esas credenciales, verifica que sean correctas y posteriormente decide si el usuario tiene permiso para acceder al endpoint solicitado.
-
-Este mecanismo permite comenzar a proteger una API sin necesidad de manejar tokens.
-
----
+Spring Security valida las credenciales y posteriormente revisa si el usuario tiene el rol necesario para acceder al recurso.
 
 ### ¿Dónde se ve en el código?
 
@@ -46,15 +38,13 @@ La configuración principal está en:
 SecurityConfig.java
 ```
 
-donde se habilita HTTP Basic mediante:
+donde se habilita mediante:
 
 ```java
 http.httpBasic(Customizer.withDefaults());
 ```
 
-En la misma configuración se restringen diferentes endpoints dependiendo de los roles del usuario.
-
-Por ejemplo, se utilizan reglas como:
+También se utilizan roles como:
 
 ```java
 .hasRole("EMPLOYEE")
@@ -68,64 +58,41 @@ Los usuarios se consultan desde la base de datos mediante:
 JdbcUserDetailsManager
 ```
 
-La estructura de usuarios, roles y contraseñas se encuentra en:
+y las tablas, usuarios, roles y contraseñas se encuentran en:
 
 ```text
 sql-scripts/01-security-tables.sql
 ```
 
-También se incluye:
+El archivo:
 
 ```text
 scripts/test-endpoints.sh
 ```
 
-para comprobar los diferentes resultados de autenticación y autorización.
-
----
+permite comprobar los accesos permitidos y rechazados.
 
 ### 401 y 403
-
-Este proyecto también permite observar la diferencia entre dos errores importantes.
-
-Un:
 
 ```text
 401 Unauthorized
 ```
 
-aparece cuando el usuario no se autenticó correctamente, por ejemplo porque no envió credenciales o son incorrectas.
-
-Un:
+significa que el usuario no se autenticó correctamente.
 
 ```text
 403 Forbidden
 ```
 
-significa que el usuario sí fue autenticado, pero no tiene el rol necesario para utilizar determinado recurso.
-
-Por ejemplo:
-
-```text
-Sin usuario/contraseña
-        ↓
-       401
-
-Usuario válido
-pero sin el rol requerido
-        ↓
-       403
-```
-
----
+significa que sí está autenticado, pero no tiene el rol necesario.
 
 ### ¿Qué pasa si no se utiliza?
 
-Sin un mecanismo de autenticación, cualquier cliente podría consumir los endpoints protegidos.
+Sin autenticación, cualquier cliente podría acceder a los endpoints.
 
-Además, si solamente se verifica que el usuario existe pero no sus roles, un usuario con pocos privilegios podría ejecutar operaciones que deberían estar reservadas para administradores o managers.
+Además, sin autorización por roles, un usuario podría ejecutar operaciones que no le corresponden.
 
-La principal desventaja de HTTP Basic es que las credenciales deben enviarse en cada petición, por lo que debe utilizarse siempre sobre HTTPS en un sistema real.
+HTTP Basic debe utilizarse sobre HTTPS en un sistema real, ya que las credenciales se envían en cada petición.
 
 ---
 
@@ -133,39 +100,35 @@ La principal desventaja de HTTP Basic es que las credenciales deben enviarse en 
 
 ### ¿Qué es y qué problema resuelve?
 
-JWT permite autenticar al usuario una vez y posteriormente utilizar un **token** para acceder a los recursos protegidos.
+JWT permite autenticar al usuario una vez y utilizar posteriormente un token para acceder a los endpoints protegidos.
 
-En lugar de enviar usuario y contraseña en cada petición, el flujo utilizado en este proyecto es:
+El flujo utilizado es:
 
 ```text
 Usuario + contraseña
         ↓
 POST /api/auth/login
         ↓
-Servidor valida las credenciales
-        ↓
-Genera JWT
+Servidor genera JWT
         ↓
 Cliente recibe token
         ↓
 Authorization: Bearer <token>
         ↓
-Endpoints protegidos
+API protegida
 ```
 
-Esto evita que la contraseña tenga que enviarse nuevamente en cada petición a la API.
-
----
+De esta manera, el usuario y contraseña no tienen que enviarse nuevamente en cada petición.
 
 ### ¿Dónde se ve en el código?
 
-El ejemplo se encuentra en:
+El ejemplo está en:
 
 ```text
 02-security-jwt/
 ```
 
-El endpoint de autenticación está implementado en:
+El login se implementa en:
 
 ```text
 AuthController.java
@@ -177,15 +140,15 @@ mediante:
 POST /api/auth/login
 ```
 
-Después de validar las credenciales, se genera un JWT utilizando:
+El token se genera utilizando:
 
 ```java
 JwtEncoder
 ```
 
-La configuración de Spring Security utiliza el soporte de Resource Server para validar esos tokens.
+y se valida utilizando la configuración de Spring Security como Resource Server.
 
-junto con claves RSA:
+Las claves utilizadas están en:
 
 ```text
 src/main/resources/certs/
@@ -193,76 +156,43 @@ src/main/resources/certs/
 └── public.pem
 ```
 
-La clave privada permite firmar los tokens generados por la aplicación y la clave pública permite verificar posteriormente que el token no fue alterado.
+La clave privada firma el token y la pública permite comprobar que no fue modificado.
 
----
-
-### Expiración del token
-
-En la configuración se define un tiempo de vida para el JWT:
+También se configura un tiempo de expiración:
 
 ```properties
 jwt.ttl-seconds=3600
 ```
 
-Esto evita que un token pueda utilizarse indefinidamente.
-
-Una vez vencido, el servidor debe rechazarlo.
-
----
-
 ### Demostración del 401
 
-Dentro del proyecto se incluye:
+El archivo:
 
 ```text
 scripts/test-endpoints.sh
 ```
 
-que permite comprobar diferentes situaciones.
-
-Por ejemplo:
+permite probar casos como:
 
 ```text
-Petición sin token
-        ↓
-       401
+Sin token       -> 401
+Token alterado  -> 401
+Token inválido  -> 401
+Token vencido   -> 401
 ```
 
-También se prueban casos como:
-
-```text
-Token alterado
-      ↓
-     401
-```
-
-y:
-
-```text
-JWT inválido o vencido
-        ↓
-       401
-```
-
-Esta parte es importante porque no solamente se demuestra que un token válido funciona, sino también que la API realmente bloquea peticiones que no deberían tener acceso.
-
----
+Esto demuestra que la API no solamente acepta tokens válidos, sino que también bloquea los incorrectos.
 
 ### ¿Qué pasa si no se valida correctamente?
 
-Si la API simplemente aceptara cualquier cadena enviada como token, un usuario podría modificar información del JWT y obtener privilegios que no le corresponden.
+Si la firma o la expiración no se verificaran, un usuario podría modificar el contenido del token o reutilizarlo indefinidamente.
 
-Por eso la firma es importante.
-
-El servidor verifica que el token:
+Por eso la API debe comprobar que el JWT:
 
 - tenga una firma válida;
-- no haya sido modificado;
+- no haya sido alterado;
 - no esté vencido;
-- contenga la información necesaria para autorizar al usuario.
-
-Sin estas validaciones, el token dejaría de ser una prueba confiable de identidad.
+- contenga los permisos necesarios.
 
 ---
 
@@ -270,11 +200,9 @@ Sin estas validaciones, el token dejaría de ser una prueba confiable de identid
 
 ### ¿Qué es y qué problema resuelve?
 
-OAuth2 separa la aplicación que utiliza un recurso de la aplicación encargada de autenticar al usuario.
+OAuth2 permite separar la autenticación de la API protegida.
 
-En este proyecto se utiliza **Keycloak** como servidor de autorización.
-
-La API ya no necesita administrar directamente el inicio de sesión del usuario. En su lugar, confía en los tokens emitidos por Keycloak.
+En este proyecto se utiliza **Keycloak** como Authorization Server. La API no autentica directamente al usuario, sino que confía en los tokens emitidos por Keycloak.
 
 El flujo general es:
 
@@ -283,8 +211,6 @@ Usuario
    ↓
 Keycloak
    ↓
-Autenticación
-   ↓
 Access Token
    ↓
 Cliente
@@ -292,105 +218,67 @@ Cliente
 API protegida
 ```
 
----
+### Actores de OAuth2
 
-## Actores de OAuth2
+**Resource Owner:** el usuario.
 
-En OAuth2 participan diferentes actores.
+**Client:** la aplicación que quiere acceder a la API.
 
-### Resource Owner
+**Authorization Server:** autentica al usuario y genera tokens. En este proyecto es **Keycloak**.
 
-Es el usuario propietario de los datos o permisos.
+**Resource Server:** la API que contiene los recursos protegidos y valida los tokens.
 
-En este ejemplo sería la persona que inicia sesión.
+### ¿Por qué la aplicación no ve la contraseña?
 
----
-
-### Client
-
-Es la aplicación que quiere acceder a la API en nombre del usuario.
-
-Un cliente puede ser, por ejemplo:
-
-- una aplicación web;
-- una aplicación móvil;
-- otro sistema.
-
----
-
-### Authorization Server
-
-Es quien autentica al usuario y emite los tokens.
-
-En este proyecto ese papel lo realiza:
+En un flujo recomendado como **Authorization Code + PKCE**, el usuario introduce sus credenciales directamente en el Authorization Server.
 
 ```text
+Usuario
+   ↓
 Keycloak
+   ↓
+autenticación
+   ↓
+token
+   ↓
+aplicación
 ```
 
-ejecutándose sobre el realm:
+La aplicación recibe un token, no la contraseña del usuario.
 
-```text
-academy
-```
-
----
-
-### Resource Server
-
-Es la API que contiene los recursos protegidos.
-
-La API recibe el token y verifica que haya sido emitido por el Authorization Server correcto antes de permitir el acceso.
-
----
-
-## ¿Por qué la aplicación no ve la contraseña?
-
-Una de las ventajas más importantes de OAuth2 es que la aplicación cliente no necesita conocer ni almacenar la contraseña del usuario.
-
-El usuario se autentica directamente contra el Authorization Server.
-
-La contraseña se entrega a Keycloak, no a la aplicación cliente.
-
-Esto reduce el riesgo porque cada aplicación que utilice la API no necesita almacenar las credenciales del usuario.
-
----
+Esto reduce el riesgo de tener credenciales almacenadas o procesadas por varias aplicaciones.
 
 ### ¿Dónde se ve en el código?
 
-El ejemplo está en:
+El ejemplo se encuentra en:
 
 ```text
 03-security-oauth2/
 ```
 
-La conexión con Keycloak se configura mediante:
+La API confía en Keycloak mediante:
 
 ```properties
 spring.security.oauth2.resourceserver.jwt.issuer-uri=http://localhost:8090/realms/academy
 ```
 
-Esto indica que la API confía en tokens emitidos por el realm:
+El realm utilizado es:
 
 ```text
 academy
 ```
 
-de Keycloak.
-
-La configuración principal vuelve a encontrarse en:
+En:
 
 ```text
 SecurityConfig.java
 ```
 
-donde los roles incluidos en el token se obtienen de:
+los roles se obtienen de:
 
 ```text
 realm_access.roles
 ```
-
-y posteriormente se convierten en autoridades que Spring Security puede utilizar.
 
 La configuración de Keycloak se automatiza mediante:
 
@@ -398,55 +286,32 @@ La configuración de Keycloak se automatiza mediante:
 scripts/keycloak-setup.sh
 ```
 
-Este script crea y configura elementos como:
+donde se configuran el realm, el cliente, los usuarios y los roles.
 
-```text
-Realm   -> academy
-Client  -> employee-api
-Usuarios
-Roles
-```
-
----
-
-### Sobre el flujo utilizado para las pruebas
-
-En `03-security-oauth2/scripts/test-endpoints.sh` se obtiene un token de Keycloak utilizando:
+Para las pruebas desde terminal, `test-endpoints.sh` utiliza:
 
 ```text
 grant_type=password
 ```
 
-para facilitar las pruebas desde terminal.
-
-Este mecanismo permite obtener directamente un token proporcionando usuario y contraseña.
-
-Sin embargo, en una aplicación real se recomienda utilizar un flujo como:
-
-```text
-Authorization Code + PKCE
-```
-
-porque permite que el cliente no tenga acceso directo a la contraseña del usuario.
-
----
+como una forma sencilla de obtener un token. Para una aplicación real se recomienda **Authorization Code + PKCE**.
 
 ### ¿Qué pasa si no se utiliza correctamente?
 
-Si cada aplicación administra directamente usuarios y contraseñas:
+Si cada aplicación administra sus propios usuarios y contraseñas:
 
-- aumenta la cantidad de lugares donde se almacenan credenciales;
+- aumenta el número de lugares donde existen credenciales;
 - aumenta el riesgo de filtraciones;
-- cada aplicación tendría que implementar autenticación;
-- administrar roles y accesos se vuelve más complicado.
+- se duplica la lógica de autenticación;
+- administrar usuarios y roles se vuelve más complicado.
 
-Con un Authorization Server como Keycloak, la autenticación puede centralizarse y las APIs solamente necesitan validar los tokens recibidos.
+Con Keycloak, la autenticación se centraliza y la API solamente necesita validar los tokens.
 
 ---
 
-## 4. BCrypt y almacenamiento de contraseñas
+## 4. BCrypt
 
-Las contraseñas utilizadas por los ejemplos Basic y JWT no se almacenan directamente como texto.
+Las contraseñas de los ejemplos Basic y JWT no se almacenan en texto plano.
 
 En:
 
@@ -454,7 +319,7 @@ En:
 sql-scripts/01-security-tables.sql
 ```
 
-se almacenan valores similares a:
+aparecen valores similares a:
 
 ```text
 {bcrypt}$2y$10$...
@@ -466,65 +331,43 @@ El prefijo:
 {bcrypt}
 ```
 
-indica que la contraseña fue procesada utilizando BCrypt.
+indica que la contraseña fue almacenada utilizando BCrypt.
 
-Por ejemplo, aunque diferentes usuarios puedan tener como contraseña de prueba:
-
-```text
-test123
-```
-
-los hashes almacenados pueden ser diferentes.
-
-Esto sucede porque BCrypt utiliza un **salt** durante la generación del hash.
-
-Spring Security reconoce el identificador:
-
-```text
-{bcrypt}
-```
-
-y utiliza el encoder correspondiente para validar la contraseña recibida contra el hash almacenado.
-
----
+Spring Security utiliza el encoder correspondiente para comparar la contraseña proporcionada con el hash almacenado.
 
 ### ¿Por qué no guardar contraseñas en texto plano?
 
-Si una base de datos que contiene contraseñas en texto plano fuera comprometida, todas las credenciales quedarían expuestas inmediatamente.
+Si una base de datos con contraseñas en texto plano fuera comprometida, las credenciales quedarían visibles inmediatamente.
 
-Con BCrypt lo que se almacena es un hash.
-
-El sistema compara la contraseña proporcionada por el usuario con ese hash, pero no necesita recuperar la contraseña original desde la base de datos.
+Con BCrypt se almacena un hash y no es necesario guardar la contraseña original.
 
 ---
 
-## Comparación de los tres mecanismos
+## Comparación
 
-| Mecanismo | Qué se envía después de autenticar | Quién valida |
+| Mecanismo | Qué utiliza el cliente | Quién valida |
 |---|---|---|
-| HTTP Basic | Usuario y contraseña en cada petición | La propia API |
-| JWT | Bearer token | La propia API |
-| OAuth2 | Access token | API confiando en el Authorization Server |
-
-Los tres permiten proteger recursos, pero distribuyen de manera diferente la responsabilidad de autenticar al usuario.
+| HTTP Basic | Usuario y contraseña | La API |
+| JWT | Bearer token | La API |
+| OAuth2 | Access token | API + Authorization Server |
 
 ---
 
 ## Cómo ejecutar
 
-Cada ejemplo puede levantarse desde su propia carpeta con:
+Desde cada proyecto:
 
 ```powershell
 .\mvnw spring-boot:run
 ```
 
-Para OAuth2 también debe estar disponible Keycloak y puede utilizarse:
+Para OAuth2 también debe estar disponible Keycloak:
 
 ```bash
 ./scripts/keycloak-setup.sh
 ```
 
-Los scripts `test-endpoints.sh` incluidos en cada proyecto permiten comprobar los endpoints protegidos y los casos de `401` y `403`.
+Los archivos `scripts/test-endpoints.sh` permiten probar los accesos correctos y los casos de `401` y `403`.
 
 ---
 
