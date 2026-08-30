@@ -178,7 +178,6 @@ permite probar casos como:
 Sin token       -> 401
 Token alterado  -> 401
 Token inválido  -> 401
-Token vencido   -> 401
 ```
 
 Esto demuestra que la API no solamente acepta tokens válidos, sino que también bloquea los incorrectos.
