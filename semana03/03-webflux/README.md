@@ -59,7 +59,7 @@ El procesamiento comienza cuando existe una **suscripción**. En los endpoints d
 
 ---
 
-# 1. `Mono` y comparación reactivo vs bloqueante
+## 1. `Mono` y comparación reactivo vs bloqueante
 
 El ejemplo se encuentra en:
 
@@ -197,7 +197,7 @@ GET /api/hilo
 
 ---
 
-# 2. `Flux` - cero o muchos elementos
+## 2. `Flux` - cero o muchos elementos
 
 El segundo ejemplo se encuentra en:
 
@@ -267,7 +267,7 @@ collectList()
 
 ---
 
-# ¿Qué pasa si no se utiliza correctamente?
+## ¿Qué pasa si no se utiliza correctamente?
 
 No utilizar WebFlux no significa que una aplicación esté mal. Spring MVC puede ser suficiente para muchos sistemas.
 
@@ -300,7 +300,7 @@ o una dependencia bloqueante, el hilo seguirá quedando ocupado.
 
 ---
 
-# ¿Cuándo WebFlux no vale la pena?
+## ¿Cuándo WebFlux no vale la pena?
 
 WebFlux puede no aportar una ventaja importante cuando:
 
@@ -316,7 +316,7 @@ En esos casos WebFlux permite manejar muchas conexiones utilizando pocos hilos.
 
 ---
 
-# Cómo ejecutar
+## Cómo ejecutar
 
 Para `Mono`:
 
