@@ -1,151 +1,333 @@
-# `testing` — JUnit paso a paso
+# Unit Testing - JUnit y Mockito
 
-Material de la Academia Monterrey para el tema de pruebas unitarias. Sigue el temario de
-[la guía de JUnit 5 de Baeldung](https://www.baeldung.com/junit-5), con el código actualizado
-a **JUnit 6.1.3** y verificado ejecutándolo.
+En este proyecto se trabajan **pruebas unitarias con JUnit y Mockito**.
 
-Cinco guías, un anexo y cuatro proyectos Maven independientes — **315 tests** en total.
-Cada proyecto tiene al menos un script que demuestra, corriéndolo, la idea central de su guía.
+El objetivo es comprobar que el código se comporte correctamente tanto en casos válidos como en situaciones de error, y demostrar que una suite en verde no significa necesariamente que todo esté bien probado.
+
+Los ejemplos están separados en:
+
+```text
+04-unit-testing/
+├── 01-junit-fundamentos/
+├── 02-junit-catalogo/
+├── 03-junit-datos/
+└── 04-mockito-dobles/
+```
 
 ---
 
-## Las guías
+## 1. JUnit
 
-| | Guía | De qué va |
-|---|---|---|
-| `00` | [Por qué se prueba](guias/guia-00-por-que-se-prueba.html) | Conceptos, **sin código**. Qué es un test, qué no es, y por qué verde no significa probado. Requisito de la 01. |
-| `01` | [Anatomía de un test](guias/guia-01-anatomia-de-un-test.html) | `@Test`, ciclo de vida, aserciones, la trampa del `double` — y el test que atrapa un bug de un carácter. |
-| `02` | [El catálogo](guias/guia-02-el-catalogo.html) | `assertThrows`, timeouts, *assumptions*, `@Nested`, `@Tag`, inyección de parámetros, `@Suite`. |
-| `03` | [Un test, muchos datos](guias/guia-03-un-test-muchos-datos.html) | `@ParameterizedTest` con todas sus fuentes, `@RepeatedTest`, `@TestFactory`. |
-| `04` | [Dobles de prueba](guias/guia-04-dobles-de-prueba.html) | **Mockito**: `@Mock`, `when`/`verify`, `@InjectMocks`, `ArgumentCaptor`, espías, estrictez — y cuándo NO mockear. |
-| `··` | [JUnit 5 contra JUnit 6](guias/anexo-junit5-vs-junit6.html) | Fe de erratas: qué versión usas de verdad, y la tabla de migración desde JUnit 4. |
+### ¿Qué es y qué problema resuelve?
 
-Son archivos HTML autocontenidos: se abren con **doble clic**, sin servidor y sin internet,
-y navegan entre sí. (También están publicadas en la web; las páginas detectan solas dónde
-se están viendo y ajustan sus enlaces.)
+JUnit permite automatizar pruebas sobre pequeñas partes del código.
 
-## Los proyectos
+En lugar de ejecutar manualmente el programa después de cada cambio, los tests permiten comprobar de forma repetible que los métodos siguen produciendo los resultados esperados.
 
-| Proyecto | Tests | Código bajo prueba | Script |
-|---|---|---|---|
-| [`01-junit-fundamentos`](proyectos/01-junit-fundamentos) | 22 | `Boleta` — promedio y regla de aprobación | `ver-fallar.sh` |
-| [`02-junit-catalogo`](proyectos/02-junit-catalogo) | 37 (4 abortados a propósito) | `Curso` — cupo, cierre, acta lenta | `filtrar.sh` |
-| [`03-junit-datos`](proyectos/03-junit-datos) | 211 (desde 32 métodos) | `ValidadorCurp`, `Calificador` | `contar.sh` |
-| [`04-mockito-dobles`](proyectos/04-mockito-dobles) | 45 | `ServicioInscripcion` y sus 3 colaboradores | `por-que-mockear.sh`, `la-mentira.sh` |
+En estos proyectos se utilizan aserciones como:
+
+```java
+assertEquals(...)
+assertTrue(...)
+assertFalse(...)
+assertThrows(...)
+```
+
+---
+
+### ¿Dónde se ve en el código?
+
+El ejemplo principal está en:
+
+```text
+01-junit-fundamentos/
+```
+
+En `AsercionesTest.java` se utilizan distintas aserciones para comprobar el comportamiento de `Boleta`.
+
+Por ejemplo:
+
+```java
+assertEquals(80.0, boleta.promedio());
+assertTrue(boleta.aprobado());
+```
+
+---
+
+### `@BeforeEach`
+
+En clases como `CicloDeVidaTest.java` se utiliza:
+
+```java
+@BeforeEach
+void matricularAlumno() {
+    boleta = new Boleta(new Alumno("A01", "Ana Torres"));
+}
+```
+
+Esto permite crear un escenario limpio antes de cada test y evita que una prueba dependa del estado dejado por otra.
+
+También aparece en `ServicioInscripcionTest.java`, donde antes de cada prueba se crea un curso real:
+
+```java
+@BeforeEach
+void cursoRealConDosLugares() {
+    java101 = new Curso("JAVA-101", 2);
+}
+```
+
+---
+
+### Camino de error con `assertThrows`
+
+Los tests no solamente comprueban casos correctos.
+
+En `BoletaTest.java` se verifica que una calificación fuera del rango permitido genere una excepción:
+
+```java
+assertThrows(
+    IllegalArgumentException.class,
+    () -> boleta.registrar("Java", 101)
+);
+```
+
+También se prueba:
+
+```java
+boleta.registrar("Java", -1)
+```
+
+De esta manera se comprueba el comportamiento esperado cuando los datos son inválidos.
+
+---
+
+## Verde no significa probado
+
+El proyecto incluye:
+
+```text
+01-junit-fundamentos/scripts/ver-fallar.sh
+```
+
+Este script modifica intencionalmente un solo carácter en la regla de aprobación de `Boleta`.
+
+La condición correcta es:
+
+```java
+promedio() >= 70
+```
+
+y el script la cambia temporalmente por:
+
+```java
+promedio() > 70
+```
+
+Con este bug, un alumno con exactamente `70` pasa a reprobar.
+
+Antes del cambio:
+
+```text
+22 de 22 tests pasan
+```
+
+Después de introducir el bug:
+
+```text
+20 de 22 tests siguen pasando
+```
+
+Solo fallan los tests que prueban exactamente el límite de `70`.
+
+En `BoletaTest.java` existe precisamente una prueba para:
+
+```text
+69 -> reprueba
+70 -> aprueba
+71 -> aprueba
+```
+
+El experimento demuestra que tener muchos tests en verde no garantiza que todas las reglas estén bien comprobadas. También es necesario probar límites, errores y casos especiales.
+
+---
+
+## 2. Mockito
+
+### ¿Qué es y qué problema resuelve?
+
+Mockito permite reemplazar temporalmente dependencias de una clase por objetos controlados llamados **mocks**.
+
+Esto es útil cuando una dependencia es lenta, externa o difícil de reproducir durante una prueba.
+
+El ejemplo principal está en:
+
+```text
+04-mockito-dobles/
+```
+
+y utiliza:
+
+```text
+ServicioInscripcion.java
+ServicioInscripcionTest.java
+```
+
+---
+
+### ¿Dónde se ve en el código?
+
+En `ServicioInscripcionTest.java` se crean mocks para las dependencias externas:
+
+```java
+@Mock
+private RepositorioAlumnos repoAlumnos;
+
+@Mock
+private RepositorioCursos repoCursos;
+
+@Mock
+private Notificador notificador;
+```
+
+El servicio real se crea con:
+
+```java
+@InjectMocks
+private ServicioInscripcion servicio;
+```
+
+Mockito inyecta los mocks en `ServicioInscripcion`.
+
+---
+
+### `when()` y `verify()`
+
+Con:
+
+```java
+when(...)
+```
+
+se define qué debe responder una dependencia durante el test.
+
+Por ejemplo:
+
+```java
+when(repoAlumnos.buscar("A01"))
+        .thenReturn(Optional.of(ANA));
+```
+
+Después se puede comprobar una interacción utilizando:
+
+```java
+verify(...)
+```
+
+Por ejemplo:
+
+```java
+verify(notificador).enviarConfirmacion(ANA, java101);
+```
+
+También se comprueba que ciertas acciones **no ocurran**:
+
+```java
+verify(notificador, never())
+        .enviarConfirmacion(any(), any());
+```
+
+Esto permite verificar no solamente el resultado final, sino también el comportamiento del servicio.
+
+---
+
+## ¿Por qué mockear estos colaboradores?
+
+En `ServicioInscripcionTest` se mockean:
+
+```text
+RepositorioAlumnos
+RepositorioCursos
+Notificador
+```
+
+porque representan dependencias externas o costosas de utilizar en una prueba.
+
+Por ejemplo, un repositorio real podría conectarse a una base de datos y `Notificador` podría enviar un correo.
+
+Con Mockito se pueden controlar sus respuestas sin depender de esos servicios reales.
+
+---
+
+## ¿Qué NO mockearía?
+
+En este proyecto **no se mockea `Curso`** dentro de `ServicioInscripcionTest`.
+
+Se crea uno real:
+
+```java
+java101 = new Curso("JAVA-101", 2);
+```
+
+La razón es que `Curso` contiene reglas de negocio, como determinar si todavía existen lugares disponibles.
+
+Si se mockeara:
+
+```java
+when(curso.estaLleno()).thenReturn(true);
+```
+
+el test ya no estaría comprobando la regla real de `Curso`; solamente estaría comprobando una respuesta que el propio test configuró.
+
+Esto se demuestra en:
+
+```text
+SobreMockeoTest.java
+```
+
+donde `Curso` sí se mockea intencionalmente como ejemplo de una mala práctica.
+
+La idea principal es:
+
+```text
+Mockear -> dependencias externas, lentas o difíciles de controlar.
+
+No mockear -> objetos rápidos que contienen reglas de negocio que queremos probar.
+```
+
+---
+
+## ¿Qué pasa si no se utilizan pruebas correctamente?
+
+Sin pruebas automatizadas, un cambio pequeño puede romper una regla existente sin que se detecte inmediatamente.
+
+Pero tener tests tampoco es suficiente si solamente se prueban casos fáciles.
+
+El experimento de `ver-fallar.sh` demuestra que, aunque exista un bug, la mayoría de los tests del proyecto pueden seguir pasando. Por eso una ejecución completamente en verde no garantiza por sí sola que todos los casos importantes estén correctamente probados.
+
+Por eso es importante probar:
+
+- casos normales;
+- casos de error;
+- valores límite;
+- comportamiento de las dependencias.
+
+---
+
+## Cómo ejecutar
+
+Desde cualquiera de los proyectos JUnit o Mockito:
+
+```powershell
+.\mvnw test
+```
+
+Para ejecutar el experimento que introduce el bug:
 
 ```bash
-cd proyectos/01-junit-fundamentos
-./mvnw test
+cd 01-junit-fundamentos
 ./scripts/ver-fallar.sh
 ```
 
-En Windows: `mvnw.cmd test`. Los `.sh` necesitan **Git Bash** o **WSL**.
-
-### Los cinco scripts
-
-Cada uno demuestra algo que no se puede enseñar solo con texto:
-
-- **`ver-fallar.sh`** — cambia un carácter en `Boleta.aprobado()` (`>=` pasa a `>`), corre la
-  suite y restaura el código. **20 de los 22 tests siguen en verde con el bug dentro.** Solo
-  caen los dos que se pararon justo encima del límite. Es la lección de la guía 01 en un número.
-- **`filtrar.sh`** — corre la misma suite con tres filtros de `@Tag` y mide el tiempo real de
-  ejecución (no el reloj de pared, que en un proyecto de este tamaño lo domina el arranque de
-  Maven). Los 3 tests lentos de 37 se llevan más de la mitad del tiempo.
-- **`contar.sh`** — cuenta los métodos escritos a mano contra los tests ejecutados: 32 → 211.
-- **`por-que-mockear.sh`** — la misma prueba contra el repositorio real (300 ms por consulta) y
-  con dobles. **5 tests reales tardan más que los 40 con mocks.** Justifica Mockito midiéndolo.
-- **`la-mentira.sh`** — el más importante de los cinco. Rompe la regla del cupo dentro de `Curso`
-  y corre dos clases que prueban lo mismo: la que usa un `Curso` real **cae**, la que lo mockea
-  **sigue en verde**. Las dos «cubren» el mismo código; solo una lo protege.
-
-## Los proyectos de clase, fuera de esta carpeta
-
-En la raíz del repositorio hay otros cuatro proyectos sobre lo mismo. **No son parte de este
-temario**: son el código que se escribió en vivo durante la sesión, en paquete `com.curso.v0`,
-con sus atajos y sus huecos. Se conservan para que el alumno reencuentre lo que vio en pantalla.
-
-| Proyecto | Tests | De qué va | Guía |
-|---|---|---|---|
-| [`demoTestJunit`](../demoTestJunit) | 9 | Aserciones sueltas: `assertAll`, `assertThrows`, el `assertTrue` con mensaje diferido. | `01` |
-| [`demoTestJunit2`](../demoTestJunit2) | 7 (desde 5 métodos) | `Calculator` con `@BeforeEach` y `@RepeatedTest(3)`. | `01`, `03` |
-| [`mockitoWithout`](../mockitoWithout) | — | `ServiceCalculoImpuesto` contra la implementación **real** de `ICalculoComplejo`. Sin tests: solo un `main`. | `04` |
-| [`mockito`](../mockito) | 12 | El mismo servicio cuando esa implementación **no existe**. | `04` |
-
-**`mockitoWithout` y `mockito` son el mismo código**, y funcionan como apertura de la guía 04.
-Ejecuta el `main` de los dos: el primero imprime `3.4236650365470685E7`; el segundo revienta con
-`NullPointerException`, porque ahí solo tenemos la interfaz —la implementación la escribe un
-tercero y en producción la inyecta el framework—. Ese contraste plantea en treinta segundos la
-pregunta que Mockito responde, y aun así `./mvnw test` da 12 en verde: el servicio sí se puede
-probar entero.
-
-Los dos alcances se complementan, y conviene no confundirlos. `mockito` enseña **por qué** existe
-Mockito, con un caso donde mockear es obligatorio porque no hay otra cosa que usar.
-[`04-mockito-dobles`](proyectos/04-mockito-dobles) enseña además **cuándo NO** hacerlo
-—`SobreMockeoTest`, `la-mentira.sh`—, que es la mitad que se olvida. Para dar el tema completo:
-el par de clase primero, este proyecto después.
-
-Una diferencia práctica: a diferencia de los de esta carpeta, esos cuatro **sí llevan `.project`
-y `.classpath` versionados**, así que se importan con *Existing Projects into Workspace*. Dos de
-ellos, `demoTestJunit2` y `mockito`, son además proyectos Maven.
-
 ---
 
-## La auditoría de coherencia
-
-```bash
-./scripts/auditar.py            # comprobaciones estáticas, en un segundo
-./scripts/auditar.py --tests    # además corre las suites y compara cifras
-```
-
-Existe porque el mismo dato —la latencia del proyecto Mono— se desincronizó **dos veces
-el mismo día** entre el código, un script y una guía. La lección no fue «hay que fijarse
-más»: fue que un número repetido a mano en cuatro sitios se desincroniza solo.
-
-Comprueba nueve cosas: el HTML cierra bien, las anclas del índice existen, las guías se
-enlazan entre sí por su URL publicada (sin relativos, sin autoenlaces, y con el texto del
-enlace nombrando de verdad su destino), la numeración de secciones es correlativa, los
-archivos que las guías citan existen, las versiones que muestran en un `<version>` son de
-verdad las de los `pom.xml`, las cifras de la cabecera cuadran con lo que reporta Surefire,
-y los `.sh` y `mvnw` son ejecutables. Devuelve `1` si algo falla.
-
-Está probado **en negativo**: se le rompieron doce cosas a propósito —una guía sin
-registrar, un ancla huérfana, una etiqueta sin cerrar, una cifra mentida, una versión
-inventada, un `.sh` sin permisos…— y cazó las doce. Un verificador que nunca has visto
-fallar no sabes si funciona.
-
-**Y dice en voz alta lo que NO mira**, que es la mitad de su valor: no comprueba que las
-páginas rendericen, ni que el botón *Copiar* funcione, ni que los comandos corran, ni si
-la prosa dice la verdad. Un verde suyo significa «todo lo que miro está bien», no «todo
-está bien».
-
-## Cómo abrirlo en Eclipse
-
-**File → Import… → Maven → Existing Maven Projects**, y selecciona la carpeta `testing`.
-Los cuatro proyectos aparecen a la vez. No uses *Existing Projects into Workspace*: no llevan
-`.project` — los genera m2e al importar.
-
-Para correr un test suelto: clic derecho sobre la clase → **Run As → JUnit Test**.
-
-## Versiones
-
-| | |
-|---|---|
-| JUnit | 6.1.3 (vía `junit-bom`) |
-| Mockito | 5.23.0 (vía `mockito-bom`) — solo en el proyecto 04 |
-| Java | 21 (JUnit 6 exige 17 como mínimo) |
-| Maven Surefire | 3.5.6 — **con 2.x no se ejecuta ningún test, y no falla** |
-
-Los proyectos **no** usan Spring Boot: son `pom.xml` mínimos, a propósito, para que se vea qué
-pide JUnit por sí solo. En un proyecto de Spring Boot no hace falta nada de esto —
-`spring-boot-starter-test` ya trae JUnit, Mockito y AssertJ con las versiones coordinadas.
-
-### Dos cosas del proyecto 04 que conviene saber
-
-**Mockito dice depender de JUnit 5, y no pasa nada.** `mockito-junit-jupiter:5.23.0` declara
-`junit-jupiter-api:5.13.4`, pero el `junit-bom` va antes en el `dependencyManagement` y fija
-6.1.3 para todo el árbol. Verificado: `./mvnw dependency:tree "-Dincludes=org.junit*:*"`.
-
-**El `pom` carga Mockito como `-javaagent`, y no es opcional.** Sin esa línea, cada corrida en
-Java 21 avisa de que Mockito se auto-engancha y que *«dynamic loading of agents will be
-disallowed by default in a future release»*. Con ella, el aviso desaparece y además los tests
-van más rápido (medido: 0.427 s → 0.169 s).
+[← Volver a Semana 03](../README.md)
