@@ -1,4 +1,4 @@
-# Automatización Web Santander con Selenium
+# Automatización Web con Selenium
 
 Proyecto de automatización de pruebas web desarrollado con **Java, Selenium WebDriver, TestNG y Maven**, aplicando el patrón de diseño **Page Object Model (POM)**.
 
