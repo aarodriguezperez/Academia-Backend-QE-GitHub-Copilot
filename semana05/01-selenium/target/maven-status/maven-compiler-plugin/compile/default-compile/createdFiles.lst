@@ -1,0 +1,8 @@
+base\BasePage.class
+pages\SantanderHomePage.class
+pages\BancaPrivadaMenuPage.class
+utils\DriverFactory.class
+pages\AcercaDelBancoMenuPage.class
+pages\EmpresasMenuPage.class
+pages\PymesMenuPage.class
+pages\PersonasMenuPage.class

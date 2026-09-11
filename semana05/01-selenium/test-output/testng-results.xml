@@ -1,0 +1,839 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testng-results ignored="0" total="68" passed="68" failed="0" skipped="0">
+  <reporter-output>
+  </reporter-output>
+  <suite started-at="2026-09-11T16:32:33 CST" name="Santander Automation Suite" finished-at="2026-09-11T16:42:57 CST" duration-ms="624447">
+    <groups>
+    </groups>
+    <test started-at="2026-09-11T16:32:33 CST" name="Santander Navigation Tests" finished-at="2026-09-11T16:42:57 CST" duration-ms="624447">
+      <class name="tests.BancaPrivadaTest">
+        <test-method is-config="true" signature="setUp()[pri:0, instance:tests.BancaPrivadaTest@418e7838]" started-at="2026-09-11T16:40:01 CST" name="setUp" finished-at="2026-09-11T16:40:05 CST" duration-ms="4452" status="PASS">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- setUp -->
+        <test-method signature="shouldOpenNuestrasCuentas()[pri:0, instance:tests.BancaPrivadaTest@418e7838]" started-at="2026-09-11T16:40:05 CST" name="shouldOpenNuestrasCuentas" finished-at="2026-09-11T16:40:08 CST" duration-ms="2628" status="PASS">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- shouldOpenNuestrasCuentas -->
+        <test-method is-config="true" signature="tearDown()[pri:0, instance:tests.BancaPrivadaTest@418e7838]" started-at="2026-09-11T16:40:08 CST" name="tearDown" finished-at="2026-09-11T16:40:08 CST" duration-ms="233" status="PASS">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- tearDown -->
+        <test-method is-config="true" signature="setUp()[pri:0, instance:tests.BancaPrivadaTest@418e7838]" started-at="2026-09-11T16:40:08 CST" name="setUp" finished-at="2026-09-11T16:40:13 CST" duration-ms="4634" status="PASS">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- setUp -->
+        <test-method signature="shouldOpenPodcast()[pri:0, instance:tests.BancaPrivadaTest@418e7838]" started-at="2026-09-11T16:40:13 CST" name="shouldOpenPodcast" finished-at="2026-09-11T16:40:17 CST" duration-ms="4825" status="PASS">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- shouldOpenPodcast -->
+        <test-method is-config="true" signature="tearDown()[pri:0, instance:tests.BancaPrivadaTest@418e7838]" started-at="2026-09-11T16:40:17 CST" name="tearDown" finished-at="2026-09-11T16:40:18 CST" duration-ms="235" status="PASS">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- tearDown -->
+        <test-method is-config="true" signature="setUp()[pri:0, instance:tests.BancaPrivadaTest@418e7838]" started-at="2026-09-11T16:40:18 CST" name="setUp" finished-at="2026-09-11T16:40:22 CST" duration-ms="4580" status="PASS">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- setUp -->
+        <test-method signature="shouldOpenProductos()[pri:0, instance:tests.BancaPrivadaTest@418e7838]" started-at="2026-09-11T16:40:22 CST" name="shouldOpenProductos" finished-at="2026-09-11T16:40:27 CST" duration-ms="4683" status="PASS">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- shouldOpenProductos -->
+        <test-method is-config="true" signature="tearDown()[pri:0, instance:tests.BancaPrivadaTest@418e7838]" started-at="2026-09-11T16:40:27 CST" name="tearDown" finished-at="2026-09-11T16:40:27 CST" duration-ms="263" status="PASS">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- tearDown -->
+        <test-method is-config="true" signature="setUp()[pri:0, instance:tests.BancaPrivadaTest@418e7838]" started-at="2026-09-11T16:40:27 CST" name="setUp" finished-at="2026-09-11T16:40:32 CST" duration-ms="4532" status="PASS">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- setUp -->
+        <test-method signature="shouldOpenQuienesSomos()[pri:0, instance:tests.BancaPrivadaTest@418e7838]" started-at="2026-09-11T16:40:32 CST" name="shouldOpenQuienesSomos" finished-at="2026-09-11T16:40:36 CST" duration-ms="4848" status="PASS">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- shouldOpenQuienesSomos -->
+        <test-method is-config="true" signature="tearDown()[pri:0, instance:tests.BancaPrivadaTest@418e7838]" started-at="2026-09-11T16:40:36 CST" name="tearDown" finished-at="2026-09-11T16:40:37 CST" duration-ms="252" status="PASS">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- tearDown -->
+      </class> <!-- tests.BancaPrivadaTest -->
+      <class name="tests.PymesMenuTest">
+        <test-method is-config="true" signature="setUp()[pri:0, instance:tests.PymesMenuTest@3c419631]" started-at="2026-09-11T16:37:59 CST" name="setUp" finished-at="2026-09-11T16:38:04 CST" duration-ms="5164" status="PASS">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- setUp -->
+        <test-method signature="shouldOpenAlianzas()[pri:0, instance:tests.PymesMenuTest@3c419631]" started-at="2026-09-11T16:38:04 CST" name="shouldOpenAlianzas" finished-at="2026-09-11T16:38:08 CST" duration-ms="4126" status="PASS">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- shouldOpenAlianzas -->
+        <test-method is-config="true" signature="tearDown()[pri:0, instance:tests.PymesMenuTest@3c419631]" started-at="2026-09-11T16:38:08 CST" name="tearDown" finished-at="2026-09-11T16:38:09 CST" duration-ms="243" status="PASS">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- tearDown -->
+        <test-method is-config="true" signature="setUp()[pri:0, instance:tests.PymesMenuTest@3c419631]" started-at="2026-09-11T16:38:09 CST" name="setUp" finished-at="2026-09-11T16:38:13 CST" duration-ms="4780" status="PASS">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- setUp -->
+        <test-method signature="shouldOpenCreditos()[pri:0, instance:tests.PymesMenuTest@3c419631]" started-at="2026-09-11T16:38:13 CST" name="shouldOpenCreditos" finished-at="2026-09-11T16:38:20 CST" duration-ms="6884" status="PASS">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- shouldOpenCreditos -->
+        <test-method is-config="true" signature="tearDown()[pri:0, instance:tests.PymesMenuTest@3c419631]" started-at="2026-09-11T16:38:20 CST" name="tearDown" finished-at="2026-09-11T16:38:20 CST" duration-ms="275" status="PASS">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- tearDown -->
+        <test-method is-config="true" signature="setUp()[pri:0, instance:tests.PymesMenuTest@3c419631]" started-at="2026-09-11T16:38:20 CST" name="setUp" finished-at="2026-09-11T16:38:25 CST" duration-ms="4744" status="PASS">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- setUp -->
+        <test-method signature="shouldOpenCuentas()[pri:0, instance:tests.PymesMenuTest@3c419631]" started-at="2026-09-11T16:38:25 CST" name="shouldOpenCuentas" finished-at="2026-09-11T16:38:28 CST" duration-ms="3088" status="PASS">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- shouldOpenCuentas -->
+        <test-method is-config="true" signature="tearDown()[pri:0, instance:tests.PymesMenuTest@3c419631]" started-at="2026-09-11T16:38:28 CST" name="tearDown" finished-at="2026-09-11T16:38:29 CST" duration-ms="261" status="PASS">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- tearDown -->
+        <test-method is-config="true" signature="setUp()[pri:0, instance:tests.PymesMenuTest@3c419631]" started-at="2026-09-11T16:38:29 CST" name="setUp" finished-at="2026-09-11T16:38:33 CST" duration-ms="4548" status="PASS">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- setUp -->
+        <test-method signature="shouldOpenDivisasCoberturas()[pri:0, instance:tests.PymesMenuTest@3c419631]" started-at="2026-09-11T16:38:33 CST" name="shouldOpenDivisasCoberturas" finished-at="2026-09-11T16:38:37 CST" duration-ms="3575" status="PASS">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- shouldOpenDivisasCoberturas -->
+        <test-method is-config="true" signature="tearDown()[pri:0, instance:tests.PymesMenuTest@3c419631]" started-at="2026-09-11T16:38:37 CST" name="tearDown" finished-at="2026-09-11T16:38:37 CST" duration-ms="210" status="PASS">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- tearDown -->
+        <test-method is-config="true" signature="setUp()[pri:0, instance:tests.PymesMenuTest@3c419631]" started-at="2026-09-11T16:38:37 CST" name="setUp" finished-at="2026-09-11T16:38:42 CST" duration-ms="4798" status="PASS">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- setUp -->
+        <test-method signature="shouldOpenEcosistemaNoFinanciero()[pri:0, instance:tests.PymesMenuTest@3c419631]" started-at="2026-09-11T16:38:42 CST" name="shouldOpenEcosistemaNoFinanciero" finished-at="2026-09-11T16:38:53 CST" duration-ms="11492" status="PASS">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- shouldOpenEcosistemaNoFinanciero -->
+        <test-method is-config="true" signature="tearDown()[pri:0, instance:tests.PymesMenuTest@3c419631]" started-at="2026-09-11T16:38:53 CST" name="tearDown" finished-at="2026-09-11T16:38:54 CST" duration-ms="432" status="PASS">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- tearDown -->
+        <test-method is-config="true" signature="setUp()[pri:0, instance:tests.PymesMenuTest@3c419631]" started-at="2026-09-11T16:38:54 CST" name="setUp" finished-at="2026-09-11T16:38:59 CST" duration-ms="5843" status="PASS">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- setUp -->
+        <test-method signature="shouldOpenInversiones()[pri:0, instance:tests.PymesMenuTest@3c419631]" started-at="2026-09-11T16:38:59 CST" name="shouldOpenInversiones" finished-at="2026-09-11T16:39:05 CST" duration-ms="5604" status="PASS">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- shouldOpenInversiones -->
+        <test-method is-config="true" signature="tearDown()[pri:0, instance:tests.PymesMenuTest@3c419631]" started-at="2026-09-11T16:39:05 CST" name="tearDown" finished-at="2026-09-11T16:39:05 CST" duration-ms="236" status="PASS">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- tearDown -->
+        <test-method is-config="true" signature="setUp()[pri:0, instance:tests.PymesMenuTest@3c419631]" started-at="2026-09-11T16:39:05 CST" name="setUp" finished-at="2026-09-11T16:39:10 CST" duration-ms="4510" status="PASS">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- setUp -->
+        <test-method signature="shouldOpenNegocioInternacional()[pri:0, instance:tests.PymesMenuTest@3c419631]" started-at="2026-09-11T16:39:10 CST" name="shouldOpenNegocioInternacional" finished-at="2026-09-11T16:39:15 CST" duration-ms="5286" status="PASS">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- shouldOpenNegocioInternacional -->
+        <test-method is-config="true" signature="tearDown()[pri:0, instance:tests.PymesMenuTest@3c419631]" started-at="2026-09-11T16:39:15 CST" name="tearDown" finished-at="2026-09-11T16:39:15 CST" duration-ms="266" status="PASS">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- tearDown -->
+        <test-method is-config="true" signature="setUp()[pri:0, instance:tests.PymesMenuTest@3c419631]" started-at="2026-09-11T16:39:15 CST" name="setUp" finished-at="2026-09-11T16:39:20 CST" duration-ms="4557" status="PASS">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- setUp -->
+        <test-method signature="shouldOpenNegocioTransaccional()[pri:0, instance:tests.PymesMenuTest@3c419631]" started-at="2026-09-11T16:39:20 CST" name="shouldOpenNegocioTransaccional" finished-at="2026-09-11T16:39:28 CST" duration-ms="7873" status="PASS">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- shouldOpenNegocioTransaccional -->
+        <test-method is-config="true" signature="tearDown()[pri:0, instance:tests.PymesMenuTest@3c419631]" started-at="2026-09-11T16:39:28 CST" name="tearDown" finished-at="2026-09-11T16:39:28 CST" duration-ms="245" status="PASS">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- tearDown -->
+        <test-method is-config="true" signature="setUp()[pri:0, instance:tests.PymesMenuTest@3c419631]" started-at="2026-09-11T16:39:28 CST" name="setUp" finished-at="2026-09-11T16:39:33 CST" duration-ms="4626" status="PASS">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- setUp -->
+        <test-method signature="shouldOpenPaquetesPymes()[pri:0, instance:tests.PymesMenuTest@3c419631]" started-at="2026-09-11T16:39:33 CST" name="shouldOpenPaquetesPymes" finished-at="2026-09-11T16:39:35 CST" duration-ms="2355" status="PASS">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- shouldOpenPaquetesPymes -->
+        <test-method is-config="true" signature="tearDown()[pri:0, instance:tests.PymesMenuTest@3c419631]" started-at="2026-09-11T16:39:35 CST" name="tearDown" finished-at="2026-09-11T16:39:35 CST" duration-ms="256" status="PASS">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- tearDown -->
+        <test-method is-config="true" signature="setUp()[pri:0, instance:tests.PymesMenuTest@3c419631]" started-at="2026-09-11T16:39:35 CST" name="setUp" finished-at="2026-09-11T16:39:40 CST" duration-ms="4672" status="PASS">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- setUp -->
+        <test-method signature="shouldOpenSantanderPyme()[pri:0, instance:tests.PymesMenuTest@3c419631]" started-at="2026-09-11T16:39:40 CST" name="shouldOpenSantanderPyme" finished-at="2026-09-11T16:39:43 CST" duration-ms="3184" status="PASS">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- shouldOpenSantanderPyme -->
+        <test-method is-config="true" signature="tearDown()[pri:0, instance:tests.PymesMenuTest@3c419631]" started-at="2026-09-11T16:39:43 CST" name="tearDown" finished-at="2026-09-11T16:39:43 CST" duration-ms="248" status="PASS">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- tearDown -->
+        <test-method is-config="true" signature="setUp()[pri:0, instance:tests.PymesMenuTest@3c419631]" started-at="2026-09-11T16:39:43 CST" name="setUp" finished-at="2026-09-11T16:39:48 CST" duration-ms="4765" status="PASS">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- setUp -->
+        <test-method signature="shouldOpenSeguros()[pri:0, instance:tests.PymesMenuTest@3c419631]" started-at="2026-09-11T16:39:48 CST" name="shouldOpenSeguros" finished-at="2026-09-11T16:40:00 CST" duration-ms="12157" status="PASS">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- shouldOpenSeguros -->
+        <test-method is-config="true" signature="tearDown()[pri:0, instance:tests.PymesMenuTest@3c419631]" started-at="2026-09-11T16:40:00 CST" name="tearDown" finished-at="2026-09-11T16:40:01 CST" duration-ms="271" status="PASS">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- tearDown -->
+      </class> <!-- tests.PymesMenuTest -->
+      <class name="tests.AcercaDelBancoMenuTest">
+        <test-method is-config="true" signature="setUp()[pri:0, instance:tests.AcercaDelBancoMenuTest@61230f6a]" started-at="2026-09-11T16:40:37 CST" name="setUp" finished-at="2026-09-11T16:40:41 CST" duration-ms="4537" status="PASS">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- setUp -->
+        <test-method signature="shouldOpenBlog()[pri:0, instance:tests.AcercaDelBancoMenuTest@61230f6a]" started-at="2026-09-11T16:40:41 CST" name="shouldOpenBlog" finished-at="2026-09-11T16:40:53 CST" duration-ms="12208" status="PASS">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- shouldOpenBlog -->
+        <test-method is-config="true" signature="tearDown()[pri:0, instance:tests.AcercaDelBancoMenuTest@61230f6a]" started-at="2026-09-11T16:40:53 CST" name="tearDown" finished-at="2026-09-11T16:40:54 CST" duration-ms="261" status="PASS">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- tearDown -->
+        <test-method is-config="true" signature="setUp()[pri:0, instance:tests.AcercaDelBancoMenuTest@61230f6a]" started-at="2026-09-11T16:40:54 CST" name="setUp" finished-at="2026-09-11T16:40:58 CST" duration-ms="4542" status="PASS">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- setUp -->
+        <test-method signature="shouldOpenBolsaTrabajo()[pri:0, instance:tests.AcercaDelBancoMenuTest@61230f6a]" started-at="2026-09-11T16:40:58 CST" name="shouldOpenBolsaTrabajo" finished-at="2026-09-11T16:41:00 CST" duration-ms="1303" status="PASS">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- shouldOpenBolsaTrabajo -->
+        <test-method is-config="true" signature="tearDown()[pri:0, instance:tests.AcercaDelBancoMenuTest@61230f6a]" started-at="2026-09-11T16:41:00 CST" name="tearDown" finished-at="2026-09-11T16:41:00 CST" duration-ms="230" status="PASS">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- tearDown -->
+        <test-method is-config="true" signature="setUp()[pri:0, instance:tests.AcercaDelBancoMenuTest@61230f6a]" started-at="2026-09-11T16:41:00 CST" name="setUp" finished-at="2026-09-11T16:41:04 CST" duration-ms="4608" status="PASS">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- setUp -->
+        <test-method signature="shouldOpenEducacionFinanciera()[pri:0, instance:tests.AcercaDelBancoMenuTest@61230f6a]" started-at="2026-09-11T16:41:04 CST" name="shouldOpenEducacionFinanciera" finished-at="2026-09-11T16:41:27 CST" duration-ms="22526" status="PASS">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- shouldOpenEducacionFinanciera -->
+        <test-method is-config="true" signature="tearDown()[pri:0, instance:tests.AcercaDelBancoMenuTest@61230f6a]" started-at="2026-09-11T16:41:27 CST" name="tearDown" finished-at="2026-09-11T16:41:27 CST" duration-ms="253" status="PASS">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- tearDown -->
+        <test-method is-config="true" signature="setUp()[pri:0, instance:tests.AcercaDelBancoMenuTest@61230f6a]" started-at="2026-09-11T16:41:27 CST" name="setUp" finished-at="2026-09-11T16:41:32 CST" duration-ms="4568" status="PASS">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- setUp -->
+        <test-method signature="shouldOpenFundacionSantander()[pri:0, instance:tests.AcercaDelBancoMenuTest@61230f6a]" started-at="2026-09-11T16:41:32 CST" name="shouldOpenFundacionSantander" finished-at="2026-09-11T16:41:35 CST" duration-ms="3332" status="PASS">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- shouldOpenFundacionSantander -->
+        <test-method is-config="true" signature="tearDown()[pri:0, instance:tests.AcercaDelBancoMenuTest@61230f6a]" started-at="2026-09-11T16:41:35 CST" name="tearDown" finished-at="2026-09-11T16:41:35 CST" duration-ms="239" status="PASS">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- tearDown -->
+        <test-method is-config="true" signature="setUp()[pri:0, instance:tests.AcercaDelBancoMenuTest@61230f6a]" started-at="2026-09-11T16:41:35 CST" name="setUp" finished-at="2026-09-11T16:41:40 CST" duration-ms="4425" status="PASS">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- setUp -->
+        <test-method signature="shouldOpenInversionistas()[pri:0, instance:tests.AcercaDelBancoMenuTest@61230f6a]" started-at="2026-09-11T16:41:40 CST" name="shouldOpenInversionistas" finished-at="2026-09-11T16:41:43 CST" duration-ms="2864" status="PASS">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- shouldOpenInversionistas -->
+        <test-method is-config="true" signature="tearDown()[pri:0, instance:tests.AcercaDelBancoMenuTest@61230f6a]" started-at="2026-09-11T16:41:43 CST" name="tearDown" finished-at="2026-09-11T16:41:43 CST" duration-ms="222" status="PASS">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- tearDown -->
+        <test-method is-config="true" signature="setUp()[pri:0, instance:tests.AcercaDelBancoMenuTest@61230f6a]" started-at="2026-09-11T16:41:43 CST" name="setUp" finished-at="2026-09-11T16:41:47 CST" duration-ms="4556" status="PASS">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- setUp -->
+        <test-method signature="shouldOpenResponsabilidadSocial()[pri:0, instance:tests.AcercaDelBancoMenuTest@61230f6a]" started-at="2026-09-11T16:41:47 CST" name="shouldOpenResponsabilidadSocial" finished-at="2026-09-11T16:41:50 CST" duration-ms="2448" status="PASS">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- shouldOpenResponsabilidadSocial -->
+        <test-method is-config="true" signature="tearDown()[pri:0, instance:tests.AcercaDelBancoMenuTest@61230f6a]" started-at="2026-09-11T16:41:50 CST" name="tearDown" finished-at="2026-09-11T16:41:50 CST" duration-ms="368" status="PASS">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- tearDown -->
+        <test-method is-config="true" signature="setUp()[pri:0, instance:tests.AcercaDelBancoMenuTest@61230f6a]" started-at="2026-09-11T16:41:50 CST" name="setUp" finished-at="2026-09-11T16:41:57 CST" duration-ms="6990" status="PASS">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- setUp -->
+        <test-method signature="shouldOpenSalaComunicacion()[pri:0, instance:tests.AcercaDelBancoMenuTest@61230f6a]" started-at="2026-09-11T16:41:57 CST" name="shouldOpenSalaComunicacion" finished-at="2026-09-11T16:42:57 CST" duration-ms="59877" status="PASS">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- shouldOpenSalaComunicacion -->
+        <test-method is-config="true" signature="tearDown()[pri:0, instance:tests.AcercaDelBancoMenuTest@61230f6a]" started-at="2026-09-11T16:42:57 CST" name="tearDown" finished-at="2026-09-11T16:42:57 CST" duration-ms="283" status="PASS">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- tearDown -->
+      </class> <!-- tests.AcercaDelBancoMenuTest -->
+      <class name="tests.PersonasMenuTest">
+        <test-method is-config="true" signature="setUp()[pri:0, instance:tests.PersonasMenuTest@4b5d6a01]" started-at="2026-09-11T16:33:09 CST" name="setUp" finished-at="2026-09-11T16:33:14 CST" duration-ms="4413" status="PASS">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- setUp -->
+        <test-method signature="shouldOpenAppSantander()[pri:0, instance:tests.PersonasMenuTest@4b5d6a01]" started-at="2026-09-11T16:33:14 CST" name="shouldOpenAppSantander" finished-at="2026-09-11T16:33:14 CST" duration-ms="535" status="PASS">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- shouldOpenAppSantander -->
+        <test-method is-config="true" signature="tearDown()[pri:0, instance:tests.PersonasMenuTest@4b5d6a01]" started-at="2026-09-11T16:33:14 CST" name="tearDown" finished-at="2026-09-11T16:33:15 CST" duration-ms="299" status="PASS">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- tearDown -->
+        <test-method is-config="true" signature="setUp()[pri:0, instance:tests.PersonasMenuTest@4b5d6a01]" started-at="2026-09-11T16:33:15 CST" name="setUp" finished-at="2026-09-11T16:33:19 CST" duration-ms="4507" status="PASS">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- setUp -->
+        <test-method signature="shouldOpenBuroDeCredito()[pri:0, instance:tests.PersonasMenuTest@4b5d6a01]" started-at="2026-09-11T16:33:19 CST" name="shouldOpenBuroDeCredito" finished-at="2026-09-11T16:33:21 CST" duration-ms="2189" status="PASS">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- shouldOpenBuroDeCredito -->
+        <test-method is-config="true" signature="tearDown()[pri:0, instance:tests.PersonasMenuTest@4b5d6a01]" started-at="2026-09-11T16:33:21 CST" name="tearDown" finished-at="2026-09-11T16:33:22 CST" duration-ms="309" status="PASS">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- tearDown -->
+        <test-method is-config="true" signature="setUp()[pri:0, instance:tests.PersonasMenuTest@4b5d6a01]" started-at="2026-09-11T16:33:22 CST" name="setUp" finished-at="2026-09-11T16:33:26 CST" duration-ms="4671" status="PASS">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- setUp -->
+        <test-method signature="shouldOpenCajerosAutomaticos()[pri:0, instance:tests.PersonasMenuTest@4b5d6a01]" started-at="2026-09-11T16:33:26 CST" name="shouldOpenCajerosAutomaticos" finished-at="2026-09-11T16:33:28 CST" duration-ms="1387" status="PASS">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- shouldOpenCajerosAutomaticos -->
+        <test-method is-config="true" signature="tearDown()[pri:0, instance:tests.PersonasMenuTest@4b5d6a01]" started-at="2026-09-11T16:33:28 CST" name="tearDown" finished-at="2026-09-11T16:33:28 CST" duration-ms="237" status="PASS">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- tearDown -->
+        <test-method is-config="true" signature="setUp()[pri:0, instance:tests.PersonasMenuTest@4b5d6a01]" started-at="2026-09-11T16:33:28 CST" name="setUp" finished-at="2026-09-11T16:33:33 CST" duration-ms="4638" status="PASS">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- setUp -->
+        <test-method signature="shouldOpenCanalesAlternos()[pri:0, instance:tests.PersonasMenuTest@4b5d6a01]" started-at="2026-09-11T16:33:33 CST" name="shouldOpenCanalesAlternos" finished-at="2026-09-11T16:33:35 CST" duration-ms="2258" status="PASS">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- shouldOpenCanalesAlternos -->
+        <test-method is-config="true" signature="tearDown()[pri:0, instance:tests.PersonasMenuTest@4b5d6a01]" started-at="2026-09-11T16:33:35 CST" name="tearDown" finished-at="2026-09-11T16:33:35 CST" duration-ms="256" status="PASS">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- tearDown -->
+        <test-method is-config="true" signature="setUp()[pri:0, instance:tests.PersonasMenuTest@4b5d6a01]" started-at="2026-09-11T16:33:35 CST" name="setUp" finished-at="2026-09-11T16:33:40 CST" duration-ms="4492" status="PASS">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- setUp -->
+        <test-method signature="shouldOpenCashback()[pri:0, instance:tests.PersonasMenuTest@4b5d6a01]" started-at="2026-09-11T16:33:40 CST" name="shouldOpenCashback" finished-at="2026-09-11T16:33:43 CST" duration-ms="2927" status="PASS">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- shouldOpenCashback -->
+        <test-method is-config="true" signature="tearDown()[pri:0, instance:tests.PersonasMenuTest@4b5d6a01]" started-at="2026-09-11T16:33:43 CST" name="tearDown" finished-at="2026-09-11T16:33:43 CST" duration-ms="417" status="PASS">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- tearDown -->
+        <test-method is-config="true" signature="setUp()[pri:0, instance:tests.PersonasMenuTest@4b5d6a01]" started-at="2026-09-11T16:33:43 CST" name="setUp" finished-at="2026-09-11T16:33:47 CST" duration-ms="4531" status="PASS">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- setUp -->
+        <test-method signature="shouldOpenCentroAyuda()[pri:0, instance:tests.PersonasMenuTest@4b5d6a01]" started-at="2026-09-11T16:33:47 CST" name="shouldOpenCentroAyuda" finished-at="2026-09-11T16:33:49 CST" duration-ms="1691" status="PASS">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- shouldOpenCentroAyuda -->
+        <test-method is-config="true" signature="tearDown()[pri:0, instance:tests.PersonasMenuTest@4b5d6a01]" started-at="2026-09-11T16:33:49 CST" name="tearDown" finished-at="2026-09-11T16:33:49 CST" duration-ms="250" status="PASS">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- tearDown -->
+        <test-method is-config="true" signature="setUp()[pri:0, instance:tests.PersonasMenuTest@4b5d6a01]" started-at="2026-09-11T16:33:49 CST" name="setUp" finished-at="2026-09-11T16:33:54 CST" duration-ms="4619" status="PASS">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- setUp -->
+        <test-method signature="shouldOpenCentroSeguridad()[pri:0, instance:tests.PersonasMenuTest@4b5d6a01]" started-at="2026-09-11T16:33:54 CST" name="shouldOpenCentroSeguridad" finished-at="2026-09-11T16:33:56 CST" duration-ms="1707" status="PASS">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- shouldOpenCentroSeguridad -->
+        <test-method is-config="true" signature="tearDown()[pri:0, instance:tests.PersonasMenuTest@4b5d6a01]" started-at="2026-09-11T16:33:56 CST" name="tearDown" finished-at="2026-09-11T16:33:56 CST" duration-ms="240" status="PASS">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- tearDown -->
+        <test-method is-config="true" signature="setUp()[pri:0, instance:tests.PersonasMenuTest@4b5d6a01]" started-at="2026-09-11T16:33:56 CST" name="setUp" finished-at="2026-09-11T16:34:01 CST" duration-ms="4745" status="PASS">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- setUp -->
+        <test-method signature="shouldOpenCheques()[pri:0, instance:tests.PersonasMenuTest@4b5d6a01]" started-at="2026-09-11T16:34:01 CST" name="shouldOpenCheques" finished-at="2026-09-11T16:34:02 CST" duration-ms="1566" status="PASS">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- shouldOpenCheques -->
+        <test-method is-config="true" signature="tearDown()[pri:0, instance:tests.PersonasMenuTest@4b5d6a01]" started-at="2026-09-11T16:34:02 CST" name="tearDown" finished-at="2026-09-11T16:34:03 CST" duration-ms="247" status="PASS">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- tearDown -->
+        <test-method is-config="true" signature="setUp()[pri:0, instance:tests.PersonasMenuTest@4b5d6a01]" started-at="2026-09-11T16:34:03 CST" name="setUp" finished-at="2026-09-11T16:34:07 CST" duration-ms="4566" status="PASS">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- setUp -->
+        <test-method signature="shouldOpenCreditoAutomotriz()[pri:0, instance:tests.PersonasMenuTest@4b5d6a01]" started-at="2026-09-11T16:34:07 CST" name="shouldOpenCreditoAutomotriz" finished-at="2026-09-11T16:34:09 CST" duration-ms="2229" status="PASS">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- shouldOpenCreditoAutomotriz -->
+        <test-method is-config="true" signature="tearDown()[pri:0, instance:tests.PersonasMenuTest@4b5d6a01]" started-at="2026-09-11T16:34:09 CST" name="tearDown" finished-at="2026-09-11T16:34:10 CST" duration-ms="272" status="PASS">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- tearDown -->
+        <test-method is-config="true" signature="setUp()[pri:0, instance:tests.PersonasMenuTest@4b5d6a01]" started-at="2026-09-11T16:34:10 CST" name="setUp" finished-at="2026-09-11T16:34:14 CST" duration-ms="4551" status="PASS">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- setUp -->
+        <test-method signature="shouldOpenCreditoHipotecario()[pri:0, instance:tests.PersonasMenuTest@4b5d6a01]" started-at="2026-09-11T16:34:14 CST" name="shouldOpenCreditoHipotecario" finished-at="2026-09-11T16:34:16 CST" duration-ms="1650" status="PASS">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- shouldOpenCreditoHipotecario -->
+        <test-method is-config="true" signature="tearDown()[pri:0, instance:tests.PersonasMenuTest@4b5d6a01]" started-at="2026-09-11T16:34:16 CST" name="tearDown" finished-at="2026-09-11T16:34:16 CST" duration-ms="269" status="PASS">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- tearDown -->
+        <test-method is-config="true" signature="setUp()[pri:0, instance:tests.PersonasMenuTest@4b5d6a01]" started-at="2026-09-11T16:34:16 CST" name="setUp" finished-at="2026-09-11T16:34:21 CST" duration-ms="4844" status="PASS">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- setUp -->
+        <test-method signature="shouldOpenCreditoPersonal()[pri:0, instance:tests.PersonasMenuTest@4b5d6a01]" started-at="2026-09-11T16:34:21 CST" name="shouldOpenCreditoPersonal" finished-at="2026-09-11T16:34:23 CST" duration-ms="1766" status="PASS">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- shouldOpenCreditoPersonal -->
+        <test-method is-config="true" signature="tearDown()[pri:0, instance:tests.PersonasMenuTest@4b5d6a01]" started-at="2026-09-11T16:34:23 CST" name="tearDown" finished-at="2026-09-11T16:34:23 CST" duration-ms="259" status="PASS">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- tearDown -->
+        <test-method is-config="true" signature="setUp()[pri:0, instance:tests.PersonasMenuTest@4b5d6a01]" started-at="2026-09-11T16:34:23 CST" name="setUp" finished-at="2026-09-11T16:34:28 CST" duration-ms="4546" status="PASS">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- setUp -->
+        <test-method signature="shouldOpenCuentaBasica()[pri:0, instance:tests.PersonasMenuTest@4b5d6a01]" started-at="2026-09-11T16:34:28 CST" name="shouldOpenCuentaBasica" finished-at="2026-09-11T16:34:29 CST" duration-ms="1748" status="PASS">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- shouldOpenCuentaBasica -->
+        <test-method is-config="true" signature="tearDown()[pri:0, instance:tests.PersonasMenuTest@4b5d6a01]" started-at="2026-09-11T16:34:29 CST" name="tearDown" finished-at="2026-09-11T16:34:30 CST" duration-ms="278" status="PASS">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- tearDown -->
+        <test-method is-config="true" signature="setUp()[pri:0, instance:tests.PersonasMenuTest@4b5d6a01]" started-at="2026-09-11T16:34:30 CST" name="setUp" finished-at="2026-09-11T16:34:34 CST" duration-ms="4428" status="PASS">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- setUp -->
+        <test-method signature="shouldOpenCuentaNomina()[pri:0, instance:tests.PersonasMenuTest@4b5d6a01]" started-at="2026-09-11T16:34:34 CST" name="shouldOpenCuentaNomina" finished-at="2026-09-11T16:34:36 CST" duration-ms="1623" status="PASS">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- shouldOpenCuentaNomina -->
+        <test-method is-config="true" signature="tearDown()[pri:0, instance:tests.PersonasMenuTest@4b5d6a01]" started-at="2026-09-11T16:34:36 CST" name="tearDown" finished-at="2026-09-11T16:34:36 CST" duration-ms="262" status="PASS">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- tearDown -->
+        <test-method is-config="true" signature="setUp()[pri:0, instance:tests.PersonasMenuTest@4b5d6a01]" started-at="2026-09-11T16:34:36 CST" name="setUp" finished-at="2026-09-11T16:34:40 CST" duration-ms="4574" status="PASS">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- setUp -->
+        <test-method signature="shouldOpenCuentas()[pri:0, instance:tests.PersonasMenuTest@4b5d6a01]" started-at="2026-09-11T16:34:40 CST" name="shouldOpenCuentas" finished-at="2026-09-11T16:34:42 CST" duration-ms="1815" status="PASS">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- shouldOpenCuentas -->
+        <test-method is-config="true" signature="tearDown()[pri:0, instance:tests.PersonasMenuTest@4b5d6a01]" started-at="2026-09-11T16:34:42 CST" name="tearDown" finished-at="2026-09-11T16:34:43 CST" duration-ms="282" status="PASS">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- tearDown -->
+        <test-method is-config="true" signature="setUp()[pri:0, instance:tests.PersonasMenuTest@4b5d6a01]" started-at="2026-09-11T16:34:43 CST" name="setUp" finished-at="2026-09-11T16:34:47 CST" duration-ms="4514" status="PASS">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- setUp -->
+        <test-method signature="shouldOpenFondosInversion()[pri:0, instance:tests.PersonasMenuTest@4b5d6a01]" started-at="2026-09-11T16:34:47 CST" name="shouldOpenFondosInversion" finished-at="2026-09-11T16:34:49 CST" duration-ms="2219" status="PASS">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- shouldOpenFondosInversion -->
+        <test-method is-config="true" signature="tearDown()[pri:0, instance:tests.PersonasMenuTest@4b5d6a01]" started-at="2026-09-11T16:34:49 CST" name="tearDown" finished-at="2026-09-11T16:34:50 CST" duration-ms="246" status="PASS">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- tearDown -->
+        <test-method is-config="true" signature="setUp()[pri:0, instance:tests.PersonasMenuTest@4b5d6a01]" started-at="2026-09-11T16:34:50 CST" name="setUp" finished-at="2026-09-11T16:34:54 CST" duration-ms="4621" status="PASS">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- setUp -->
+        <test-method signature="shouldOpenGastosMedicos()[pri:0, instance:tests.PersonasMenuTest@4b5d6a01]" started-at="2026-09-11T16:34:54 CST" name="shouldOpenGastosMedicos" finished-at="2026-09-11T16:34:58 CST" duration-ms="3448" status="PASS">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- shouldOpenGastosMedicos -->
+        <test-method is-config="true" signature="tearDown()[pri:0, instance:tests.PersonasMenuTest@4b5d6a01]" started-at="2026-09-11T16:34:58 CST" name="tearDown" finished-at="2026-09-11T16:34:58 CST" duration-ms="251" status="PASS">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- tearDown -->
+        <test-method is-config="true" signature="setUp()[pri:0, instance:tests.PersonasMenuTest@4b5d6a01]" started-at="2026-09-11T16:34:58 CST" name="setUp" finished-at="2026-09-11T16:35:02 CST" duration-ms="4609" status="PASS">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- setUp -->
+        <test-method signature="shouldOpenInversionesPlazo()[pri:0, instance:tests.PersonasMenuTest@4b5d6a01]" started-at="2026-09-11T16:35:02 CST" name="shouldOpenInversionesPlazo" finished-at="2026-09-11T16:35:05 CST" duration-ms="2138" status="PASS">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- shouldOpenInversionesPlazo -->
+        <test-method is-config="true" signature="tearDown()[pri:0, instance:tests.PersonasMenuTest@4b5d6a01]" started-at="2026-09-11T16:35:05 CST" name="tearDown" finished-at="2026-09-11T16:35:05 CST" duration-ms="228" status="PASS">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- tearDown -->
+        <test-method is-config="true" signature="setUp()[pri:0, instance:tests.PersonasMenuTest@4b5d6a01]" started-at="2026-09-11T16:35:05 CST" name="setUp" finished-at="2026-09-11T16:35:09 CST" duration-ms="4620" status="PASS">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- setUp -->
+        <test-method signature="shouldOpenLimiteTransaccion()[pri:0, instance:tests.PersonasMenuTest@4b5d6a01]" started-at="2026-09-11T16:35:09 CST" name="shouldOpenLimiteTransaccion" finished-at="2026-09-11T16:35:10 CST" duration-ms="469" status="PASS">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- shouldOpenLimiteTransaccion -->
+        <test-method is-config="true" signature="tearDown()[pri:0, instance:tests.PersonasMenuTest@4b5d6a01]" started-at="2026-09-11T16:35:10 CST" name="tearDown" finished-at="2026-09-11T16:35:10 CST" duration-ms="224" status="PASS">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- tearDown -->
+        <test-method is-config="true" signature="setUp()[pri:0, instance:tests.PersonasMenuTest@4b5d6a01]" started-at="2026-09-11T16:35:10 CST" name="setUp" finished-at="2026-09-11T16:35:15 CST" duration-ms="4563" status="PASS">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- setUp -->
+        <test-method signature="shouldOpenMundoHogar()[pri:0, instance:tests.PersonasMenuTest@4b5d6a01]" started-at="2026-09-11T16:35:15 CST" name="shouldOpenMundoHogar" finished-at="2026-09-11T16:35:16 CST" duration-ms="1341" status="PASS">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- shouldOpenMundoHogar -->
+        <test-method is-config="true" signature="tearDown()[pri:0, instance:tests.PersonasMenuTest@4b5d6a01]" started-at="2026-09-11T16:35:16 CST" name="tearDown" finished-at="2026-09-11T16:35:16 CST" duration-ms="239" status="PASS">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- tearDown -->
+        <test-method is-config="true" signature="setUp()[pri:0, instance:tests.PersonasMenuTest@4b5d6a01]" started-at="2026-09-11T16:35:16 CST" name="setUp" finished-at="2026-09-11T16:35:21 CST" duration-ms="4543" status="PASS">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- setUp -->
+        <test-method signature="shouldOpenNotasEstructuradas()[pri:0, instance:tests.PersonasMenuTest@4b5d6a01]" started-at="2026-09-11T16:35:21 CST" name="shouldOpenNotasEstructuradas" finished-at="2026-09-11T16:35:23 CST" duration-ms="2288" status="PASS">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- shouldOpenNotasEstructuradas -->
+        <test-method is-config="true" signature="tearDown()[pri:0, instance:tests.PersonasMenuTest@4b5d6a01]" started-at="2026-09-11T16:35:23 CST" name="tearDown" finished-at="2026-09-11T16:35:23 CST" duration-ms="265" status="PASS">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- tearDown -->
+        <test-method is-config="true" signature="setUp()[pri:0, instance:tests.PersonasMenuTest@4b5d6a01]" started-at="2026-09-11T16:35:23 CST" name="setUp" finished-at="2026-09-11T16:35:28 CST" duration-ms="4899" status="PASS">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- setUp -->
+        <test-method signature="shouldOpenPertenencias()[pri:0, instance:tests.PersonasMenuTest@4b5d6a01]" started-at="2026-09-11T16:35:28 CST" name="shouldOpenPertenencias" finished-at="2026-09-11T16:35:30 CST" duration-ms="1971" status="PASS">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- shouldOpenPertenencias -->
+        <test-method is-config="true" signature="tearDown()[pri:0, instance:tests.PersonasMenuTest@4b5d6a01]" started-at="2026-09-11T16:35:30 CST" name="tearDown" finished-at="2026-09-11T16:35:31 CST" duration-ms="278" status="PASS">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- tearDown -->
+        <test-method is-config="true" signature="setUp()[pri:0, instance:tests.PersonasMenuTest@4b5d6a01]" started-at="2026-09-11T16:35:31 CST" name="setUp" finished-at="2026-09-11T16:35:35 CST" duration-ms="4666" status="PASS">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- setUp -->
+        <test-method signature="shouldOpenPortabilidadNomina()[pri:0, instance:tests.PersonasMenuTest@4b5d6a01]" started-at="2026-09-11T16:35:35 CST" name="shouldOpenPortabilidadNomina" finished-at="2026-09-11T16:35:38 CST" duration-ms="2544" status="PASS">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- shouldOpenPortabilidadNomina -->
+        <test-method is-config="true" signature="tearDown()[pri:0, instance:tests.PersonasMenuTest@4b5d6a01]" started-at="2026-09-11T16:35:38 CST" name="tearDown" finished-at="2026-09-11T16:35:38 CST" duration-ms="278" status="PASS">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- tearDown -->
+        <test-method is-config="true" signature="setUp()[pri:0, instance:tests.PersonasMenuTest@4b5d6a01]" started-at="2026-09-11T16:35:38 CST" name="setUp" finished-at="2026-09-11T16:35:43 CST" duration-ms="4624" status="PASS">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- setUp -->
+        <test-method signature="shouldOpenPromocionesSantander()[pri:0, instance:tests.PersonasMenuTest@4b5d6a01]" started-at="2026-09-11T16:35:43 CST" name="shouldOpenPromocionesSantander" finished-at="2026-09-11T16:35:46 CST" duration-ms="3691" status="PASS">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- shouldOpenPromocionesSantander -->
+        <test-method is-config="true" signature="tearDown()[pri:0, instance:tests.PersonasMenuTest@4b5d6a01]" started-at="2026-09-11T16:35:46 CST" name="tearDown" finished-at="2026-09-11T16:35:47 CST" duration-ms="270" status="PASS">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- tearDown -->
+        <test-method is-config="true" signature="setUp()[pri:0, instance:tests.PersonasMenuTest@4b5d6a01]" started-at="2026-09-11T16:35:47 CST" name="setUp" finished-at="2026-09-11T16:35:51 CST" duration-ms="4673" status="PASS">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- setUp -->
+        <test-method signature="shouldOpenRegulacion()[pri:0, instance:tests.PersonasMenuTest@4b5d6a01]" started-at="2026-09-11T16:35:51 CST" name="shouldOpenRegulacion" finished-at="2026-09-11T16:35:53 CST" duration-ms="2076" status="PASS">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- shouldOpenRegulacion -->
+        <test-method is-config="true" signature="tearDown()[pri:0, instance:tests.PersonasMenuTest@4b5d6a01]" started-at="2026-09-11T16:35:53 CST" name="tearDown" finished-at="2026-09-11T16:35:54 CST" duration-ms="562" status="PASS">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- tearDown -->
+        <test-method is-config="true" signature="setUp()[pri:0, instance:tests.PersonasMenuTest@4b5d6a01]" started-at="2026-09-11T16:35:54 CST" name="setUp" finished-at="2026-09-11T16:35:55 CST" duration-ms="1437" status="PASS">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- setUp -->
+        <test-method signature="shouldOpenSantanderDigital()[pri:0, instance:tests.PersonasMenuTest@4b5d6a01]" started-at="2026-09-11T16:35:55 CST" name="shouldOpenSantanderDigital" finished-at="2026-09-11T16:36:01 CST" duration-ms="5946" status="PASS">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- shouldOpenSantanderDigital -->
+        <test-method is-config="true" signature="tearDown()[pri:0, instance:tests.PersonasMenuTest@4b5d6a01]" started-at="2026-09-11T16:36:01 CST" name="tearDown" finished-at="2026-09-11T16:36:01 CST" duration-ms="224" status="PASS">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- tearDown -->
+        <test-method is-config="true" signature="setUp()[pri:0, instance:tests.PersonasMenuTest@4b5d6a01]" started-at="2026-09-11T16:36:02 CST" name="setUp" finished-at="2026-09-11T16:36:06 CST" duration-ms="4677" status="PASS">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- setUp -->
+        <test-method signature="shouldOpenSantanderWeb()[pri:0, instance:tests.PersonasMenuTest@4b5d6a01]" started-at="2026-09-11T16:36:06 CST" name="shouldOpenSantanderWeb" finished-at="2026-09-11T16:36:08 CST" duration-ms="1972" status="PASS">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- shouldOpenSantanderWeb -->
+        <test-method is-config="true" signature="tearDown()[pri:0, instance:tests.PersonasMenuTest@4b5d6a01]" started-at="2026-09-11T16:36:08 CST" name="tearDown" finished-at="2026-09-11T16:36:08 CST" duration-ms="240" status="PASS">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- tearDown -->
+        <test-method is-config="true" signature="setUp()[pri:0, instance:tests.PersonasMenuTest@4b5d6a01]" started-at="2026-09-11T16:36:08 CST" name="setUp" finished-at="2026-09-11T16:36:13 CST" duration-ms="4572" status="PASS">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- setUp -->
+        <test-method signature="shouldOpenSeguroAhorro()[pri:0, instance:tests.PersonasMenuTest@4b5d6a01]" started-at="2026-09-11T16:36:13 CST" name="shouldOpenSeguroAhorro" finished-at="2026-09-11T16:36:17 CST" duration-ms="3843" status="PASS">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- shouldOpenSeguroAhorro -->
+        <test-method is-config="true" signature="tearDown()[pri:0, instance:tests.PersonasMenuTest@4b5d6a01]" started-at="2026-09-11T16:36:17 CST" name="tearDown" finished-at="2026-09-11T16:36:17 CST" duration-ms="273" status="PASS">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- tearDown -->
+        <test-method is-config="true" signature="setUp()[pri:0, instance:tests.PersonasMenuTest@4b5d6a01]" started-at="2026-09-11T16:36:17 CST" name="setUp" finished-at="2026-09-11T16:36:22 CST" duration-ms="4656" status="PASS">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- setUp -->
+        <test-method signature="shouldOpenSeguroAuto()[pri:0, instance:tests.PersonasMenuTest@4b5d6a01]" started-at="2026-09-11T16:36:22 CST" name="shouldOpenSeguroAuto" finished-at="2026-09-11T16:36:24 CST" duration-ms="2156" status="PASS">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- shouldOpenSeguroAuto -->
+        <test-method is-config="true" signature="tearDown()[pri:0, instance:tests.PersonasMenuTest@4b5d6a01]" started-at="2026-09-11T16:36:24 CST" name="tearDown" finished-at="2026-09-11T16:36:24 CST" duration-ms="232" status="PASS">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- tearDown -->
+        <test-method is-config="true" signature="setUp()[pri:0, instance:tests.PersonasMenuTest@4b5d6a01]" started-at="2026-09-11T16:36:24 CST" name="setUp" finished-at="2026-09-11T16:36:29 CST" duration-ms="4594" status="PASS">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- setUp -->
+        <test-method signature="shouldOpenSeguroHogar()[pri:0, instance:tests.PersonasMenuTest@4b5d6a01]" started-at="2026-09-11T16:36:29 CST" name="shouldOpenSeguroHogar" finished-at="2026-09-11T16:36:32 CST" duration-ms="3504" status="PASS">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- shouldOpenSeguroHogar -->
+        <test-method is-config="true" signature="tearDown()[pri:0, instance:tests.PersonasMenuTest@4b5d6a01]" started-at="2026-09-11T16:36:32 CST" name="tearDown" finished-at="2026-09-11T16:36:33 CST" duration-ms="276" status="PASS">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- tearDown -->
+        <test-method is-config="true" signature="setUp()[pri:0, instance:tests.PersonasMenuTest@4b5d6a01]" started-at="2026-09-11T16:36:33 CST" name="setUp" finished-at="2026-09-11T16:36:37 CST" duration-ms="4633" status="PASS">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- setUp -->
+        <test-method signature="shouldOpenSeguroVida()[pri:0, instance:tests.PersonasMenuTest@4b5d6a01]" started-at="2026-09-11T16:36:37 CST" name="shouldOpenSeguroVida" finished-at="2026-09-11T16:36:41 CST" duration-ms="4122" status="PASS">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- shouldOpenSeguroVida -->
+        <test-method is-config="true" signature="tearDown()[pri:0, instance:tests.PersonasMenuTest@4b5d6a01]" started-at="2026-09-11T16:36:41 CST" name="tearDown" finished-at="2026-09-11T16:36:42 CST" duration-ms="246" status="PASS">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- tearDown -->
+        <test-method is-config="true" signature="setUp()[pri:0, instance:tests.PersonasMenuTest@4b5d6a01]" started-at="2026-09-11T16:36:42 CST" name="setUp" finished-at="2026-09-11T16:36:46 CST" duration-ms="4574" status="PASS">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- setUp -->
+        <test-method signature="shouldOpenSelect()[pri:0, instance:tests.PersonasMenuTest@4b5d6a01]" started-at="2026-09-11T16:36:46 CST" name="shouldOpenSelect" finished-at="2026-09-11T16:36:49 CST" duration-ms="2666" status="PASS">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- shouldOpenSelect -->
+        <test-method is-config="true" signature="tearDown()[pri:0, instance:tests.PersonasMenuTest@4b5d6a01]" started-at="2026-09-11T16:36:49 CST" name="tearDown" finished-at="2026-09-11T16:36:49 CST" duration-ms="490" status="PASS">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- tearDown -->
+        <test-method is-config="true" signature="setUp()[pri:0, instance:tests.PersonasMenuTest@4b5d6a01]" started-at="2026-09-11T16:36:49 CST" name="setUp" finished-at="2026-09-11T16:36:50 CST" duration-ms="1137" status="PASS">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- setUp -->
+        <test-method signature="shouldOpenSimuladorHipotecario()[pri:0, instance:tests.PersonasMenuTest@4b5d6a01]" started-at="2026-09-11T16:36:50 CST" name="shouldOpenSimuladorHipotecario" finished-at="2026-09-11T16:36:57 CST" duration-ms="6275" status="PASS">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- shouldOpenSimuladorHipotecario -->
+        <test-method is-config="true" signature="tearDown()[pri:0, instance:tests.PersonasMenuTest@4b5d6a01]" started-at="2026-09-11T16:36:57 CST" name="tearDown" finished-at="2026-09-11T16:36:57 CST" duration-ms="279" status="PASS">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- tearDown -->
+        <test-method is-config="true" signature="setUp()[pri:0, instance:tests.PersonasMenuTest@4b5d6a01]" started-at="2026-09-11T16:36:57 CST" name="setUp" finished-at="2026-09-11T16:37:02 CST" duration-ms="4600" status="PASS">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- setUp -->
+        <test-method signature="shouldOpenSolucionesColectivos()[pri:0, instance:tests.PersonasMenuTest@4b5d6a01]" started-at="2026-09-11T16:37:02 CST" name="shouldOpenSolucionesColectivos" finished-at="2026-09-11T16:37:03 CST" duration-ms="1754" status="PASS">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- shouldOpenSolucionesColectivos -->
+        <test-method is-config="true" signature="tearDown()[pri:0, instance:tests.PersonasMenuTest@4b5d6a01]" started-at="2026-09-11T16:37:03 CST" name="tearDown" finished-at="2026-09-11T16:37:04 CST" duration-ms="254" status="PASS">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- tearDown -->
+        <test-method is-config="true" signature="setUp()[pri:0, instance:tests.PersonasMenuTest@4b5d6a01]" started-at="2026-09-11T16:37:04 CST" name="setUp" finished-at="2026-09-11T16:37:08 CST" duration-ms="4581" status="PASS">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- setUp -->
+        <test-method signature="shouldOpenSucursales()[pri:0, instance:tests.PersonasMenuTest@4b5d6a01]" started-at="2026-09-11T16:37:08 CST" name="shouldOpenSucursales" finished-at="2026-09-11T16:37:11 CST" duration-ms="2722" status="PASS">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- shouldOpenSucursales -->
+        <test-method is-config="true" signature="tearDown()[pri:0, instance:tests.PersonasMenuTest@4b5d6a01]" started-at="2026-09-11T16:37:11 CST" name="tearDown" finished-at="2026-09-11T16:37:11 CST" duration-ms="235" status="PASS">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- tearDown -->
+        <test-method is-config="true" signature="setUp()[pri:0, instance:tests.PersonasMenuTest@4b5d6a01]" started-at="2026-09-11T16:37:11 CST" name="setUp" finished-at="2026-09-11T16:37:16 CST" duration-ms="4529" status="PASS">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- setUp -->
+        <test-method signature="shouldOpenSuperlinea()[pri:0, instance:tests.PersonasMenuTest@4b5d6a01]" started-at="2026-09-11T16:37:16 CST" name="shouldOpenSuperlinea" finished-at="2026-09-11T16:37:17 CST" duration-ms="1345" status="PASS">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- shouldOpenSuperlinea -->
+        <test-method is-config="true" signature="tearDown()[pri:0, instance:tests.PersonasMenuTest@4b5d6a01]" started-at="2026-09-11T16:37:17 CST" name="tearDown" finished-at="2026-09-11T16:37:17 CST" duration-ms="242" status="PASS">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- tearDown -->
+        <test-method is-config="true" signature="setUp()[pri:0, instance:tests.PersonasMenuTest@4b5d6a01]" started-at="2026-09-11T16:37:17 CST" name="setUp" finished-at="2026-09-11T16:37:22 CST" duration-ms="4759" status="PASS">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- setUp -->
+        <test-method signature="shouldOpenTarjetasCredito()[pri:0, instance:tests.PersonasMenuTest@4b5d6a01]" started-at="2026-09-11T16:37:22 CST" name="shouldOpenTarjetasCredito" finished-at="2026-09-11T16:37:22 CST" duration-ms="489" status="PASS">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- shouldOpenTarjetasCredito -->
+        <test-method is-config="true" signature="tearDown()[pri:0, instance:tests.PersonasMenuTest@4b5d6a01]" started-at="2026-09-11T16:37:22 CST" name="tearDown" finished-at="2026-09-11T16:37:23 CST" duration-ms="214" status="PASS">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- tearDown -->
+        <test-method is-config="true" signature="setUp()[pri:0, instance:tests.PersonasMenuTest@4b5d6a01]" started-at="2026-09-11T16:37:23 CST" name="setUp" finished-at="2026-09-11T16:37:27 CST" duration-ms="4594" status="PASS">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- setUp -->
+        <test-method signature="shouldOpenTerminosCondiciones()[pri:0, instance:tests.PersonasMenuTest@4b5d6a01]" started-at="2026-09-11T16:37:27 CST" name="shouldOpenTerminosCondiciones" finished-at="2026-09-11T16:37:29 CST" duration-ms="2047" status="PASS">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- shouldOpenTerminosCondiciones -->
+        <test-method is-config="true" signature="tearDown()[pri:0, instance:tests.PersonasMenuTest@4b5d6a01]" started-at="2026-09-11T16:37:29 CST" name="tearDown" finished-at="2026-09-11T16:37:30 CST" duration-ms="258" status="PASS">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- tearDown -->
+        <test-method is-config="true" signature="setUp()[pri:0, instance:tests.PersonasMenuTest@4b5d6a01]" started-at="2026-09-11T16:37:30 CST" name="setUp" finished-at="2026-09-11T16:37:34 CST" duration-ms="4576" status="PASS">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- setUp -->
+        <test-method signature="shouldOpenTutoriales()[pri:0, instance:tests.PersonasMenuTest@4b5d6a01]" started-at="2026-09-11T16:37:34 CST" name="shouldOpenTutoriales" finished-at="2026-09-11T16:37:35 CST" duration-ms="1371" status="PASS">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- shouldOpenTutoriales -->
+        <test-method is-config="true" signature="tearDown()[pri:0, instance:tests.PersonasMenuTest@4b5d6a01]" started-at="2026-09-11T16:37:35 CST" name="tearDown" finished-at="2026-09-11T16:37:36 CST" duration-ms="267" status="PASS">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- tearDown -->
+        <test-method is-config="true" signature="setUp()[pri:0, instance:tests.PersonasMenuTest@4b5d6a01]" started-at="2026-09-11T16:37:36 CST" name="setUp" finished-at="2026-09-11T16:37:41 CST" duration-ms="5708" status="PASS">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- setUp -->
+        <test-method signature="shouldOpenUniqueRewards()[pri:0, instance:tests.PersonasMenuTest@4b5d6a01]" started-at="2026-09-11T16:37:41 CST" name="shouldOpenUniqueRewards" finished-at="2026-09-11T16:37:44 CST" duration-ms="2203" status="PASS">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- shouldOpenUniqueRewards -->
+        <test-method is-config="true" signature="tearDown()[pri:0, instance:tests.PersonasMenuTest@4b5d6a01]" started-at="2026-09-11T16:37:44 CST" name="tearDown" finished-at="2026-09-11T16:37:44 CST" duration-ms="278" status="PASS">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- tearDown -->
+      </class> <!-- tests.PersonasMenuTest -->
+      <class name="tests.SantanderHomeTest">
+        <test-method is-config="true" signature="setUp()[pri:0, instance:tests.SantanderHomeTest@4b14c583]" started-at="2026-09-11T16:32:33 CST" name="setUp" finished-at="2026-09-11T16:32:42 CST" duration-ms="8710" status="PASS">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- setUp -->
+        <test-method signature="shouldOpenAcercaDelBancoMenu()[pri:0, instance:tests.SantanderHomeTest@4b14c583]" started-at="2026-09-11T16:32:42 CST" name="shouldOpenAcercaDelBancoMenu" finished-at="2026-09-11T16:32:42 CST" duration-ms="258" status="PASS">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- shouldOpenAcercaDelBancoMenu -->
+        <test-method is-config="true" signature="tearDown()[pri:0, instance:tests.SantanderHomeTest@4b14c583]" started-at="2026-09-11T16:32:42 CST" name="tearDown" finished-at="2026-09-11T16:32:42 CST" duration-ms="267" status="PASS">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- tearDown -->
+        <test-method is-config="true" signature="setUp()[pri:0, instance:tests.SantanderHomeTest@4b14c583]" started-at="2026-09-11T16:32:42 CST" name="setUp" finished-at="2026-09-11T16:32:48 CST" duration-ms="5950" status="PASS">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- setUp -->
+        <test-method signature="shouldOpenBancaPrivada()[pri:0, instance:tests.SantanderHomeTest@4b14c583]" started-at="2026-09-11T16:32:48 CST" name="shouldOpenBancaPrivada" finished-at="2026-09-11T16:32:51 CST" duration-ms="3264" status="PASS">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- shouldOpenBancaPrivada -->
+        <test-method is-config="true" signature="tearDown()[pri:0, instance:tests.SantanderHomeTest@4b14c583]" started-at="2026-09-11T16:32:51 CST" name="tearDown" finished-at="2026-09-11T16:32:52 CST" duration-ms="267" status="PASS">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- tearDown -->
+        <test-method is-config="true" signature="setUp()[pri:0, instance:tests.SantanderHomeTest@4b14c583]" started-at="2026-09-11T16:32:52 CST" name="setUp" finished-at="2026-09-11T16:32:58 CST" duration-ms="6599" status="PASS">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- setUp -->
+        <test-method signature="shouldOpenEmpresasMenu()[pri:0, instance:tests.SantanderHomeTest@4b14c583]" started-at="2026-09-11T16:32:58 CST" name="shouldOpenEmpresasMenu" finished-at="2026-09-11T16:32:59 CST" duration-ms="244" status="PASS">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- shouldOpenEmpresasMenu -->
+        <test-method is-config="true" signature="tearDown()[pri:0, instance:tests.SantanderHomeTest@4b14c583]" started-at="2026-09-11T16:32:59 CST" name="tearDown" finished-at="2026-09-11T16:32:59 CST" duration-ms="335" status="PASS">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- tearDown -->
+        <test-method is-config="true" signature="setUp()[pri:0, instance:tests.SantanderHomeTest@4b14c583]" started-at="2026-09-11T16:32:59 CST" name="setUp" finished-at="2026-09-11T16:33:04 CST" duration-ms="4841" status="PASS">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- setUp -->
+        <test-method signature="shouldOpenPersonasMenu()[pri:0, instance:tests.SantanderHomeTest@4b14c583]" started-at="2026-09-11T16:33:04 CST" name="shouldOpenPersonasMenu" finished-at="2026-09-11T16:33:04 CST" duration-ms="224" status="PASS">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- shouldOpenPersonasMenu -->
+        <test-method is-config="true" signature="tearDown()[pri:0, instance:tests.SantanderHomeTest@4b14c583]" started-at="2026-09-11T16:33:04 CST" name="tearDown" finished-at="2026-09-11T16:33:04 CST" duration-ms="250" status="PASS">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- tearDown -->
+        <test-method is-config="true" signature="setUp()[pri:0, instance:tests.SantanderHomeTest@4b14c583]" started-at="2026-09-11T16:33:04 CST" name="setUp" finished-at="2026-09-11T16:33:09 CST" duration-ms="4737" status="PASS">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- setUp -->
+        <test-method signature="shouldOpenPymesMenu()[pri:0, instance:tests.SantanderHomeTest@4b14c583]" started-at="2026-09-11T16:33:09 CST" name="shouldOpenPymesMenu" finished-at="2026-09-11T16:33:09 CST" duration-ms="210" status="PASS">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- shouldOpenPymesMenu -->
+        <test-method is-config="true" signature="tearDown()[pri:0, instance:tests.SantanderHomeTest@4b14c583]" started-at="2026-09-11T16:33:09 CST" name="tearDown" finished-at="2026-09-11T16:33:09 CST" duration-ms="250" status="PASS">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- tearDown -->
+      </class> <!-- tests.SantanderHomeTest -->
+      <class name="tests.EmpresasMenuTest">
+        <test-method is-config="true" signature="setUp()[pri:0, instance:tests.EmpresasMenuTest@4a22f9e2]" started-at="2026-09-11T16:37:44 CST" name="setUp" finished-at="2026-09-11T16:37:49 CST" duration-ms="4631" status="PASS">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- setUp -->
+        <test-method signature="shouldOpenEmpresasGobierno()[pri:0, instance:tests.EmpresasMenuTest@4a22f9e2]" started-at="2026-09-11T16:37:49 CST" name="shouldOpenEmpresasGobierno" finished-at="2026-09-11T16:37:51 CST" duration-ms="2388" status="PASS">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- shouldOpenEmpresasGobierno -->
+        <test-method is-config="true" signature="tearDown()[pri:0, instance:tests.EmpresasMenuTest@4a22f9e2]" started-at="2026-09-11T16:37:51 CST" name="tearDown" finished-at="2026-09-11T16:37:51 CST" duration-ms="266" status="PASS">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- tearDown -->
+        <test-method is-config="true" signature="setUp()[pri:0, instance:tests.EmpresasMenuTest@4a22f9e2]" started-at="2026-09-11T16:37:51 CST" name="setUp" finished-at="2026-09-11T16:37:56 CST" duration-ms="4672" status="PASS">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- setUp -->
+        <test-method signature="shouldOpenMultinacionales()[pri:0, instance:tests.EmpresasMenuTest@4a22f9e2]" started-at="2026-09-11T16:37:56 CST" name="shouldOpenMultinacionales" finished-at="2026-09-11T16:37:59 CST" duration-ms="2809" status="PASS">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- shouldOpenMultinacionales -->
+        <test-method is-config="true" signature="tearDown()[pri:0, instance:tests.EmpresasMenuTest@4a22f9e2]" started-at="2026-09-11T16:37:59 CST" name="tearDown" finished-at="2026-09-11T16:37:59 CST" duration-ms="251" status="PASS">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- tearDown -->
+      </class> <!-- tests.EmpresasMenuTest -->
+    </test> <!-- Santander Navigation Tests -->
+  </suite> <!-- Santander Automation Suite -->
+</testng-results>

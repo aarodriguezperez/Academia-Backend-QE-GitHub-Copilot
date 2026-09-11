@@ -1,0 +1,420 @@
+<html>
+<head>
+<title>TestNG:  Santander Navigation Tests</title>
+<link href="../testng.css" rel="stylesheet" type="text/css" />
+<link href="../my-testng.css" rel="stylesheet" type="text/css" />
+
+<style type="text/css">
+.log { display: none;} 
+.stack-trace { display: none;} 
+</style>
+<script type="text/javascript">
+<!--
+function flip(e) {
+  current = e.style.display;
+  if (current == 'block') {
+    e.style.display = 'none';
+    return 0;
+  }
+  else {
+    e.style.display = 'block';
+    return 1;
+  }
+}
+
+function toggleBox(szDivId, elem, msg1, msg2)
+{
+  var res = -1;  if (document.getElementById) {
+    res = flip(document.getElementById(szDivId));
+  }
+  else if (document.all) {
+    // this is the way old msie versions work
+    res = flip(document.all[szDivId]);
+  }
+  if(elem) {
+    if(res == 0) elem.innerHTML = msg1; else elem.innerHTML = msg2;
+  }
+
+}
+
+function toggleAllBoxes() {
+  if (document.getElementsByTagName) {
+    d = document.getElementsByTagName('div');
+    for (i = 0; i < d.length; i++) {
+      if (d[i].className == 'log') {
+        flip(d[i]);
+      }
+    }
+  }
+}
+
+// -->
+</script>
+
+</head>
+<body>
+<h2 align='center'>Santander Navigation Tests</h2><table border='1' align="center">
+<tr>
+<td>Tests passed/Failed/Skipped:</td><td>68/0/0</td>
+</tr><tr>
+<td>Started on:</td><td>Fri Sep 11 16:32:33 CST 2026</td>
+</tr>
+<tr><td>Total time:</td><td>624 seconds (624447 ms)</td>
+</tr><tr>
+<td>Included groups:</td><td></td>
+</tr><tr>
+<td>Excluded groups:</td><td></td>
+</tr>
+</table><p/>
+<small><i>(Hover the method name to see the test class name)</i></small><p/>
+<table width='100%' border='1' class='invocation-passed'>
+<tr><td colspan='4' align='center'><b>PASSED TESTS</b></td></tr>
+<tr><td><b>Test method</b></td>
+<td><b>Attribute(s)</b></td>
+<td width="30%"><b>Exception</b></td>
+<td width="10%"><b>Time (seconds)</b></td>
+<td><b>Instance</b></td>
+</tr>
+<tr>
+<td title='tests.SantanderHomeTest.shouldOpenEmpresasMenu()'><b>shouldOpenEmpresasMenu</b><br>Test class: tests.SantanderHomeTest</td>
+<td></td>
+<td>0</td>
+<td>tests.SantanderHomeTest@4b14c583</td></tr>
+<tr>
+<td title='tests.PersonasMenuTest.shouldOpenCentroSeguridad()'><b>shouldOpenCentroSeguridad</b><br>Test class: tests.PersonasMenuTest</td>
+<td></td>
+<td>1</td>
+<td>tests.PersonasMenuTest@4b5d6a01</td></tr>
+<tr>
+<td title='tests.AcercaDelBancoMenuTest.shouldOpenBolsaTrabajo()'><b>shouldOpenBolsaTrabajo</b><br>Test class: tests.AcercaDelBancoMenuTest</td>
+<td></td>
+<td>1</td>
+<td>tests.AcercaDelBancoMenuTest@61230f6a</td></tr>
+<tr>
+<td title='tests.PersonasMenuTest.shouldOpenSolucionesColectivos()'><b>shouldOpenSolucionesColectivos</b><br>Test class: tests.PersonasMenuTest</td>
+<td></td>
+<td>1</td>
+<td>tests.PersonasMenuTest@4b5d6a01</td></tr>
+<tr>
+<td title='tests.PymesMenuTest.shouldOpenEcosistemaNoFinanciero()'><b>shouldOpenEcosistemaNoFinanciero</b><br>Test class: tests.PymesMenuTest</td>
+<td></td>
+<td>11</td>
+<td>tests.PymesMenuTest@3c419631</td></tr>
+<tr>
+<td title='tests.PersonasMenuTest.shouldOpenCajerosAutomaticos()'><b>shouldOpenCajerosAutomaticos</b><br>Test class: tests.PersonasMenuTest</td>
+<td></td>
+<td>1</td>
+<td>tests.PersonasMenuTest@4b5d6a01</td></tr>
+<tr>
+<td title='tests.PersonasMenuTest.shouldOpenCentroAyuda()'><b>shouldOpenCentroAyuda</b><br>Test class: tests.PersonasMenuTest</td>
+<td></td>
+<td>1</td>
+<td>tests.PersonasMenuTest@4b5d6a01</td></tr>
+<tr>
+<td title='tests.PersonasMenuTest.shouldOpenTarjetasCredito()'><b>shouldOpenTarjetasCredito</b><br>Test class: tests.PersonasMenuTest</td>
+<td></td>
+<td>0</td>
+<td>tests.PersonasMenuTest@4b5d6a01</td></tr>
+<tr>
+<td title='tests.BancaPrivadaTest.shouldOpenPodcast()'><b>shouldOpenPodcast</b><br>Test class: tests.BancaPrivadaTest</td>
+<td></td>
+<td>4</td>
+<td>tests.BancaPrivadaTest@418e7838</td></tr>
+<tr>
+<td title='tests.PersonasMenuTest.shouldOpenGastosMedicos()'><b>shouldOpenGastosMedicos</b><br>Test class: tests.PersonasMenuTest</td>
+<td></td>
+<td>3</td>
+<td>tests.PersonasMenuTest@4b5d6a01</td></tr>
+<tr>
+<td title='tests.PersonasMenuTest.shouldOpenCuentaNomina()'><b>shouldOpenCuentaNomina</b><br>Test class: tests.PersonasMenuTest</td>
+<td></td>
+<td>1</td>
+<td>tests.PersonasMenuTest@4b5d6a01</td></tr>
+<tr>
+<td title='tests.PersonasMenuTest.shouldOpenLimiteTransaccion()'><b>shouldOpenLimiteTransaccion</b><br>Test class: tests.PersonasMenuTest</td>
+<td></td>
+<td>0</td>
+<td>tests.PersonasMenuTest@4b5d6a01</td></tr>
+<tr>
+<td title='tests.PersonasMenuTest.shouldOpenCheques()'><b>shouldOpenCheques</b><br>Test class: tests.PersonasMenuTest</td>
+<td></td>
+<td>1</td>
+<td>tests.PersonasMenuTest@4b5d6a01</td></tr>
+<tr>
+<td title='tests.PersonasMenuTest.shouldOpenMundoHogar()'><b>shouldOpenMundoHogar</b><br>Test class: tests.PersonasMenuTest</td>
+<td></td>
+<td>1</td>
+<td>tests.PersonasMenuTest@4b5d6a01</td></tr>
+<tr>
+<td title='tests.PymesMenuTest.shouldOpenSeguros()'><b>shouldOpenSeguros</b><br>Test class: tests.PymesMenuTest</td>
+<td></td>
+<td>12</td>
+<td>tests.PymesMenuTest@3c419631</td></tr>
+<tr>
+<td title='tests.PersonasMenuTest.shouldOpenPortabilidadNomina()'><b>shouldOpenPortabilidadNomina</b><br>Test class: tests.PersonasMenuTest</td>
+<td></td>
+<td>2</td>
+<td>tests.PersonasMenuTest@4b5d6a01</td></tr>
+<tr>
+<td title='tests.EmpresasMenuTest.shouldOpenMultinacionales()'><b>shouldOpenMultinacionales</b><br>Test class: tests.EmpresasMenuTest</td>
+<td></td>
+<td>2</td>
+<td>tests.EmpresasMenuTest@4a22f9e2</td></tr>
+<tr>
+<td title='tests.PymesMenuTest.shouldOpenInversiones()'><b>shouldOpenInversiones</b><br>Test class: tests.PymesMenuTest</td>
+<td></td>
+<td>5</td>
+<td>tests.PymesMenuTest@3c419631</td></tr>
+<tr>
+<td title='tests.PersonasMenuTest.shouldOpenTerminosCondiciones()'><b>shouldOpenTerminosCondiciones</b><br>Test class: tests.PersonasMenuTest</td>
+<td></td>
+<td>2</td>
+<td>tests.PersonasMenuTest@4b5d6a01</td></tr>
+<tr>
+<td title='tests.PersonasMenuTest.shouldOpenFondosInversion()'><b>shouldOpenFondosInversion</b><br>Test class: tests.PersonasMenuTest</td>
+<td></td>
+<td>2</td>
+<td>tests.PersonasMenuTest@4b5d6a01</td></tr>
+<tr>
+<td title='tests.PersonasMenuTest.shouldOpenSantanderDigital()'><b>shouldOpenSantanderDigital</b><br>Test class: tests.PersonasMenuTest</td>
+<td></td>
+<td>5</td>
+<td>tests.PersonasMenuTest@4b5d6a01</td></tr>
+<tr>
+<td title='tests.PersonasMenuTest.shouldOpenCreditoHipotecario()'><b>shouldOpenCreditoHipotecario</b><br>Test class: tests.PersonasMenuTest</td>
+<td></td>
+<td>1</td>
+<td>tests.PersonasMenuTest@4b5d6a01</td></tr>
+<tr>
+<td title='tests.PersonasMenuTest.shouldOpenCashback()'><b>shouldOpenCashback</b><br>Test class: tests.PersonasMenuTest</td>
+<td></td>
+<td>2</td>
+<td>tests.PersonasMenuTest@4b5d6a01</td></tr>
+<tr>
+<td title='tests.BancaPrivadaTest.shouldOpenProductos()'><b>shouldOpenProductos</b><br>Test class: tests.BancaPrivadaTest</td>
+<td></td>
+<td>4</td>
+<td>tests.BancaPrivadaTest@418e7838</td></tr>
+<tr>
+<td title='tests.PersonasMenuTest.shouldOpenCuentaBasica()'><b>shouldOpenCuentaBasica</b><br>Test class: tests.PersonasMenuTest</td>
+<td></td>
+<td>1</td>
+<td>tests.PersonasMenuTest@4b5d6a01</td></tr>
+<tr>
+<td title='tests.PersonasMenuTest.shouldOpenSuperlinea()'><b>shouldOpenSuperlinea</b><br>Test class: tests.PersonasMenuTest</td>
+<td></td>
+<td>1</td>
+<td>tests.PersonasMenuTest@4b5d6a01</td></tr>
+<tr>
+<td title='tests.SantanderHomeTest.shouldOpenPymesMenu()'><b>shouldOpenPymesMenu</b><br>Test class: tests.SantanderHomeTest</td>
+<td></td>
+<td>0</td>
+<td>tests.SantanderHomeTest@4b14c583</td></tr>
+<tr>
+<td title='tests.PersonasMenuTest.shouldOpenPertenencias()'><b>shouldOpenPertenencias</b><br>Test class: tests.PersonasMenuTest</td>
+<td></td>
+<td>1</td>
+<td>tests.PersonasMenuTest@4b5d6a01</td></tr>
+<tr>
+<td title='tests.AcercaDelBancoMenuTest.shouldOpenSalaComunicacion()'><b>shouldOpenSalaComunicacion</b><br>Test class: tests.AcercaDelBancoMenuTest</td>
+<td></td>
+<td>59</td>
+<td>tests.AcercaDelBancoMenuTest@61230f6a</td></tr>
+<tr>
+<td title='tests.PersonasMenuTest.shouldOpenSucursales()'><b>shouldOpenSucursales</b><br>Test class: tests.PersonasMenuTest</td>
+<td></td>
+<td>2</td>
+<td>tests.PersonasMenuTest@4b5d6a01</td></tr>
+<tr>
+<td title='tests.AcercaDelBancoMenuTest.shouldOpenInversionistas()'><b>shouldOpenInversionistas</b><br>Test class: tests.AcercaDelBancoMenuTest</td>
+<td></td>
+<td>2</td>
+<td>tests.AcercaDelBancoMenuTest@61230f6a</td></tr>
+<tr>
+<td title='tests.PersonasMenuTest.shouldOpenSeguroHogar()'><b>shouldOpenSeguroHogar</b><br>Test class: tests.PersonasMenuTest</td>
+<td></td>
+<td>3</td>
+<td>tests.PersonasMenuTest@4b5d6a01</td></tr>
+<tr>
+<td title='tests.PersonasMenuTest.shouldOpenAppSantander()'><b>shouldOpenAppSantander</b><br>Test class: tests.PersonasMenuTest</td>
+<td></td>
+<td>0</td>
+<td>tests.PersonasMenuTest@4b5d6a01</td></tr>
+<tr>
+<td title='tests.PersonasMenuTest.shouldOpenSimuladorHipotecario()'><b>shouldOpenSimuladorHipotecario</b><br>Test class: tests.PersonasMenuTest</td>
+<td></td>
+<td>6</td>
+<td>tests.PersonasMenuTest@4b5d6a01</td></tr>
+<tr>
+<td title='tests.PymesMenuTest.shouldOpenAlianzas()'><b>shouldOpenAlianzas</b><br>Test class: tests.PymesMenuTest</td>
+<td></td>
+<td>4</td>
+<td>tests.PymesMenuTest@3c419631</td></tr>
+<tr>
+<td title='tests.PersonasMenuTest.shouldOpenTutoriales()'><b>shouldOpenTutoriales</b><br>Test class: tests.PersonasMenuTest</td>
+<td></td>
+<td>1</td>
+<td>tests.PersonasMenuTest@4b5d6a01</td></tr>
+<tr>
+<td title='tests.PersonasMenuTest.shouldOpenUniqueRewards()'><b>shouldOpenUniqueRewards</b><br>Test class: tests.PersonasMenuTest</td>
+<td></td>
+<td>2</td>
+<td>tests.PersonasMenuTest@4b5d6a01</td></tr>
+<tr>
+<td title='tests.PymesMenuTest.shouldOpenCreditos()'><b>shouldOpenCreditos</b><br>Test class: tests.PymesMenuTest</td>
+<td></td>
+<td>6</td>
+<td>tests.PymesMenuTest@3c419631</td></tr>
+<tr>
+<td title='tests.SantanderHomeTest.shouldOpenBancaPrivada()'><b>shouldOpenBancaPrivada</b><br>Test class: tests.SantanderHomeTest</td>
+<td></td>
+<td>3</td>
+<td>tests.SantanderHomeTest@4b14c583</td></tr>
+<tr>
+<td title='tests.PersonasMenuTest.shouldOpenInversionesPlazo()'><b>shouldOpenInversionesPlazo</b><br>Test class: tests.PersonasMenuTest</td>
+<td></td>
+<td>2</td>
+<td>tests.PersonasMenuTest@4b5d6a01</td></tr>
+<tr>
+<td title='tests.PersonasMenuTest.shouldOpenCreditoAutomotriz()'><b>shouldOpenCreditoAutomotriz</b><br>Test class: tests.PersonasMenuTest</td>
+<td></td>
+<td>2</td>
+<td>tests.PersonasMenuTest@4b5d6a01</td></tr>
+<tr>
+<td title='tests.BancaPrivadaTest.shouldOpenQuienesSomos()'><b>shouldOpenQuienesSomos</b><br>Test class: tests.BancaPrivadaTest</td>
+<td></td>
+<td>4</td>
+<td>tests.BancaPrivadaTest@418e7838</td></tr>
+<tr>
+<td title='tests.AcercaDelBancoMenuTest.shouldOpenResponsabilidadSocial()'><b>shouldOpenResponsabilidadSocial</b><br>Test class: tests.AcercaDelBancoMenuTest</td>
+<td></td>
+<td>2</td>
+<td>tests.AcercaDelBancoMenuTest@61230f6a</td></tr>
+<tr>
+<td title='tests.PersonasMenuTest.shouldOpenBuroDeCredito()'><b>shouldOpenBuroDeCredito</b><br>Test class: tests.PersonasMenuTest</td>
+<td></td>
+<td>2</td>
+<td>tests.PersonasMenuTest@4b5d6a01</td></tr>
+<tr>
+<td title='tests.SantanderHomeTest.shouldOpenPersonasMenu()'><b>shouldOpenPersonasMenu</b><br>Test class: tests.SantanderHomeTest</td>
+<td></td>
+<td>0</td>
+<td>tests.SantanderHomeTest@4b14c583</td></tr>
+<tr>
+<td title='tests.PersonasMenuTest.shouldOpenSelect()'><b>shouldOpenSelect</b><br>Test class: tests.PersonasMenuTest</td>
+<td></td>
+<td>2</td>
+<td>tests.PersonasMenuTest@4b5d6a01</td></tr>
+<tr>
+<td title='tests.PersonasMenuTest.shouldOpenCuentas()'><b>shouldOpenCuentas</b><br>Test class: tests.PersonasMenuTest</td>
+<td></td>
+<td>1</td>
+<td>tests.PersonasMenuTest@4b5d6a01</td></tr>
+<tr>
+<td title='tests.PymesMenuTest.shouldOpenNegocioInternacional()'><b>shouldOpenNegocioInternacional</b><br>Test class: tests.PymesMenuTest</td>
+<td></td>
+<td>5</td>
+<td>tests.PymesMenuTest@3c419631</td></tr>
+<tr>
+<td title='tests.PersonasMenuTest.shouldOpenNotasEstructuradas()'><b>shouldOpenNotasEstructuradas</b><br>Test class: tests.PersonasMenuTest</td>
+<td></td>
+<td>2</td>
+<td>tests.PersonasMenuTest@4b5d6a01</td></tr>
+<tr>
+<td title='tests.SantanderHomeTest.shouldOpenAcercaDelBancoMenu()'><b>shouldOpenAcercaDelBancoMenu</b><br>Test class: tests.SantanderHomeTest</td>
+<td></td>
+<td>0</td>
+<td>tests.SantanderHomeTest@4b14c583</td></tr>
+<tr>
+<td title='tests.PersonasMenuTest.shouldOpenCanalesAlternos()'><b>shouldOpenCanalesAlternos</b><br>Test class: tests.PersonasMenuTest</td>
+<td></td>
+<td>2</td>
+<td>tests.PersonasMenuTest@4b5d6a01</td></tr>
+<tr>
+<td title='tests.PymesMenuTest.shouldOpenNegocioTransaccional()'><b>shouldOpenNegocioTransaccional</b><br>Test class: tests.PymesMenuTest</td>
+<td></td>
+<td>7</td>
+<td>tests.PymesMenuTest@3c419631</td></tr>
+<tr>
+<td title='tests.PymesMenuTest.shouldOpenCuentas()'><b>shouldOpenCuentas</b><br>Test class: tests.PymesMenuTest</td>
+<td></td>
+<td>3</td>
+<td>tests.PymesMenuTest@3c419631</td></tr>
+<tr>
+<td title='tests.AcercaDelBancoMenuTest.shouldOpenFundacionSantander()'><b>shouldOpenFundacionSantander</b><br>Test class: tests.AcercaDelBancoMenuTest</td>
+<td></td>
+<td>3</td>
+<td>tests.AcercaDelBancoMenuTest@61230f6a</td></tr>
+<tr>
+<td title='tests.AcercaDelBancoMenuTest.shouldOpenEducacionFinanciera()'><b>shouldOpenEducacionFinanciera</b><br>Test class: tests.AcercaDelBancoMenuTest</td>
+<td></td>
+<td>22</td>
+<td>tests.AcercaDelBancoMenuTest@61230f6a</td></tr>
+<tr>
+<td title='tests.PersonasMenuTest.shouldOpenPromocionesSantander()'><b>shouldOpenPromocionesSantander</b><br>Test class: tests.PersonasMenuTest</td>
+<td></td>
+<td>3</td>
+<td>tests.PersonasMenuTest@4b5d6a01</td></tr>
+<tr>
+<td title='tests.PymesMenuTest.shouldOpenDivisasCoberturas()'><b>shouldOpenDivisasCoberturas</b><br>Test class: tests.PymesMenuTest</td>
+<td></td>
+<td>3</td>
+<td>tests.PymesMenuTest@3c419631</td></tr>
+<tr>
+<td title='tests.BancaPrivadaTest.shouldOpenNuestrasCuentas()'><b>shouldOpenNuestrasCuentas</b><br>Test class: tests.BancaPrivadaTest</td>
+<td></td>
+<td>2</td>
+<td>tests.BancaPrivadaTest@418e7838</td></tr>
+<tr>
+<td title='tests.PersonasMenuTest.shouldOpenSantanderWeb()'><b>shouldOpenSantanderWeb</b><br>Test class: tests.PersonasMenuTest</td>
+<td></td>
+<td>1</td>
+<td>tests.PersonasMenuTest@4b5d6a01</td></tr>
+<tr>
+<td title='tests.PymesMenuTest.shouldOpenSantanderPyme()'><b>shouldOpenSantanderPyme</b><br>Test class: tests.PymesMenuTest</td>
+<td></td>
+<td>3</td>
+<td>tests.PymesMenuTest@3c419631</td></tr>
+<tr>
+<td title='tests.AcercaDelBancoMenuTest.shouldOpenBlog()'><b>shouldOpenBlog</b><br>Test class: tests.AcercaDelBancoMenuTest</td>
+<td></td>
+<td>12</td>
+<td>tests.AcercaDelBancoMenuTest@61230f6a</td></tr>
+<tr>
+<td title='tests.PersonasMenuTest.shouldOpenCreditoPersonal()'><b>shouldOpenCreditoPersonal</b><br>Test class: tests.PersonasMenuTest</td>
+<td></td>
+<td>1</td>
+<td>tests.PersonasMenuTest@4b5d6a01</td></tr>
+<tr>
+<td title='tests.PymesMenuTest.shouldOpenPaquetesPymes()'><b>shouldOpenPaquetesPymes</b><br>Test class: tests.PymesMenuTest</td>
+<td></td>
+<td>2</td>
+<td>tests.PymesMenuTest@3c419631</td></tr>
+<tr>
+<td title='tests.PersonasMenuTest.shouldOpenSeguroAhorro()'><b>shouldOpenSeguroAhorro</b><br>Test class: tests.PersonasMenuTest</td>
+<td></td>
+<td>3</td>
+<td>tests.PersonasMenuTest@4b5d6a01</td></tr>
+<tr>
+<td title='tests.PersonasMenuTest.shouldOpenSeguroVida()'><b>shouldOpenSeguroVida</b><br>Test class: tests.PersonasMenuTest</td>
+<td></td>
+<td>4</td>
+<td>tests.PersonasMenuTest@4b5d6a01</td></tr>
+<tr>
+<td title='tests.PersonasMenuTest.shouldOpenSeguroAuto()'><b>shouldOpenSeguroAuto</b><br>Test class: tests.PersonasMenuTest</td>
+<td></td>
+<td>2</td>
+<td>tests.PersonasMenuTest@4b5d6a01</td></tr>
+<tr>
+<td title='tests.PersonasMenuTest.shouldOpenRegulacion()'><b>shouldOpenRegulacion</b><br>Test class: tests.PersonasMenuTest</td>
+<td></td>
+<td>2</td>
+<td>tests.PersonasMenuTest@4b5d6a01</td></tr>
+<tr>
+<td title='tests.EmpresasMenuTest.shouldOpenEmpresasGobierno()'><b>shouldOpenEmpresasGobierno</b><br>Test class: tests.EmpresasMenuTest</td>
+<td></td>
+<td>2</td>
+<td>tests.EmpresasMenuTest@4a22f9e2</td></tr>
+</table><p>
+</body>
+</html>

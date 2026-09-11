@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd">
+
+<suite name="Santander Automation Suite" parallel="false">
+
+    <listeners>
+        <listener class-name="listeners.ScreenshotListener"/>
+    </listeners>
+
+    <test name="Santander Navigation Tests">
+
+        <classes>
+            <class name="tests.SantanderHomeTest"/>
+            <class name="tests.PersonasMenuTest"/>
+            <class name="tests.EmpresasMenuTest"/>
+            <class name="tests.PymesMenuTest"/>
+            <class name="tests.BancaPrivadaTest"/>
+            <class name="tests.AcercaDelBancoMenuTest"/>
+        </classes>
+
+    </test>
+
+</suite>

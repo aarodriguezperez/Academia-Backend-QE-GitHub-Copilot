@@ -1,0 +1,8 @@
+base\BaseTest.class
+tests\EmpresasMenuTest.class
+tests\SantanderHomeTest.class
+tests\BancaPrivadaTest.class
+tests\PersonasMenuTest.class
+listeners\ScreenshotListener.class
+tests\AcercaDelBancoMenuTest.class
+tests\PymesMenuTest.class
