@@ -50,7 +50,7 @@ Se trabajó con:
 
 La topología utilizada se encuentra en:
 
-[Topología AWS - Día 3](./infra/topologia-aws-03.md)
+[Topología AWS - Día 3](./infra/topologia-aws-dia03.md)
 
 ---
 
