@@ -123,7 +123,7 @@ Al terminar el Día 3 tenía:
 La topología del Día 3 está documentada en:
 
 ```text
-infra/topologia-aws.md
+infra/topologia-aws-dia03.md
 ```
 
 ---
@@ -437,8 +437,16 @@ Finalmente restauré `scripts/permisos.sh`, hice un nuevo push y el pipeline vol
 
 ![Pipeline recuperado](evidencias/dia-04/20-pipeline-recuperado.png)
 
----
+### Topología del Día 4
 
+La topología utilizada para el flujo de integración y despliegue continuo
+del Día 4 se encuentra documentada en:
+
+```text
+infra/topologia-aws-dia04.md
+```
+
+---
 
 
 # Preguntas de reflexión
