@@ -509,7 +509,7 @@ El pipeline automatiza exactamente las tareas que antes ejecutaba manualmente y 
 
 # Limpieza
 
-Al terminar las evidencias y el último push revise y eliminé los recursos:
+Al terminar las evidencias y el último push revisé y eliminé los recursos:
 
 - [x] `taskflow-pipeline`.
 - [x] Proyecto CodeBuild `taskflow-build`.
@@ -520,5 +520,3 @@ Al terminar las evidencias y el último push revise y eliminé los recursos:
 - [x] Roles IAM creados específicamente para la práctica.
 - [x] Security Groups temporales.
 - [x] Access Key creada para `taskflow-admin`.
-
-Las casillas se deben marcar únicamente después de realizar la limpieza real en AWS.
