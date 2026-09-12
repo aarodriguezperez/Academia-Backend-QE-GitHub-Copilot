@@ -111,13 +111,4 @@ semana05/
 
 ---
 
-## Entrega
-
-La documentación principal de esta semana se encuentra en:
-
-- [Selenium](./01-selenium/)
-- [AWS](./02-aws/actividades-aws.md)
-
----
-
 [← Volver al README principal](../README.md)
