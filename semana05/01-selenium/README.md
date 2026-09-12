@@ -204,9 +204,3 @@ Este proyecto permite practicar:
 - Ejecución de suites con Maven.
 - Ejecución headless.
 - Reportes y captura de evidencias ante fallos.
-
-## Autor
-
-**Alberto Rodríguez**
-
-Proyecto desarrollado como práctica de automatización de pruebas con Selenium WebDriver y Java.
