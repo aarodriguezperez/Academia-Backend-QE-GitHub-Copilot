@@ -353,8 +353,6 @@ Los principales recursos a considerar durante la limpieza son:
 - Security Groups creados para la práctica.
 - Recursos temporales que ya no sean necesarios.
 
-No eliminé todavía los recursos que se reutilizarán durante las actividades del Día 4.
-
 ---
 
 ## Reflexiones del Día 3
