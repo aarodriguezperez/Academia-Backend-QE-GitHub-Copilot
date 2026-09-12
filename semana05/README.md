@@ -1,113 +1,54 @@
-# Semana 05 - Automatización de Pruebas y AWS
+# Semana 05 - Selenium y AWS
 
-Durante la Semana 05 se trabajaron dos bloques principales:
+Durante esta semana se trabajó con **automatización de pruebas web** utilizando Selenium WebDriver y con diferentes servicios de **Amazon Web Services (AWS)**.
 
-- Automatización de pruebas web con Selenium WebDriver.
-- Servicios de AWS, despliegue de aplicaciones y automatización mediante CI/CD.
-
-La entrega de esta semana está dividida en dos partes: el proyecto de Selenium con su documentación y un documento que explica las actividades realizadas en AWS.
+La semana se dividió en dos partes: un proyecto de automatización sobre el sitio de Santander México y actividades de infraestructura, bases de datos y despliegue continuo en AWS.
 
 ---
 
-## 01 - Selenium
+## Proyectos
 
-En esta parte se desarrolló un proyecto de automatización de pruebas sobre el sitio de Santander México utilizando:
+### [01 - Selenium](./01-selenium/)
+
+Proyecto de automatización de pruebas web desarrollado con:
 
 - Java 21
 - Selenium WebDriver
 - TestNG
 - Maven
 - Page Object Model (POM)
-- Selenium Manager
 
-La suite automatiza la navegación de distintas secciones del portal y actualmente contiene **68 pruebas automatizadas**.
+Se automatiza la navegación de diferentes secciones del sitio de Santander México mediante una suite de pruebas organizada con Page Object Model.
 
-La documentación del proyecto incluye:
-
-- Objetivo.
-- Tecnologías utilizadas.
-- Arquitectura.
-- Organización mediante Page Object Model.
-- Casos de prueba.
-- Ejecución con Maven y TestNG.
-- Ejecución en modo headless.
-- Capturas automáticas ante fallos.
-- Resultados de la suite.
-
-### Documentación
-
-[Ver proyecto y documentación de Selenium](./01-selenium/)
+La explicación del proyecto, su estructura y los resultados de las pruebas se encuentran en el README correspondiente.
 
 ---
 
-## 02 - AWS
+### [02 - AWS](./02-aws/)
 
-Durante las actividades de AWS se trabajó en dos etapas.
+Actividades realizadas con diferentes servicios de Amazon Web Services.
 
-### Día 3 - Fundamentos, EC2, S3, VPC y RDS
+Durante el primer bloque se realizó un despliegue manual de TaskFlow utilizando:
 
-Se realizaron actividades relacionadas con:
+- IAM
+- EC2
+- RDS
+- S3
 
-- Seguridad de la cuenta e IAM.
-- Presupuesto de AWS.
-- Creación y configuración de una instancia EC2.
-- Conexión por SSH.
-- Instalación y validación de Java 21.
-- Empaquetado y transferencia del JAR de TaskFlow.
-- Ejecución pública de TaskFlow.
-- Amazon RDS con PostgreSQL.
-- Configuración de red entre EC2 y RDS.
-- Amazon S3.
-- Presigned URLs.
-- Smoke test de la aplicación.
+Posteriormente se trabajó con:
 
-### Día 4 - DynamoDB, CodeBuild, CodeDeploy y CodePipeline
+- DynamoDB
+- CodeBuild
+- CodeDeploy
+- CodePipeline
 
-Se trabajó con:
+El flujo de despliegue manual se transformó en un proceso automatizado de integración y despliegue continuo.
 
-- DynamoDB.
-- Comparación entre `Query` y `Scan`.
-- Modelado según patrones de acceso.
-- Versionado de artefactos en S3.
-- IAM para servicios.
-- CodeDeploy Agent.
-- `taskflow.service`.
-- `buildspec.yml`.
-- `appspec.yml`.
-- Lifecycle hooks.
-- CodeBuild.
-- CodeDeploy.
-- CodePipeline.
-- Despliegue automático de la versión `3.0.1`.
-- Fallo intencional de un hook y recuperación del pipeline.
-- Limpieza final de recursos.
-
-### Documentación
-
-[Ver actividades y evidencias de AWS](./02-aws/)
+La explicación completa de las actividades, evidencias, errores encontrados y topologías se encuentra en la documentación de AWS.
 
 ---
 
-## Estructura de la semana
-
-```text
-semana05/
-├── README.md
-├── 01-selenium/
-│   ├── README.md
-│   ├── src/
-│   ├── pom.xml
-│   └── testng.xml
-└── 02-aws/
-    ├── README.md
-    ├── actividades-aws.md
-    ├── evidencias/
-    │   ├── dia-03/
-    │   └── dia-04/
-    └── infra/
-        ├── topologia-aws-dia03.md
-        └── topologia-aws-dia04.md
-```
+> La explicación detallada de cada parte de la semana se encuentra en su respectiva documentación.
 
 ---
 
