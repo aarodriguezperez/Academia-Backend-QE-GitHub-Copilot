@@ -13,7 +13,7 @@ Cada semana cuenta con su propia carpeta y documentación. Algunos proyectos de 
 ## Contenido
 
 - [Semana 01 - Fundamentos de Java y POO](./semana01/)
-- [Semana 02 - Spring Boot y Persistencia](./semana02/)
+- [Semana 02 - Spring Boot, Persistencia e Inyección de Dependencias](./semana02/)
 - [Semana 03 - Java Avanzado, Seguridad, WebFlux y Testing](./semana03/)
 - [Semana 04 - React y TaskFlow](./semana04/)
-- [Semana 05 - Automatización de Pruebas y AWS](./semana05/)
+- [Semana 05 - Selenium y AWS](./semana05/)
