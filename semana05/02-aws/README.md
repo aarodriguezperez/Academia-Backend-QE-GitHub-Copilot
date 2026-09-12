@@ -26,7 +26,7 @@ También se validó la comunicación entre EC2 y RDS y el funcionamiento públic
 
 La topología utilizada se encuentra en:
 
-[Topología AWS - Día 3](./infra/topologia-aws.md)
+[Topología AWS - Día 3](./infra/topologia-aws-dia03.md)
 
 ---
 
