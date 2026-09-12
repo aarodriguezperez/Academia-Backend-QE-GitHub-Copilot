@@ -1,4 +1,4 @@
-# Semana 03 - Core Avanzado, Seguridad, WebFlux y Unit Testing
+# Semana 03 - Java Avanzado, Seguridad, WebFlux y Unit Testing
 
 Durante esta semana se trabajaron conceptos avanzados de Java y desarrollo backend, incluyendo manejo de archivos, serialización, seguridad, programación reactiva y pruebas unitarias.
 
