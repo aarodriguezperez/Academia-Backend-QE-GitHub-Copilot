@@ -105,7 +105,7 @@ semana05/
     │   ├── dia-03/
     │   └── dia-04/
     └── infra/
-        ├── topologia-aws.md
+        ├── topologia-aws-dia03.md
         └── topologia-aws-dia04.md
 ```
 
