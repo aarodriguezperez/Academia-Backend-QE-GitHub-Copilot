@@ -2,330 +2,125 @@
 
 ## Introducción
 
-Durante el Día 3 de la Semana 5 trabajé con distintos servicios de Amazon Web Services para desplegar la API de **TaskFlow** en la nube.
+Durante la Semana 5 trabajé con AWS en dos etapas. En el **Día 3** desplegué TaskFlow manualmente usando EC2, RDS y S3. En el **Día 4** trabajé con DynamoDB y convertí ese despliegue manual en un flujo automatizado con CodePipeline, CodeBuild y CodeDeploy.
 
-El objetivo de la práctica fue preparar una cuenta segura, crear una instancia EC2, desplegar una aplicación Java, crear una base de datos PostgreSQL en Amazon RDS, almacenar el artefacto de la aplicación en Amazon S3 y comprobar que TaskFlow funcionara públicamente desde AWS.
-
-En cada bloque documento **qué hice**, **para qué sirve**, **qué observé** y los problemas que se presentaron durante la práctica.
+El documento resume qué hice, para qué sirvió cada bloque, qué resultados obtuve y los errores que encontré. No se incluyen contraseñas, Access Keys, `JWT_SECRET`, archivos `.pem` ni el endpoint completo de RDS.
 
 ---
 
 # Día 3 - Fundamentos, EC2, S3, VPC y RDS
 
-## 1. La cuenta, segura
+## 1. Presupuesto y seguridad
 
-### MP-1 - Presupuesto antes que nada
+Antes de crear infraestructura configuré el presupuesto `taskflow-5usd` con un límite de **5 USD** para controlar el consumo de la práctica.
 
-#### Qué hice
+![Presupuesto AWS](evidencias/dia-03/01-presupuesto.png)
 
-Antes de crear infraestructura configuré un presupuesto mensual llamado `taskflow-5usd` con un límite de **5 USD**.
-
-El objetivo fue tener visibilidad del consumo generado durante las prácticas y detectar posibles cargos inesperados mientras utilizaba servicios como EC2 y RDS.
-
-#### Para qué sirve
-
-AWS Budgets permite establecer un monto de referencia y monitorear el consumo de la cuenta. El presupuesto no detiene automáticamente los recursos al alcanzar el límite, pero ayuda a controlar y detectar gastos.
-
-#### Qué vi
-
-![Presupuesto configurado](evidencias/dia-03/01-presupuesto.png)
-
-La captura muestra el presupuesto `taskflow-5usd` con un límite de **5 USD**, un consumo de **0.00 USD** y estado saludable al momento de realizar la práctica.
-
----
-
-### MP-2 - Asegurar la cuenta
-
-#### Qué hice
-
-Para evitar trabajar directamente con la cuenta principal, utilicé un usuario IAM llamado `taskflow-admin`.
-
-También configuré autenticación multifactor (MFA) mediante un dispositivo virtual como segunda capa de seguridad para el inicio de sesión.
-
-#### Para qué sirve
-
-IAM permite administrar identidades y permisos dentro de AWS. Separar el trabajo cotidiano de la cuenta principal reduce el uso innecesario de credenciales con privilegios elevados.
-
-MFA agrega un segundo factor de autenticación además de la contraseña.
-
-#### Qué vi
+También utilicé un usuario IAM llamado `taskflow-admin` y configuré MFA para evitar trabajar diariamente con la cuenta principal.
 
 ![MFA configurado](evidencias/dia-03/02-mfa.png)
 
-La evidencia muestra que se asignó correctamente un dispositivo MFA virtual.
-
 ![Usuario IAM](evidencias/dia-03/03-usuario-iam.png)
 
-La captura muestra el usuario `taskflow-admin` con MFA configurado, que fue la identidad utilizada para continuar con las actividades de AWS.
+Con esto dejé preparada una cuenta con control de gasto y una identidad separada para trabajar.
 
 ---
+
+
 
 ## 2. EC2
 
-### MP-3 - Lanzar la instancia EC2
+Creé la instancia `taskflow-ec2` de tipo `t3.micro`.
 
-#### Qué hice
+![EC2 creada](evidencias/dia-03/04-ec2-creada.png)
 
-Creé una instancia de Amazon EC2 llamada `taskflow-ec2` para utilizarla como servidor de la aplicación TaskFlow.
+El Security Group se configuró con:
 
-La instancia se creó como `t3.micro` y quedó en estado `Running`.
+- SSH (`22`) únicamente desde mi IP.
+- Puerto `8080` abierto para acceder públicamente a Swagger.
 
-Además, configuré el Security Group para permitir:
-
-- Puerto **22 (SSH)** únicamente desde mi dirección IP.
-- Puerto **8080 (TCP)** desde internet para poder acceder públicamente a Swagger durante la práctica.
-
-#### Para qué sirve
-
-Amazon EC2 proporciona una máquina virtual en AWS donde puedo instalar software y ejecutar la aplicación Java sin depender de mi computadora local.
-
-El Security Group actúa como firewall de la instancia y permite definir qué tráfico puede entrar o salir.
-
-#### Qué vi
-
-![Instancia EC2 creada](evidencias/dia-03/04-ec2-creada.png)
-
-La captura muestra la instancia `taskflow-ec2` en estado `Running`, con los chequeos de estado aprobados y lista para continuar con la conexión SSH.
-
----
-
-### MP-4 - Conectar por SSH
-
-#### Qué hice
-
-Desde Git Bash utilicé la llave privada asociada a la instancia para conectarme por SSH.
-
-Primero ajusté los permisos del archivo `.pem`:
-
-```bash
-chmod 400 taskflow-key.pem
-```
-
-Después realicé la conexión:
-
-```bash
-ssh -i taskflow-key.pem ec2-user@<IP_PUBLICA_EC2>
-```
-
-#### Para qué sirve
-
-SSH permite administrar remotamente una instancia Linux mediante una terminal segura. Desde esta sesión pude instalar o verificar software, ejecutar comandos y administrar TaskFlow.
-
-#### Qué vi
+Después me conecté por SSH utilizando la llave privada de la instancia.
 
 ![Conexión SSH](evidencias/dia-03/06-conexion-ssh.png)
 
-La captura muestra el inicio de sesión correcto en **Amazon Linux 2023** y el prompt del usuario `ec2-user`, confirmando que la conexión SSH funcionó.
-
----
-
-### MP-5 - Java en la EC2
-
-#### Qué hice
-
-Ya conectado a EC2 verifiqué que Java estuviera instalado ejecutando:
+Dentro de EC2 comprobé que Java 21 estuviera disponible:
 
 ```bash
 java -version
 ```
 
-#### Para qué sirve
+![Java 21 en EC2](evidencias/dia-03/07-java-version.png)
 
-TaskFlow es una aplicación Java, por lo que la instancia necesita una versión compatible de Java para ejecutar el archivo JAR.
-
-#### Qué vi
-
-![Java en EC2](evidencias/dia-03/07-java-version.png)
-
-La salida confirmó que la instancia tenía disponible **OpenJDK 21 mediante Amazon Corretto**, por lo que estaba preparada para ejecutar TaskFlow.
-
----
-
-### MP-6 - El JAR viaja
-
-#### Qué hice
-
-Desde mi computadora generé el artefacto ejecutable de TaskFlow con Maven:
-
-```bash
-mvn -q -DskipTests package
-```
-
-Después verifiqué el archivo creado en `target/` y lo transferí a EC2 mediante `scp`:
-
-```bash
-scp -i <RUTA_LLAVE> \
-  target/taskflow-api-3.0.0.jar \
-  ec2-user@<IP_PUBLICA_EC2>:~/taskflow-api.jar
-```
-
-#### Para qué sirve
-
-Maven empaqueta la aplicación en un archivo JAR ejecutable. `scp` permite copiar ese artefacto de forma segura desde mi computadora hacia la instancia EC2 utilizando SSH.
-
-#### Qué vi
+Generé el JAR de TaskFlow con Maven y lo transferí a EC2 mediante `scp`.
 
 ![JAR transferido](evidencias/dia-03/08-jar-transferido.png)
 
-La salida muestra que `taskflow-api-3.0.0.jar` fue generado correctamente y que la transferencia hacia EC2 terminó al **100 %**.
-
----
-
-### MP-7 - Primer arranque público
-
-#### Qué hice
-
-Dentro de EC2 inicié TaskFlow en segundo plano con `nohup`:
-
-```bash
-nohup java -jar taskflow-api.jar > app.log 2>&1 &
-```
-
-Después revisé el log de la aplicación y accedí desde mi computadora al Swagger publicado en el puerto `8080`.
-
-Una vez dentro de Swagger inicié sesión con un usuario de prueba, autoricé las peticiones mediante JWT y ejecuté el endpoint de creación de tareas.
-
-#### Para qué sirve
-
-Este paso permitió comprobar que TaskFlow podía ejecutarse en una máquina EC2 y recibir peticiones desde internet a través del puerto `8080`.
-
-#### Qué vi
+Finalmente inicié la aplicación con `nohup` y accedí a Swagger desde mi navegador.
 
 ![Swagger público](evidencias/dia-03/09-swagger-publico.png)
 
-La captura muestra Swagger disponible desde mi navegador, confirmando que la API estaba ejecutándose públicamente desde EC2.
+Realicé login, autoricé las peticiones con JWT y creé una tarea. La API respondió con HTTP `201`.
 
 ![Tarea creada](evidencias/dia-03/10-tarea-creada.png)
 
-La petición de creación respondió con código HTTP **201** y devolvió los datos de la nueva tarea. Esto confirmó que la API no solamente cargaba, sino que podía procesar operaciones correctamente.
+Esto confirmó que TaskFlow estaba funcionando públicamente desde AWS.
 
 ---
 
-## 3. RDS y la red
 
-### MP-8 - Crear RDS
 
-#### Qué hice
+## 3. RDS y red
 
-Creé una base de datos administrada en Amazon RDS llamada `taskflow-db` utilizando el motor **PostgreSQL**.
-
-La instancia de base de datos quedó en estado `Available`.
-
-#### Para qué sirve
-
-Amazon RDS permite utilizar una base de datos administrada por AWS. En lugar de instalar PostgreSQL manualmente dentro de EC2, la base se ejecuta como un recurso independiente.
-
-Esto separa la aplicación de la persistencia de datos y permite que EC2 se concentre en ejecutar TaskFlow.
-
-#### Qué vi
+Creé `taskflow-db` utilizando PostgreSQL en Amazon RDS.
 
 ![RDS creado](evidencias/dia-03/11-rds-creado.png)
 
-La captura muestra `taskflow-db` disponible y utilizando PostgreSQL.
+Al intentar conectar TaskFlow con RDS inicialmente obtuve un timeout de conexión. El problema estaba relacionado con la comunicación de red entre EC2 y RDS.
 
----
+Revisé los Security Groups y permití PostgreSQL por el puerto `5432` desde la infraestructura autorizada de EC2, sin hacer pública la base de datos.
 
-### Conectividad entre EC2 y RDS
-
-#### Qué hice
-
-Después de crear RDS configuré TaskFlow para utilizar PostgreSQL como base de datos.
-
-La aplicación se inició pasando la configuración necesaria mediante parámetros, utilizando valores protegidos para el host, usuario, contraseña y secreto JWT.
-
-El flujo esperado era:
-
-```text
-EC2 / TaskFlow
-      |
-      | TCP 5432
-      v
-RDS / PostgreSQL
-```
-
-La base de datos no se configuró para recibir conexiones públicas desde internet. El acceso a PostgreSQL se limitó a la comunicación necesaria desde EC2 mediante la red de AWS y los Security Groups.
-
-#### Problema encontrado
-
-En el primer intento la aplicación no consiguió establecer la conexión con PostgreSQL y se presentó un timeout de conexión.
-
-El error indicaba un problema de red entre EC2 y RDS, por lo que revisé la configuración de los Security Groups y el acceso al puerto `5432`.
-
-Después de corregir la comunicación entre ambos recursos volví a iniciar TaskFlow.
-
-#### Qué vi
+Después de corregir la red, TaskFlow completó su arranque utilizando RDS.
 
 ![TaskFlow conectado a RDS](evidencias/dia-03/14-taskflow-rds-exitoso.png)
 
-La evidencia muestra que `TaskflowApiApplication` completó correctamente su arranque después de realizar la configuración de RDS.
-
-Con esto confirmé que la aplicación podía ejecutarse en EC2 utilizando la base PostgreSQL alojada en RDS.
-
-> En el repositorio no se incluyen la contraseña de RDS, el `JWT_SECRET` ni el endpoint completo de la base de datos.
+Este error fue útil para entender que una base privada puede ser accesible desde EC2 sin exponer PostgreSQL a internet.
 
 ---
 
+
+
 ## 4. S3
 
-### MP-9 - Bucket, JAR y presigned URL
-
-#### Qué hice
-
-Creé un bucket de Amazon S3 llamado `taskflow-artefactos-aarodriguezperez` para almacenar el artefacto generado de TaskFlow.
-
-Después cargué el archivo:
+Creé el bucket `taskflow-artefactos-aarodriguezperez` y subí:
 
 ```text
 taskflow-api-3.0.0.jar
 ```
 
-#### Para qué sirve
+![JAR en S3](evidencias/dia-03/13-s3-jar.png)
 
-Amazon S3 permite almacenar objetos de forma duradera dentro de AWS. En esta práctica lo utilicé para mantener el artefacto compilado de TaskFlow fuera de la instancia EC2.
+También generé una **presigned URL** para dar acceso temporal al objeto sin hacer público el bucket.
 
-#### Qué vi
+![Presigned URL](evidencias/dia-03/15-presigned-url-creada.png)
 
-![JAR almacenado en S3](evidencias/dia-03/13-s3-jar.png)
-
-La captura muestra el archivo `taskflow-api-3.0.0.jar` almacenado correctamente dentro del bucket.
+S3 quedó como almacenamiento externo para el artefacto de TaskFlow.
 
 ---
 
-### Presigned URL
 
-#### Qué hice
-
-Generé desde Amazon S3 una **presigned URL** para el JAR.
-
-#### Para qué sirve
-
-Una presigned URL permite proporcionar acceso temporal a un objeto privado de S3 sin cambiar el bucket completo a acceso público.
-
-De esta forma es posible compartir o descargar un archivo durante un periodo limitado manteniendo la configuración privada del bucket.
-
-#### Qué vi
-
-![Presigned URL creada](evidencias/dia-03/15-presigned-url-creada.png)
-
-La consola de S3 confirmó que la URL prefirmada para `taskflow-api-3.0.0.jar` fue creada correctamente.
-
----
 
 ## 5. Integrador del Día 3
 
-### TaskFlow funcionando en AWS
+Al terminar el Día 3 tenía:
 
-Al finalizar los bloques anteriores tenía los principales componentes de la práctica funcionando en AWS:
+- EC2 ejecutando TaskFlow.
+- Swagger público por el puerto `8080`.
+- RDS PostgreSQL conectado desde EC2.
+- S3 almacenando el JAR.
+- Una presigned URL para acceso temporal.
+- Un smoke test exitoso mediante la creación de una tarea.
 
-- **EC2** ejecutando TaskFlow con Java 21.
-- Swagger disponible públicamente mediante el puerto `8080`.
-- Autenticación JWT funcional.
-- Creación de una tarea con respuesta HTTP `201`.
-- **RDS PostgreSQL** utilizado como base de datos de la aplicación.
-- **S3** almacenando el artefacto `taskflow-api-3.0.0.jar`.
-- Presigned URL generada para acceso temporal al objeto de S3.
-
-La topología utilizada se encuentra documentada en:
+La topología del Día 3 está documentada en:
 
 ```text
 infra/topologia-aws.md
@@ -333,44 +128,397 @@ infra/topologia-aws.md
 
 ---
 
-### Smoke test
 
-Como prueba funcional final accedí al Swagger desplegado en EC2, realicé la autenticación y ejecuté la creación de una tarea.
 
-El código HTTP `201` mostrado en la evidencia `10-tarea-creada.png` confirmó que TaskFlow estaba disponible y procesando operaciones correctamente desde AWS.
+# Día 4 - DynamoDB, CodePipeline y CodeDeploy
 
----
 
-### Limpieza de recursos
 
-Al finalizar el Día 3 revisé los recursos creados para evitar consumo innecesario.
+## 6. Preparar nuevamente EC2
 
-Los principales recursos a considerar durante la limpieza son:
+Volví a iniciar `taskflow-ec2` y añadí los dos elementos necesarios para CodeDeploy:
 
-- Instancia EC2 `taskflow-ec2`.
-- Instancia RDS `taskflow-db`.
-- Bucket y objetos de S3.
-- Security Groups creados para la práctica.
-- Recursos temporales que ya no sean necesarios.
+- Tag `Name = taskflow-ec2`.
+- IAM instance profile `taskflow-ec2-role`.
+
+![EC2 con IAM role](evidencias/dia-04/02-ec2-role-tag.png)
+
+También eliminé el JAR copiado manualmente durante el Día 3. A partir de este punto el artefacto debía llegar mediante el pipeline.
 
 ---
 
-## Reflexiones del Día 3
 
-### ¿Por qué RDS no tiene IP pública y cómo llega entonces EC2 a él?
 
-RDS no necesita estar expuesto directamente a internet porque solamente TaskFlow necesita comunicarse con la base de datos.
+## 7. DynamoDB
 
-EC2 y RDS se encuentran dentro de la infraestructura de red de AWS. TaskFlow utiliza el endpoint de RDS para realizar la conexión y el Security Group de la base permite tráfico PostgreSQL por el puerto `5432` desde la infraestructura autorizada de EC2.
 
-Esto permite que la aplicación acceda a la base de datos sin abrir PostgreSQL al internet público.
+
+### Crear la tabla
+
+Creé `taskflow-eventos` con:
+
+- Partition key: `taskId`.
+- Sort key: `fechaHora`.
+- Capacity mode: On-demand.
+
+![Tabla DynamoDB](evidencias/dia-04/03-dynamodb-tabla.png)
+
+Después inserté cinco eventos mediante AWS CLI.
+
+![Cinco eventos](evidencias/dia-04/04-dynamodb-cinco-eventos.png)
+
+### Query vs Scan
+
+Consulté los eventos de `T-001` con `Query` y con `Scan`.
+
+![Query vs Scan](evidencias/dia-04/05-query-vs-scan.png)
+
+
+| Operación | Devueltos | Revisados | Capacity Units |
+| --------- | --------- | --------- | -------------- |
+| `Query`   | 3         | 3         | 0.5            |
+| `Scan`    | 3         | 5         | 2.0            |
+
+
+`Query` fue más eficiente porque utilizó directamente la partition key. `Scan` recorrió toda la tabla y después aplicó el filtro.
+
+### Modelar al revés
+
+Revisé los cuatro patrones de acceso de TaskFlow. El modelo actual funciona bien para consultar eventos por `taskId`, pero no resuelve eficientemente el patrón **“tareas que completó luis”**, porque `autor` y `tipo` no forman parte de la clave.
+
+Para soportarlo correctamente sería necesario un **Global Secondary Index (GSI)**.
+
+La idea principal es que en DynamoDB primero se definen las consultas que la aplicación necesita y después se diseña la tabla alrededor de esos patrones.
 
 ---
 
-### ¿Qué habría pasado si dejaba SSH abierto al mundo?
 
-Si el puerto `22` hubiera quedado configurado con `0.0.0.0/0`, cualquier dirección de internet habría podido intentar establecer una conexión SSH con la instancia.
 
-Aunque el acceso siguiera protegido mediante una llave, exponer SSH innecesariamente aumenta la superficie de ataque y permite intentos automatizados contra el servidor.
+## 8. Bucket de artefactos e IAM para servicios
 
-Por ese motivo configuré el puerto `22` únicamente para mi dirección IP y dejé público solamente el puerto `8080` necesario para probar Swagger durante esta práctica.
+Reutilicé el bucket del Día 3 y activé **Bucket Versioning**.
+
+![S3 Versioning](evidencias/dia-04/06-s3-versioning.png)
+
+El bucket pasó de ser un ejercicio de almacenamiento a formar parte del pipeline como almacén de artefactos.
+
+También verifiqué que EC2 tuviera asociado `taskflow-ec2-role`. Los roles de CodeDeploy, CodeBuild y CodePipeline se fueron creando conforme avancé.
+
+---
+
+
+
+## 9. CodeDeploy Agent
+
+Instalé el agente de CodeDeploy en EC2 y validé su estado.
+
+![CodeDeploy Agent](evidencias/dia-04/07-codedeploy-agent.png)
+
+El estado `active (running)` confirmó que la instancia estaba lista para recibir despliegues automatizados.
+
+---
+
+
+
+## 10. taskflow.service
+
+Agregué `taskflow.service` para reemplazar el uso de `nohup`.
+
+Las directivas principales fueron:
+
+```ini
+User=ec2-user
+WorkingDirectory=/opt/taskflow
+ExecStart=/usr/bin/java -jar /opt/taskflow/taskflow-api.jar
+SuccessExitStatus=143
+Restart=always
+```
+
+![taskflow.service](evidencias/dia-04/08-taskflow-service.png)
+
+Con `systemd`, TaskFlow puede mantenerse como servicio y reiniciarse sin depender de una sesión SSH.
+
+---
+
+
+
+## 11. buildspec.yml
+
+`buildspec.yml` define cómo CodeBuild genera el artefacto.
+
+Las acciones principales son:
+
+```bash
+mvn -q -DskipTests package
+mv target/taskflow-api-*.jar target/taskflow-api.jar
+```
+
+El artefacto incluye:
+
+```text
+target/taskflow-api.jar
+appspec.yml
+taskflow.service
+scripts/**/*
+```
+
+![buildspec.yml](evidencias/dia-04/09-buildspec.png)
+
+De esta forma CodeDeploy recibe no solo el JAR, sino también las instrucciones y scripts necesarios para instalarlo.
+
+---
+
+
+
+## 12. appspec.yml y hooks
+
+Los comandos manuales del Día 3 quedaron automatizados mediante hooks:
+
+
+| Acción manual    | Script         | Hook               |
+| ---------------- | -------------- | ------------------ |
+| Detener TaskFlow | `parar.sh`     | `ApplicationStop`  |
+| Ajustar permisos | `permisos.sh`  | `AfterInstall`     |
+| Iniciar TaskFlow | `arrancar.sh`  | `ApplicationStart` |
+| Validar la API   | `verificar.sh` | `ValidateService`  |
+
+
+Marqué los cuatro scripts como ejecutables dentro de Git.
+
+![Hooks ejecutables](evidencias/dia-04/10-hooks-ejecutables.png)
+
+Las entradas `100755` confirman que el permiso de ejecución quedó registrado en el repositorio.
+
+---
+
+
+
+## 13. CodeDeploy y CodePipeline
+
+Creé el rol `taskflow-codedeploy-role`, la aplicación `taskflow` y el deployment group `taskflow-dg`.
+
+El deployment group utiliza:
+
+```text
+Name = taskflow-ec2
+```
+
+para identificar la instancia.
+
+![Deployment group](evidencias/dia-04/12-codedeploy-deployment-group.png)
+
+Después creé `taskflow-pipeline` con el flujo:
+
+```text
+GitHub -> CodeBuild -> CodeDeploy
+```
+
+
+
+### Primer error del pipeline
+
+La primera ejecución llegó correctamente a Source, pero Build falló.
+
+![Build fallido](evidencias/dia-04/13-pipeline-build-fallido.png)
+
+En los logs apareció:
+
+```text
+AccessDenied
+s3:GetObject
+```
+
+El rol de CodeBuild no tenía permisos para descargar el artefacto desde mi bucket S3 personalizado.
+
+Agregué el permiso requerido al rol `codebuild-taskflow-build-service-role` y repetí la etapa.
+
+![Pipeline exitoso](evidencias/dia-04/14-pipeline-exitoso.png)
+
+Después de la corrección, Source, Build y Deploy terminaron en verde.
+
+---
+
+
+
+## 14. Validar el despliegue
+
+Abrí:
+
+```text
+http://<IP_PUBLICA_EC2>:8080/info
+```
+
+y obtuve:
+
+```json
+{
+  "version": "3.0.0",
+  "app": "taskflow-api"
+}
+```
+
+![TaskFlow desplegado](evidencias/dia-04/15-info-taskflow.png)
+
+También comprobé:
+
+```bash
+systemctl status taskflow
+```
+
+![TaskFlow con systemd](evidencias/dia-04/16-taskflow-systemd.png)
+
+El estado `active (running)` confirmó que CodeDeploy instaló correctamente la aplicación y que ahora estaba administrada por `systemd`.
+
+---
+
+
+
+## 15. Integrador - El push que despliega
+
+
+
+### Versión 3.0.1
+
+Modifiqué la constante `VERSION` de `3.0.0` a `3.0.1` y realicé únicamente:
+
+```bash
+git add .
+git commit -m "chore: v3.0.1"
+git push
+```
+
+No compilé ni copié archivos manualmente.
+
+Cuando terminó el pipeline, `/info` respondió:
+
+```json
+{
+  "version": "3.0.1",
+  "app": "taskflow-api"
+}
+```
+
+![Versión 3.0.1](evidencias/dia-04/18-info-v301.png)
+
+Esto confirmó que un push a `main` podía desplegar automáticamente una nueva versión.
+
+---
+
+
+
+## 16. Romper el pipeline a propósito
+
+Cambié temporalmente en `appspec.yml`:
+
+```text
+scripts/permisos.sh
+```
+
+por:
+
+```text
+scripts/no-existe.sh
+```
+
+Después hice commit y push.
+
+CodeDeploy falló en `AfterInstall` con:
+
+```text
+Error code: ScriptMissing
+Script name: scripts/no-existe.sh
+```
+
+![Hook fallido](evidencias/dia-04/19-deploy-fallido-hook.png)
+
+La prueba me permitió localizar exactamente qué hook falló y por qué.
+
+Finalmente restauré `scripts/permisos.sh`, hice un nuevo push y el pipeline volvió a verde.
+
+![Pipeline recuperado](evidencias/dia-04/20-pipeline-recuperado.png)
+
+---
+
+
+
+# Preguntas de reflexión
+
+
+
+## 1. ¿Por qué RDS no tiene IP pública y cómo llega EC2 a él?
+
+RDS no necesita estar expuesto a internet porque quien lo consume es TaskFlow desde EC2. Ambos recursos se comunican dentro de la red de AWS y el Security Group de RDS permite PostgreSQL por el puerto `5432` desde la infraestructura autorizada de EC2.
+
+Así la base permanece privada y solamente la aplicación puede llegar a ella.
+
+---
+
+
+
+## 2. ¿Qué habría pasado si dejaba SSH abierto al mundo?
+
+Con `0.0.0.0/0` en el puerto `22`, cualquier equipo en internet habría podido intentar conectarse por SSH.
+
+Aunque la llave privada siguiera protegiendo el acceso, aumentaría innecesariamente la superficie de ataque. Por eso SSH quedó limitado a mi IP.
+
+---
+
+
+
+## 3. ¿Qué midió la comparación de Query contra Scan?
+
+Medí cuántos elementos tuvo que revisar DynamoDB y cuánta capacidad consumió para devolver los mismos datos.
+
+`Query` devolvió 3 elementos revisando 3 y consumiendo 0.5 unidades. `Scan` devolvió los mismos 3, pero revisó 5 y consumió 2.0 unidades.
+
+La prueba mostró que `Query` es más eficiente cuando conocemos la partition key.
+
+---
+
+
+
+## 4. ¿Qué hace cada pieza del pipeline?
+
+- **CodePipeline:** coordina Source, Build y Deploy.
+- **CodeBuild:** lee `buildspec.yml`, compila TaskFlow y genera el artefacto.
+- **S3:** almacena los artefactos que circulan entre las etapas.
+- **CodeDeploy:** instala el artefacto en EC2 siguiendo `appspec.yml`.
+
+`appspec.yml` viaja dentro del artefacto porque contiene las instrucciones de despliegue de esa revisión: archivos, rutas y hooks. Así el código y su forma de desplegarse permanecen versionados juntos.
+
+---
+
+
+
+## 5. ¿En qué hook vive cada comando manual del Día 3?
+
+
+| Acción             | Script         | Hook               |
+| ------------------ | -------------- | ------------------ |
+| Detener aplicación | `parar.sh`     | `ApplicationStop`  |
+| Ajustar permisos   | `permisos.sh`  | `AfterInstall`     |
+| Iniciar aplicación | `arrancar.sh`  | `ApplicationStart` |
+| Validar respuesta  | `verificar.sh` | `ValidateService`  |
+
+
+El pipeline automatiza exactamente las tareas que antes ejecutaba manualmente y mantiene siempre el mismo orden.
+
+---
+
+
+
+# Limpieza
+
+Al terminar las evidencias y el último push revise y eliminé los recursos:
+
+- [x] `taskflow-pipeline`.
+- [x] Proyecto CodeBuild `taskflow-build`.
+- [x] Aplicación y deployment group de CodeDeploy.
+- [x] Instancia EC2 `taskflow-ec2`.
+- [x] RDS `taskflow-db`.
+- [x] Bucket y artefactos de S3.
+- [x] Roles IAM creados específicamente para la práctica.
+- [x] Security Groups temporales.
+- [x] Access Key creada para `taskflow-admin`.
+
+Las casillas se deben marcar únicamente después de realizar la limpieza real en AWS.
