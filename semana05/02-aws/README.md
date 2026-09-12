@@ -209,12 +209,4 @@ Las credenciales utilizadas durante la práctica se mantuvieron fuera del reposi
 
 ---
 
-## Documento de entrega
-
-Para revisar la implementación completa:
-
-[Ver actividades-aws.md](./actividades-aws.md)
-
----
-
 [← Volver a Semana 05](../README.md)
