@@ -1,4 +1,4 @@
-# Día 04 - Skills, agentes personalizados y auditoría controlada
+# Día 04 - Skills y agentes personalizados
 
 ## Objetivo
 
