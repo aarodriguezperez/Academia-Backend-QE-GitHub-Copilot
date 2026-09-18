@@ -445,25 +445,6 @@ Después se realizó el commit y push final, comprobando que el repositorio qued
 
 ---
 
-## Resultados del Día 01
-
-Al finalizar se logró:
-
-- trabajar en PowerShell 7;
-- instalar Node.js, npm y GitHub Copilot CLI;
-- iniciar sesión con la cuenta de GitHub;
-- crear un repositorio independiente de TaskFlow;
-- establecer una línea base de **67 tests y 0 fallos**;
-- utilizar `gpt-5-mini` y revisar consumo/contexto;
-- comprobar respuestas del agente con comandos independientes;
-- aprobar, negar y deshacer acciones;
-- configurar `.github/copilot-instructions.md`;
-- generar `docs/ARQUITECTURA.md`;
-- validar la documentación hasta obtener **0 NO EXISTE**;
-- registrar evidencias y consumo del integrador.
-
----
-
 ## Conclusión
 
 El Día 01 estableció la forma de trabajo utilizada durante el resto de la semana: **Copilot puede leer, ejecutar y editar, pero sus respuestas y acciones deben comprobarse**.
