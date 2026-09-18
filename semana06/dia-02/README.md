@@ -504,30 +504,6 @@ Por lo tanto, el consumo aproximado durante la práctica fue:
 
 ---
 
-## Resultados del Día 02
-
-Al finalizar el día se logró:
-
-- trabajar a partir de especificaciones antes de solicitar código al agente;
-- implementar `GET /tasks/overdue`;
-- detectar que un test inicialmente no protegía el ordenamiento;
-- corregir el test mediante un follow-up específico;
-- validar el comportamiento mediante pruebas de mutación;
-- utilizar `/review` con un alcance explícito;
-- utilizar `/plan` antes de implementar una segunda feature;
-- implementar `GET /tasks/unassigned`;
-- eliminar una aserción incorrecta de orden dentro del test slice;
-- obtener una suite final de **72 tests sin fallos**;
-- comprobar que Copilot corrigiera código de producción sin modificar tests durante un experimento;
-- abrir y revisar un Pull Request con Copilot Code Review;
-- evaluar qué sugerencias aplicar y cuáles rechazar;
-- integrar los cambios a `main`;
-- comprobar los endpoints contra la aplicación real;
-- verificar respuesta `401` cuando no se proporciona token;
-- registrar un consumo aproximado de **52 AI Credits** durante el día.
-
----
-
 ## Conclusión
 
 El segundo día mostró que una suite en verde no es suficiente para afirmar que una implementación está correctamente protegida.
