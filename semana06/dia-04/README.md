@@ -2,80 +2,140 @@
 
 ## Objetivo
 
-Durante el Día 04 se trabajó con **skills**, **agentes personalizados** y servidores **MCP** para organizar el trabajo de GitHub Copilot CLI por responsabilidades.
+Durante el Día 04 se trabajó con **skills**, **agentes personalizados** y servidores **MCP** para organizar el uso de GitHub Copilot CLI por responsabilidades.
 
-Los objetivos principales de la práctica fueron:
+Los objetivos principales fueron:
 
-- implementar el endpoint `GET /projects/{id}/summary` utilizando una skill del proyecto;
-- validar la implementación mediante una segunda skill de verificación;
-- separar responsabilidades de revisión y testing mediante agentes personalizados;
-- auditar una cuenta de AWS con un agente restringido por permisos de solo lectura;
-- comprobar, mediante una prueba integradora, que la verificación real detecta errores de negocio.
+- implementar `GET /projects/{id}/summary` mediante una skill;
+- verificar la implementación con una segunda skill y una prueba de punta a punta;
+- separar revisión y testing mediante agentes personalizados;
+- comprobar que las herramientas disponibles realmente limitan lo que un agente puede hacer;
+- auditar una cuenta de AWS con credenciales de solo lectura;
+- introducir un error de negocio a propósito y comprobar que el equipo de verificación lo detectara.
 
-La práctica se realizó sobre la rama:
+El trabajo se realizó sobre:
 
 ```text
- dia4-equipo
+taskflow-copilot-aarodriguezperez
 ```
 
-en el repositorio:
+en la rama:
 
 ```text
- taskflow-copilot-aarodriguezperez
+dia4-equipo
 ```
 
 ---
 
+# Preparación del Día 04
+
+Antes de iniciar se actualizó `academyMty` y se comprobó que estuvieran disponibles las skills, agentes, scripts y archivos de referencia del día.
+
+También se validó que:
+
+- `main` contuviera `GET /tasks/overdue` y `GET /tasks/unassigned`;
+- la suite estuviera en verde;
+- el issue `#2 - GET /projects/{id}/summary` siguiera disponible;
+- `gpt-5-mini` continuara configurado;
+- GitHub Copilot CLI estuviera actualizado.
+
+Los servidores MCP utilizados durante el Día 03 se deshabilitaron temporalmente para evitar cargar herramientas innecesarias:
+
+```text
+taskflow
+playwright
+aws-knowledge
+```
+
+Después se creó:
+
+```text
+dia4-equipo
+```
+
+y se agregó:
+
+```text
+specs/summary.md
+```
+
+a partir de la especificación del issue del Día 03.
+
+![Preparación · Rama `dia4-equipo` y spec de summary](./evidencias/00-preparacion-rama-dia4.png)
+
+---
+
+# Skills: recetas que el agente carga cuando las necesita
+
 ## MP-1 · Agregar las skills al proyecto
 
-Se incorporaron al repositorio las siguientes skills:
+Se incorporaron:
 
 ```text
 .github/skills/crear-endpoint-taskflow/
 .github/skills/verificar-taskflow/
 ```
 
-La primera se utiliza para implementar endpoints REST dentro de TaskFlow respetando la estructura del proyecto. La segunda ejecuta un script de verificación de punta a punta para comprobar que la aplicación responde correctamente.
+La primera contiene una receta reutilizable para implementar endpoints dentro de TaskFlow y la segunda incluye un script de verificación de punta a punta.
 
-Con `copilot skill list` se comprobó que ambas skills ya aparecían como **Project skills**.
+Con:
 
-![MP-1 · Skills registradas en el proyecto](./evidencias/01-mp1-skills-registradas.png)
+```text
+copilot skill list
+```
+
+se confirmó que ambas aparecieran como **Project skills**.
+
+![MP-1 · Skills registradas](./evidencias/01-mp1-skills-registradas.png)
 
 ---
 
-## MP-2 · Romper y restaurar el frontmatter de una skill
+## MP-2 · Romper el frontmatter de una skill
 
-Para entender cómo detecta Copilot una skill, se editó temporalmente el archivo:
+Se modificó temporalmente:
 
 ```text
 .github/skills/verificar-taskflow/SKILL.md
 ```
 
-Se eliminó la primera línea del frontmatter YAML y, como resultado, la skill dejó de cargar correctamente. Copilot reportó que el frontmatter estaba mal formado. Después se restauró el archivo original y se confirmó que la skill volviera a estar disponible.
+eliminando la primera línea del frontmatter.
 
-Esto permitió comprobar que el encabezado YAML de `SKILL.md` es obligatorio para que Copilot reconozca la skill.
+La skill dejó de cargarse y Copilot reportó:
 
-![MP-2 · Skill con frontmatter inválido](./evidencias/02-mp2-frontmatter-invalido.png)
+```text
+missing or malformed YAML frontmatter
+```
+
+![MP-2 · Frontmatter inválido detectado](./evidencias/02-mp2-frontmatter-invalido.png)
+
+Después se restauró el archivo original y ambas skills volvieron a aparecer correctamente.
 
 ---
 
-## MP-3 · Implementar `GET /projects/{id}/summary` con la skill
+## MP-3 · Implementar `GET /projects/{id}/summary`
 
-Se solicitó a Copilot implementar el endpoint a partir de `specs/summary.md`, usando explícitamente la skill:
+La implementación se solicitó invocando explícitamente:
 
 ```text
 /crear-endpoint-taskflow
 ```
 
-La implementación generó:
+sobre:
 
-- controller;
-- service;
-- mapper;
-- tests unitarios y slice en archivos nuevos;
-- evidencia de la sesión.
+```text
+specs/summary.md
+```
 
-Al finalizar, la suite pasó de **72** a **76 tests**, con resultado verde:
+La skill establecía reglas adicionales a las instrucciones generales del repositorio, entre ellas:
+
+- crear los tests nuevos en clases nuevas;
+- utilizar el service que el controller ya inyectaba;
+- leer `plantillas.md` antes de escribir;
+- reutilizar reglas y convenciones existentes.
+
+Después de la ejecución se comprobó el resultado sin depender de la explicación del modelo.
+
+La suite pasó de **72 a 76 tests**:
 
 ```text
 Tests run: 76
@@ -85,40 +145,72 @@ Skipped: 0
 BUILD SUCCESS
 ```
 
-![MP-3 · Endpoint summary implementado y suite en verde](./evidencias/03-mp3-endpoint-summary-76-tests.png)
+Los tests generados aparecieron como archivos nuevos y no como modificaciones de tests existentes.
+
+![MP-3 · Endpoint implementado y 76 tests en verde](./evidencias/03-mp3-endpoint-summary-76-tests.png)
 
 ---
 
-## MP-4 · Verificar que realmente se usó la skill
+## MP-4 · Comprobar que la skill realmente se cargó
 
-No bastaba con que el endpoint estuviera implementado: también había que demostrar que Copilot utilizó la skill correcta.
+Un resultado parecido a la receta no demuestra que Copilot haya utilizado la skill.
 
-Para ello se revisó el transcript exportado de la sesión y se confirmó que la skill `crear-endpoint-taskflow` había sido cargada antes de generar el código.
+Por ello se revisó:
 
-![MP-4 · Skill crear-endpoint-taskflow cargada](./evidencias/04-mp4-skill-crear-endpoint-cargada.png)
+```text
+evidencia/dia4/summary-sesion.md
+```
+
+y se buscó:
+
+```text
+Skill "crear-endpoint-taskflow" loaded successfully
+```
+
+La llamada apareció correctamente en el transcript.
+
+![MP-4 · Skill `crear-endpoint-taskflow` cargada](./evidencias/04-mp4-skill-crear-endpoint-cargada.png)
+
+Antes del commit se eliminaron del transcript las contraseñas temporales generadas por Spring Security.
 
 ---
 
-## MP-5 · Ejecutar manualmente la skill `verificar-taskflow`
+# Skill con script: `verificar-taskflow`
 
-La skill `verificar-taskflow` incluye el script:
+## MP-5 · Ejecutar el script manualmente
+
+La skill:
+
+```text
+verificar-taskflow
+```
+
+incluye:
 
 ```text
 .github/skills/verificar-taskflow/verificar.ps1
 ```
 
-Este script empaqueta la aplicación, la arranca con H2, espera a que la API responda y valida distintos endpoints reales de TaskFlow.
+El script:
 
-Entre las comprobaciones realizadas estuvieron:
+1. empaqueta TaskFlow;
+2. arranca la aplicación con H2;
+3. espera a que la API y la semilla estén disponibles;
+4. ejecuta peticiones reales;
+5. apaga la aplicación al terminar.
 
-- `GET /tasks/overdue`;
-- `GET /tasks/unassigned`;
-- `GET /projects/1/summary`;
-- `GET /projects/2/summary`;
-- `GET /projects/3/summary`;
-- `404` para proyecto inexistente;
-- `401` sin token;
-- apagado correcto de la aplicación.
+Se comprobaron:
+
+```text
+GET /tasks/overdue
+GET /tasks/unassigned
+GET /projects/1/summary
+GET /projects/2/summary
+GET /projects/3/summary
+404 de proyecto inexistente
+401 sin token
+apagado de la aplicación
+```
 
 El resultado fue:
 
@@ -126,84 +218,151 @@ El resultado fue:
 RESULTADO: 8/8 OK
 ```
 
-![MP-5 · Verificación manual 8 de 8 OK](./evidencias/05-mp5-verificacion-manual-8de8.png)
+![MP-5 · Verificación manual 8/8 OK](./evidencias/05-mp5-verificacion-manual-8de8.png)
 
 ---
 
-## MP-6 · Ejecutar la verificación mediante Copilot
+## MP-6 · Pedir a Copilot que ejecute la skill
 
-Después se pidió a Copilot ejecutar la misma comprobación usando la skill:
+Después se solicitó:
 
 ```text
-/verificar-taskflow
+/verificar-taskflow Verifica TaskFlow con el script de la skill y dame el resultado.
 ```
 
-En el transcript se verificó que el resultado también fue `8/8 OK` y que la ejecución terminó con código de salida correcto. Esto demuestra que el resultado no fue inventado por el modelo, sino producto de la ejecución real del script.
+Copilot cargó la skill y ejecutó el script.
 
-![MP-6 · Verificación con Copilot y resultado 8/8 OK](./evidencias/06-mp6-verificacion-copilot-8de8.png)
+![MP-6 · Ejecución de `verificar-taskflow`](./evidencias/06-mp6-verificacion-copilot.png)
+
+Posteriormente se revisó el transcript buscando el resultado acompañado por la salida real del shell.
+
+La comprobación mostró:
+
+```text
+RESULTADO: 8/8 OK
+<shellId: ... completed with exit code 0>
+```
+
+![MP-6 · Resultado real y exit code 0](./evidencias/07-mp6-exitcode0.png)
+
+La segunda evidencia es importante porque distingue la salida del comando de una posible repetición realizada por el modelo.
 
 ---
 
-## MP-7 · Crear el equipo de agentes personalizados
+# Agentes personalizados: roles con herramientas diferentes
 
-Se agregaron al proyecto los siguientes agentes:
+## MP-7 · Crear el equipo
+
+Se incorporaron:
 
 ```text
 .github/agents/revisor.agent.md
 .github/agents/tester.agent.md
 ```
 
-Al consultar `/agent`, Copilot mostró ambos agentes como parte del proyecto.
+Los dos roles quedaron diferenciados de la siguiente forma:
 
-Sus responsabilidades quedaron separadas así:
+| Agente | Herramientas | Responsabilidad |
+| --- | --- | --- |
+| `revisor` | `read`, `search` | revisar sin modificar |
+| `tester` | `read`, `search`, `edit`, `execute` | agregar tests y ejecutar Maven |
 
-- **revisor**: revisar la implementación sin modificar archivos;
-- **tester**: agregar la cobertura faltante y ejecutar la suite.
+Al utilizar `/agent`, ambos aparecieron como agentes personalizados del proyecto.
 
-![MP-7 · Agentes personalizados registrados](./evidencias/07-mp7-agentes-registrados.png)
+![MP-7 · Agentes `revisor` y `tester`](./evidencias/08-mp7-agentes-registrados.png)
 
 ---
 
-## MP-8 · Revisar la implementación con el agente `revisor`
+## MP-8 · Revisar la implementación con `revisor`
 
-Se generó un diff con los cambios del endpoint y se pidió al agente `revisor` contrastarlo con `specs/summary.md`.
+Como `revisor` no puede ejecutar Git, primero se generó:
 
-El agente devolvió:
+```text
+evidencia/dia4/summary.diff
+```
+
+y se pidió comparar ese diff contra:
+
+```text
+specs/summary.md
+```
+
+El agente produjo:
 
 - hallazgos;
 - sugerencias;
-- casos sin test;
-- un veredicto sobre la calidad de la implementación.
+- sección **Casos sin test**;
+- veredicto.
 
-Posteriormente se comprobó que no hubiera editado código dentro de `src`.
+![MP-8 · Veredicto del agente revisor](./evidencias/09-mp8-revisor-veredicto.png)
 
-![MP-8 · Hallazgos entregados por el revisor](./evidencias/08-mp8-revisor-hallazgos.png)
+Después se ejecutaron comprobaciones independientes.
 
----
+`Select-String` encontró las secciones esperadas y:
 
-## MP-9 · Comprobar que el `revisor` no puede editar
+```text
+git status --porcelain src
+```
 
-Para validar la restricción del agente, se ejecutó una segunda prueba intentando que el `revisor` corrigiera directamente uno de sus hallazgos.
+no mostró cambios.
 
-Aunque la sesión permitía muchas herramientas, el agente no pudo editar archivos porque en su definición solo contaba con herramientas de lectura y búsqueda.
-
-Esto confirmó que el control real de permisos depende de la definición del agente y no únicamente de los flags de la sesión.
-
-![MP-9 · El revisor no puede editar archivos](./evidencias/09-mp9-revisor-no-edita.png)
+![MP-8 · Revisión sin modificar `src`](./evidencias/10-mp8-git-status-sin-cambios.png)
 
 ---
 
-## MP-10 · Agregar los tests faltantes con el agente `tester`
+## MP-9 · Pedir al revisor que edite
 
-El agente `tester` leyó:
+Para comprobar que la lista de herramientas era una restricción real, el agente se ejecutó con:
+
+```text
+--allow-all-tools
+```
+
+y se le pidió corregir directamente su primer hallazgo.
+
+El agente intentó resolver la tarea desde su rol:
+
+![MP-9 · Intento de corrección por el revisor](./evidencias/11-mp9-revisor-intento-edicion.png)
+
+Sin embargo:
+
+```text
+git status --porcelain -- src .github
+```
+
+no mostró ninguna modificación.
+
+El transcript sí existía, pero los archivos permanecieron iguales.
+
+![MP-9 · El revisor no pudo modificar archivos](./evidencias/12-mp9-revisor-no-modifico.png)
+
+Esto demostró que `--allow-all-tools` no puede proporcionar una herramienta que el agente no tiene declarada.
+
+---
+
+## MP-10 · El tester agrega los casos faltantes
+
+El agente `tester` recibió:
 
 - `specs/summary.md`;
-- la sección **Casos sin test** de `evidencia/dia4/revision.md`;
-- los tests existentes del endpoint.
+- **Casos sin test** de `revision.md`;
+- los tests actuales de `summary`.
 
-Con base en eso agregó la cobertura faltante. Durante la revisión se detectaron algunos cambios innecesarios en un test existente; esos cambios se deshicieron y se conservó únicamente la nueva cobertura requerida.
+Durante la primera revisión se encontró que había modificado anotaciones dentro de `ProjectSummaryControllerTest`.
 
-La suite quedó finalmente en:
+![MP-10 · Cambio del tester revisado antes de aceptarlo](./evidencias/13-mp10-cambio-tester-revisado.png)
+
+Ese cambio no era necesario para agregar el caso faltante, por lo que se restauró.
+
+Al terminar, `git status` mostró únicamente:
+
+```text
+src/test/java/com/taskflow/slice/ProjectSummarySecurityTest.java
+```
+
+como test nuevo, y `git diff --numstat -- src/test` ya no reportó modificaciones a tests existentes.
+
+La suite terminó en:
 
 ```text
 Tests run: 77
@@ -213,156 +372,350 @@ Skipped: 0
 BUILD SUCCESS
 ```
 
-![MP-10 · Tester agrega cobertura y deja 77 tests en verde](./evidencias/10-mp10-tester-77-tests.png)
+![MP-10 · Estado final del tester y 77 tests en verde](./evidencias/14-mp10-tester-final-77-tests.png)
 
 ---
 
-## MP-11 · Crear y configurar el perfil `mcp-readonly`
+# Auditoría de AWS con un agente de solo lectura
 
-Para la parte de AWS se creó temporalmente el usuario y perfil:
+## MP-11 · Crear `mcp-readonly`
+
+Para revisar la cuenta utilizada durante la Semana 05 se creó temporalmente:
 
 ```text
 mcp-readonly
 ```
 
-con permisos de solo lectura mediante `ViewOnlyAccess`.
+con la política:
 
-El perfil se configuró localmente con `aws configure --profile mcp-readonly` y se verificó con `sts get-caller-identity`.
+```text
+ViewOnlyAccess
+```
 
-La Access Key y la Secret Access Key se usaron solo de forma local y no se integraron al repositorio ni a los prompts de la documentación final.
+Se configuró el perfil local:
 
-![MP-11 · Perfil mcp-readonly configurado](./evidencias/11-mp11-mcp-readonly-configurado.png)
+```text
+mcp-readonly
+```
+
+y se validó mediante:
+
+```text
+aws sts get-caller-identity --profile mcp-readonly
+```
+
+La evidencia utilizada para documentación fue recortada y anonimizada: **no contiene Access Key, Secret Access Key ni número de cuenta**.
+
+![MP-11 · Identidad `mcp-readonly` verificada](./evidencias/15-mp11-sts-mcp-readonly-anonimizado.png)
+
+La capa principal de protección era IAM: aunque el agente recibiera permisos amplios en Copilot, la identidad de AWS no debía poder escribir.
 
 ---
 
-## MP-12 · Preparar el agente `auditor-aws` y la skill `limpieza-aws`
+## MP-12 · Preparar `auditor-aws` y `limpieza-aws`
 
-Se incorporaron:
+El servidor de AWS se ejecuta mediante `uvx`.
+
+Se comprobó la versión fija utilizada en la práctica:
+
+```text
+MCP Proxy for AWS v1.6.6
+```
+
+![MP-12 · AWS MCP Proxy disponible](./evidencias/16-mp12-aws-proxy-v166.png)
+
+Después se incorporaron:
 
 ```text
 .github/agents/auditor-aws.agent.md
 .github/skills/limpieza-aws/
 ```
 
-Este agente utiliza el servidor MCP `aws-ro`, que se conecta mediante el perfil `mcp-readonly`. Su diseño estaba orientado a ejecutar únicamente lectura de recursos para listar el estado de la cuenta.
+`copilot skill list` mostró las tres skills del proyecto:
 
-La sesión de auditoría cargó la skill y comenzó el proceso de lectura del script `auditoria.py`.
+```text
+crear-endpoint-taskflow
+limpieza-aws
+verificar-taskflow
+```
 
-![MP-12 · Skill de auditoría AWS ejecutada](./evidencias/12-mp12-auditor-aws-skill-ejecutada.png)
+![MP-12 · Skills del proyecto incluyendo `limpieza-aws`](./evidencias/17-mp12-tres-skills.png)
+
+El agente `auditor-aws` declara internamente el servidor `aws-ro`, por lo que AWS solo queda disponible dentro de ese rol.
 
 ---
 
-## MP-13 · Ejecutar la auditoría de AWS
+## MP-13 · Auditar la cuenta y comprobar que no puede escribir
 
-Finalmente, el agente ejecutó la auditoría con una llamada basada en `aws___run_script` y generó el veredicto final sobre la cuenta.
+Después de resolver la configuración del perfil, el agente realizó la llamada real:
 
-El resultado reportado fue:
+```text
+aws-ro-aws___run_script
+```
+
+y el transcript produjo:
 
 ```text
 Veredicto: CUENTA LIMPIA
 ```
 
-Además, en una prueba controlada de escritura, AWS devolvió `AccessDenied` al intentar crear un bucket S3, comprobando que el usuario `mcp-readonly` efectivamente no contaba con permisos de escritura.
+![MP-13 · `aws___run_script` y veredicto de la auditoría](./evidencias/18-mp13-aws-run-script-veredicto.png)
 
-![MP-13 · Auditoría AWS con veredicto de cuenta limpia](./evidencias/13-mp13-aws-cuenta-limpia.png)
+### Prueba de escritura
+
+La segunda parte del MP pidió intentar una única operación:
+
+```text
+s3:CreateBucket
+```
+
+AWS rechazó la llamada:
+
+```text
+AccessDenied
+mcp-readonly is not authorized to perform: s3:CreateBucket
+```
+
+La captura fue anonimizada para no publicar el número de cuenta.
+
+![MP-13 · Escritura rechazada por IAM](./evidencias/19-mp13-accessdenied-anonimizado.png)
+
+Esto comprobó que la restricción no dependía únicamente de las instrucciones del agente: **AWS impedía la escritura en la capa de IAM**.
+
+### Sacar los transcripts privados del repositorio
+
+Los transcripts completos contenían identificadores de cuenta y recursos, por lo que se movieron a:
+
+```text
+$HOME\evidencia-aws-dia4
+```
+
+fuera del repositorio público.
+
+`Test-Path` confirmó:
+
+```text
+False
+False
+```
+
+para los dos transcripts dentro de `evidencia/dia4/`.
+
+![MP-13 · Transcripts de AWS fuera del repositorio](./evidencias/20-mp13-transcripts-fuera-repo.png)
+
+En el repo solo permaneció:
+
+```text
+aws-resultado.txt
+```
+
+con la información anonimizada.
 
 ---
 
-## Integrador · Provocar y detectar un bug real
+# Integrador · El equipo debe detectar un error
 
-Como parte final del Día 04 se introdujo intencionalmente un error en la lógica del resumen: se reemplazó temporalmente la validación correcta basada en `Task::estaVencida` por una condición que solo consideraba la fecha.
+## 1. Romper la regla a propósito
 
-Esto provocó que tareas `DONE` con fecha pasada fueran contadas como vencidas. Al ejecutar nuevamente el verificador, el error fue detectado por la comprobación de punta a punta.
+La implementación correcta del resumen reutilizaba:
 
-El resultado cambió a:
+```java
+Task::estaVencida
+```
+
+La regla fue reemplazada temporalmente por una condición que solo revisaba `dueDate`, ignorando el estado `DONE`.
+
+En este recorrido, la suite ya contenía el test agregado por el agente tester, por lo que también detectó el error:
+
+```text
+Tests run: 77
+Failures: 1
+BUILD FAILURE
+```
+
+![Integrador · La suite detecta el bug intencional](./evidencias/21-integrador-suite-detecta-bug.png)
+
+Además se ejecutó la comprobación de punta a punta.
+
+Contra la semilla real, el resultado fue:
 
 ```text
 RESULTADO: 2 de 8 con FALLA
 ```
 
-![Integrador · El verificador detecta el bug](./evidencias/14-integrador-bug-detectado.png)
+![Integrador · El verificador detecta el error de negocio](./evidencias/22-integrador-verificador-detecta-bug.png)
 
-Después se restauró la implementación correcta y se volvió a ejecutar la verificación. El sistema regresó a su estado esperado:
+Así se comprobó el mismo defecto desde dos niveles distintos: tests automatizados y aplicación ejecutándose.
+
+---
+
+## 2. Restaurar la implementación
+
+La versión correcta se restauró y se volvió a ejecutar:
+
+```text
+verificar.ps1
+```
+
+El resultado regresó a:
 
 ```text
 RESULTADO: 8/8 OK
 ```
 
-![Integrador · Recuperación después del bug](./evidencias/15-integrador-restaurado-8de8.png)
+![Integrador · Implementación restaurada](./evidencias/23-integrador-restaurado-8de8.png)
+
+Antes de publicar la rama se comprobó que no quedaran modificaciones accidentales dentro de `src`.
 
 ---
 
-## Pull Request y merge
+# Pull Request y merge
 
-Una vez completada la práctica, se publicó la rama `dia4-equipo` y se abrió el Pull Request:
+Antes de publicar se buscaron:
+
+- Access Keys;
+- Secret Access Keys;
+- contraseñas temporales;
+- ARN con números de cuenta.
+
+Después se publicó:
+
+```text
+dia4-equipo
+```
+
+y se abrió:
 
 ```text
 #4 - GET /projects/{id}/summary con el equipo de .github
 ```
 
-En el PR se integraron:
+El PR se mergeó a:
 
-- las skills del proyecto;
-- los agentes personalizados;
-- la especificación `specs/summary.md`;
-- la implementación del endpoint;
-- los tests;
-- la evidencia generada durante la práctica.
+```text
+main
+```
 
-Después de revisar los cambios, el PR fue mergeado a `main`.
+![Pull Request del Día 04 mergeado](./evidencias/24-pr-mergeado.png)
 
-![Pull Request del Día 04 mergeado](./evidencias/16-pr-mergeado.png)
+Una vez actualizado `main`, `copilot skill list` confirmó que las skills del proyecto seguían disponibles después del merge.
+
+![Skills disponibles en `main`](./evidencias/25-main-skills-disponibles.png)
 
 ---
 
-## Cierre del issue
+# Cierre del issue
 
-La funcionalidad desarrollada correspondía al issue creado durante el Día 03:
+La funcionalidad implementada correspondía a:
 
 ```text
 #2 - GET /projects/{id}/summary
 ```
 
-Tras el merge del PR, el issue quedó asociado a la implementación y apareció como cerrado.
+Al finalizar quedó en estado:
 
-![Issue del endpoint summary cerrado](./evidencias/17-issue-cerrado.png)
+```text
+Closed
+```
+
+![Issue #2 cerrado](./evidencias/26-issue-cerrado.png)
 
 ---
 
-## Resultados del Día 04
+# Evidencia final
 
-Al finalizar la práctica se logró:
+El directorio del Día 04 quedó con:
 
-- incorporar skills reutilizables al proyecto;
-- comprobar el efecto de un frontmatter inválido;
+```text
+aws-resultado.txt
+revision.md
+revisor-no-edita.md
+summary-sesion.md
+summary.diff
+tester-sesion.md
+verificar-sesion.md
+verificar.txt
+```
+
+![Evidencia final del Día 04](./evidencias/27-evidencia-final-dia4.png)
+
+Los transcripts completos de AWS no permanecieron dentro del repositorio.
+
+---
+
+# Limpieza
+
+Al terminar se restauró la configuración utilizada durante el Día 03 y se eliminaron las credenciales temporales utilizadas para AWS.
+
+Los servidores:
+
+```text
+taskflow
+playwright
+aws-knowledge
+```
+
+se volvieron a habilitar.
+
+También se eliminó:
+
+```text
+mcp-readonly
+```
+
+junto con:
+
+- su Access Key;
+- `ViewOnlyAccess`;
+- el perfil `[mcp-readonly]`;
+- el bloque `[profile mcp-readonly]`.
+
+De esta forma, una credencial creada únicamente para la práctica no continuó activa después de terminar el día.
+
+---
+
+# Resultados del Día 04
+
+Al finalizar se logró:
+
+- incorporar y probar skills reutilizables;
+- comprobar el fallo producido por un frontmatter inválido;
 - implementar `GET /projects/{id}/summary` mediante una skill;
-- demostrar en transcript que la skill fue realmente utilizada;
-- aumentar la suite de **72 a 76 tests** durante la implementación;
-- validar la aplicación con **8/8 OK** mediante el verificador;
-- ejecutar esa misma validación a través de Copilot;
-- crear y usar los agentes `revisor` y `tester`;
-- obtener una revisión sin modificar código;
-- comprobar que el `revisor` no podía editar archivos;
-- ampliar la cobertura con el `tester` y finalizar con **77 tests** en verde;
-- crear un perfil de AWS de solo lectura para auditoría;
-- obtener el veredicto **CUENTA LIMPIA**;
-- demostrar con `AccessDenied` que el perfil no podía crear buckets S3;
-- provocar un bug intencional y detectarlo con la verificación real;
-- restaurar la implementación y recuperar el resultado **8/8 OK**;
+- confirmar en el transcript que la skill se cargó;
+- aumentar la suite de **72 a 76 tests**;
+- obtener **8/8 OK** contra la aplicación real;
+- ejecutar esa misma verificación mediante Copilot y confirmar `exit code 0`;
+- crear los agentes `revisor` y `tester`;
+- comprobar que `revisor` no podía editar aunque la sesión tuviera `--allow-all-tools`;
+- revisar y descartar cambios innecesarios producidos por `tester`;
+- terminar con **77 tests en verde**;
+- configurar un agente AWS con una identidad de solo lectura;
+- obtener **Veredicto: CUENTA LIMPIA**;
+- demostrar mediante `AccessDenied` que `mcp-readonly` no podía crear un bucket;
+- sacar del repo público los transcripts completos de AWS;
+- introducir un bug intencional detectado tanto por la suite como por `verificar-taskflow`;
+- restaurar el código y regresar a **8/8 OK**;
 - integrar el trabajo mediante el PR `#4`;
-- cerrar el issue `#2` asociado al endpoint.
+- cerrar el issue `#2`;
+- conservar únicamente evidencia segura dentro del repositorio.
 
 ---
 
-## Conclusión
+# Conclusión
 
-El Día 04 permitió pasar de un uso general de Copilot CLI a una organización más estructurada basada en:
+El Día 04 reunió los conceptos trabajados durante la semana y los organizó dentro de `.github/`.
 
-- **skills** para encapsular recetas reutilizables;
-- **agentes** para separar responsabilidades;
-- **MCP** para acceder a herramientas y servicios externos;
-- **scripts de verificación** para validar el comportamiento real de la aplicación.
+Las cuatro piezas principales quedaron diferenciadas:
 
-También mostró que las restricciones más importantes no deben descansar únicamente en el modelo.
+| Mecanismo | Función |
+| --- | --- |
+| `.github/copilot-instructions.md` | reglas generales del repositorio |
+| Skill | receta reutilizable para una tarea concreta |
+| Agente personalizado | rol con instrucciones y herramientas específicas |
+| Servidor MCP | capacidad externa accesible mediante herramientas |
 
-En el caso del agente `revisor`, la protección estuvo en las herramientas que tenía declaradas. En el caso de AWS, la protección efectiva estuvo en IAM mediante un perfil de solo lectura. Finalmente, la prueba integradora confirmó que la validación de punta a punta sigue siendo indispensable para detectar errores de negocio que una suite de tests puede pasar por alto.
+La práctica también mostró que las restricciones deben aplicarse en capas.
+
+El agente `revisor` no podía modificar código porque no tenía herramientas de edición. El agente `auditor-aws` podía interactuar con AWS, pero IAM impedía las operaciones de escritura aunque Copilot se iniciara con permisos amplios.
+
+Finalmente, el integrador confirmó el valor de las verificaciones independientes: al introducir una regla incorrecta, tanto la suite como `verificar-taskflow` detectaron el problema, y la restauración volvió a dejar la aplicación en `8/8 OK`.
