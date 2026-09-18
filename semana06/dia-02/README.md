@@ -13,9 +13,12 @@ El trabajo se realizó sobre el repositorio:
 
 `taskflow-copilot-aarodriguezperez`
 
+La estructura de este documento sigue los MP de Moodle en el mismo orden de ejecución. Las evidencias se muestran de forma individual cuando ayudan a entender una comprobación distinta, sin limitar artificialmente cada MP a una sola captura.
+
+
 ---
 
-## 1. Especificación antes de implementar
+## MP-1 · La rama y la spec en el repo
 
 La primera funcionalidad fue:
 
@@ -46,11 +49,11 @@ La especificación definía previamente:
 
 La spec quedó en un commit independiente para poder distinguir claramente lo escrito por el usuario de lo generado posteriormente por el agente.
 
-![Rama y spec de overdue](./evidencias/01-spec-overdue-rama.png)
+![Rama y spec de overdue](./evidencias/01-mp1-rama-spec-overdue.png)
 
 ---
 
-## 2. Registro inicial del consumo
+## MP-2 · El agente implementa
 
 Antes de iniciar la implementación se registró el consumo acumulado de AI Credits.
 
@@ -62,11 +65,11 @@ El valor inicial fue:
 
 Este valor se guardó para compararlo con el consumo al terminar el día.
 
-![Uso inicial](./evidencias/02-usage-inicio-dia2.png)
+![Uso inicial](./evidencias/02-mp2-usage-inicio.png)
 
 ---
 
-## 3. Implementación de `GET /tasks/overdue`
+### Implementación de `GET /tasks/overdue`
 
 Se pidió a Copilot implementar `specs/overdue.md` al pie de la letra y ejecutar la suite.
 
@@ -81,13 +84,13 @@ src/test/java/com/taskflow/unit/TaskServiceTest.java
 
 La implementación inicial terminó con la suite en verde.
 
-![Implementación de overdue](./evidencias/03-implementacion-overdue-copilot.png)
+![Implementación de overdue](./evidencias/03-mp2-implementacion-overdue.png)
 
 Sin embargo, el objetivo de la actividad era comprobar que un `BUILD SUCCESS` no garantiza que los tests nuevos realmente protejan la funcionalidad.
 
 ---
 
-## 4. Checklist de revisión
+## MP-3 · El checklist, punto por punto
 
 Después de la implementación se creó el commit:
 
@@ -108,11 +111,11 @@ El checklist revisó:
 
 La revisión confirmó que el cambio estaba limitado a la spec y los cuatro archivos esperados.
 
-![Checklist de alcance](./evidencias/04-checklist-overdue-alcance.png)
+![Checklist de alcance](./evidencias/04-mp3-checklist-alcance.png)
 
 ---
 
-## 5. Una suite verde no era suficiente
+### Resultado del checklist: el orden no estaba protegido
 
 Para comprobar que el test unitario realmente vigilara el orden, se utilizó el script:
 
@@ -140,13 +143,13 @@ BUILD SUCCESS
 
 Esto reveló un problema importante: **el ordenamiento podía desaparecer y los tests seguían pasando**.
 
-![Mutación no detectada](./evidencias/05-checklist-detecta-orden-no-probado.png)
+![Mutación no detectada](./evidencias/05-mp3-mutacion-no-detectada.png)
 
 Por lo tanto, aunque la implementación funcionaba, la prueba no protegía correctamente el comportamiento requerido.
 
 ---
 
-## 6. Follow-up específico para corregir el test
+## MP-4 · Follow-up del punto que falló
 
 Se envió únicamente el follow-up correspondiente al punto que había fallado.
 
@@ -165,7 +168,7 @@ RESTAURADO: TaskService.java quedó exactamente como estaba.
 
 En este caso, el `BUILD FAILURE` es el resultado correcto: demuestra que si se elimina el ordenamiento, el test detecta la regresión.
 
-![Mutación detectada](./evidencias/06-overdue-mutacion-build-failure.png)
+![Mutación detectada](./evidencias/06-mp4-mutacion-detectada.png)
 
 La suite normal volvió a ejecutarse correctamente:
 
@@ -177,11 +180,11 @@ Skipped: 0
 BUILD SUCCESS
 ```
 
-![Suite overdue en verde](./evidencias/07-overdue-suite-69-verde.png)
+![Suite overdue en verde](./evidencias/07-mp4-suite-overdue-69.png)
 
 ---
 
-## 7. Revisión adicional con `/review`
+## MP-5 · `/review`: un segundo par de ojos
 
 Se utilizó `/review` limitando expresamente el análisis a:
 
@@ -200,13 +203,13 @@ Entre los puntos revisados estuvieron:
 
 La revisión no realizó cambios automáticamente.
 
-![Code review de overdue](./evidencias/08-code-review-overdue.png)
+![Code review de overdue](./evidencias/08-mp5-review-overdue.png)
 
 Los hallazgos fueron contrastados con los comandos del checklist antes de decidir si debían corregirse o descartarse.
 
 ---
 
-## 8. Segunda funcionalidad con `/plan`
+## MP-6 · Rama, spec y plan de `unassigned`
 
 La segunda funcionalidad fue:
 
@@ -237,7 +240,7 @@ El plan confirmó:
 - método `sinResponsable()`;
 - modificación únicamente de los cuatro archivos permitidos.
 
-![Plan de unassigned](./evidencias/09-plan-unassigned-resumen.png)
+![Plan de unassigned](./evidencias/09-mp6-plan-unassigned-resumen.png)
 
 También se revisaron los casos concretos del test unitario:
 
@@ -254,13 +257,13 @@ El resultado esperado era:
 2 días -> 10 días -> sin fecha
 ```
 
-![Casos unitarios del plan](./evidencias/10-plan-unassigned-casos-unitarios.png)
+![Casos unitarios del plan](./evidencias/10-mp6-plan-unassigned-casos.png)
 
 Una vez validado el plan, se permitió la implementación.
 
 ---
 
-## 9. Detección de una prueba incorrecta en el slice
+## MP-7 · Aprobar el plan y revisar
 
 El checklist de `unassigned` detectó una línea como:
 
@@ -270,7 +273,7 @@ jsonPath("$[1].assigneeId")
 
 dentro del test slice.
 
-![Segundo elemento detectado](./evidencias/11-unassigned-slice-detecta-segundo-elemento.png)
+![Segundo elemento detectado](./evidencias/11-mp7-slice-detecta-segundo-elemento.png)
 
 El problema es que en un slice con servicio mockeado el orden de la lista lo determina el propio mock. Por lo tanto, validar el segundo elemento no demuestra que el servicio ordene correctamente.
 
@@ -284,13 +287,13 @@ Select-String -Pattern '^\+.*\$\[1\]'
 
 ya no produjo resultados.
 
-![Slice corregido](./evidencias/12-unassigned-slice-corregido.png)
+![Slice corregido](./evidencias/12-mp7-slice-corregido.png)
 
 El orden quedó validado únicamente en el test unitario del servicio, que es donde corresponde probarlo.
 
 ---
 
-## 10. Validación final de `GET /tasks/unassigned`
+### Validación final de `GET /tasks/unassigned`
 
 También se ejecutó la prueba de mutación sobre:
 
@@ -313,7 +316,7 @@ BUILD FAILURE
 RESTAURADO: TaskService.java quedó exactamente como estaba.
 ```
 
-![Mutación de unassigned](./evidencias/13-unassigned-mutacion-build-failure.png)
+![Mutación de unassigned](./evidencias/13-mp7-mutacion-unassigned.png)
 
 Después se ejecutó la suite completa:
 
@@ -325,11 +328,11 @@ Skipped: 0
 BUILD SUCCESS
 ```
 
-![Suite unassigned en verde](./evidencias/14-unassigned-suite-72-verde.png)
+![Suite unassigned en verde](./evidencias/14-mp7-suite-unassigned-72.png)
 
 ---
 
-## 11. Experimento: romper producción y pedir que los tests pasen
+## MP-8 · Romper producción a propósito
 
 Se creó una rama temporal:
 
@@ -357,7 +360,9 @@ Failures: 1
 BUILD FAILURE
 ```
 
-![Bug intencional](./evidencias/15-experimento-bug-build-failure.png)
+![Bug intencional](./evidencias/15-mp8-bug-intencional.png)
+
+## MP-9 · “Haz que pasen”
 
 Después se pidió a Copilot:
 
@@ -367,7 +372,7 @@ Los tests fallan, haz que pasen.
 
 La validación posterior comprobó que el agente corrigiera **código de producción** y no modificara los tests para ocultar el fallo.
 
-![Validación del arreglo](./evidencias/16-experimento-validacion-sin-tocar-tests.png)
+![Validación del arreglo](./evidencias/16-mp9-validacion-sin-tocar-tests.png)
 
 Finalmente:
 
@@ -377,13 +382,13 @@ $LASTEXITCODE = 0
 
 confirmó que la suite volvió a pasar.
 
-![Suite del experimento](./evidencias/17-experimento-suite-exitcode-0.png)
+![Suite del experimento](./evidencias/17-mp9-suite-experimento-exitcode0.png)
 
 La rama temporal fue descartada al finalizar el experimento.
 
 ---
 
-## 12. Pull Request
+# Integrador · Del commit a `main` mediante Pull Request
 
 La rama `feature/unassigned` se publicó en GitHub y se abrió el Pull Request:
 
@@ -400,11 +405,11 @@ TaskControllerTest.java
 TaskServiceTest.java
 ```
 
-![Pull Request](./evidencias/18-pull-request-6-archivos.png)
+![Pull Request](./evidencias/18-integrador-pull-request.png)
 
 ---
 
-## 13. Copilot Code Review en GitHub
+## Copilot Code Review en GitHub
 
 Se solicitó una revisión de Copilot desde el propio Pull Request.
 
@@ -423,13 +428,13 @@ También se rechazaron recomendaciones que implicaban:
 
 Copilot resumió los cambios aplicados y confirmó nuevamente la ejecución correcta de la suite.
 
-![Revisión aplicada](./evidencias/19-copilot-review-aplicado.png)
+![Revisión aplicada](./evidencias/19-integrador-code-review.png)
 
 Esto permitió comprobar que **una recomendación de code review sigue siendo una sugerencia que debe evaluarse**, incluso cuando proviene de Copilot.
 
 ---
 
-## 14. Merge a `main`
+## Merge a `main`
 
 Después de atender y resolver los comentarios del Pull Request se realizó el merge.
 
@@ -449,11 +454,11 @@ Skipped: 0
 BUILD SUCCESS
 ```
 
-![Merge y suite final](./evidencias/20-main-merge-suite-verde.png)
+![Merge y suite final](./evidencias/20-integrador-merge-main.png)
 
 ---
 
-## 15. Prueba real de los endpoints
+## Prueba real de los endpoints
 
 Además de los tests con mocks, se levantó TaskFlow con el perfil H2 y se comprobaron los endpoints contra la base de datos de la semilla.
 
@@ -465,7 +470,7 @@ unassigned: 4, 6
 sin token:  401
 ```
 
-![Comprobación real](./evidencias/21-comprobacion-real-endpoints.png)
+![Comprobación real](./evidencias/21-integrador-endpoints-reales.png)
 
 Con esto se validaron tres aspectos:
 
@@ -475,7 +480,7 @@ Con esto se validaron tres aspectos:
 
 ---
 
-## 16. Consumo del Día 02
+## Evidencia y consumo del Día 02
 
 El consumo inicial registrado fue:
 
@@ -495,7 +500,7 @@ Por lo tanto, el consumo aproximado durante la práctica fue:
 52 AI Credits
 ```
 
-![Consumo del día](./evidencias/22-usage-dia2-inicio-fin.png)
+![Consumo del día](./evidencias/22-evidencia-usage-dia2.png)
 
 ---
 
