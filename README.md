@@ -2,9 +2,11 @@
 
 Repositorio de proyectos, ejercicios y prácticas desarrollados durante la academia, organizados por semana.
 
-El objetivo es aplicar de manera práctica los conceptos revisados durante las sesiones, comenzando con fundamentos de **Java y Programación Orientada a Objetos**, y avanzando hacia el desarrollo de aplicaciones con **Spring Boot**, persistencia de datos, seguridad, programación reactiva, pruebas unitarias, desarrollo frontend con React, automatización de pruebas y servicios en la nube.
+El objetivo es aplicar de manera práctica los conceptos revisados durante las sesiones, comenzando con fundamentos de **Java y Programación Orientada a Objetos**, y avanzando hacia el desarrollo de aplicaciones con **Spring Boot**, persistencia de datos, seguridad, programación reactiva, pruebas unitarias, desarrollo frontend con React, automatización de pruebas, servicios en la nube y desarrollo asistido por inteligencia artificial.
 
-A lo largo de las semanas se han trabajado tecnologías y herramientas como **Java, Spring Boot, Maven, JPA, MongoDB, Docker, Keycloak, WebFlux, JUnit, Mockito, React, TypeScript, Selenium WebDriver, TestNG y Amazon Web Services (AWS)**.
+A lo largo de las semanas se han trabajado tecnologías y herramientas como **Java, Spring Boot, Maven, JPA, MongoDB, Docker, Keycloak, WebFlux, JUnit, Mockito, React, TypeScript, Selenium WebDriver, TestNG, Amazon Web Services (AWS), GitHub Copilot, Visual Studio Code y Model Context Protocol (MCP)**.
+
+Durante las etapas finales de la academia también se trabajó con **GitHub Copilot CLI, Copilot Code Review, instrucciones de repositorio, skills, agentes personalizados y servidores MCP**, aplicando estos recursos sobre proyectos reales y verificando sus resultados mediante tests automatizados, scripts, APIs REST y flujos de revisión en GitHub.
 
 Cada semana cuenta con su propia carpeta y documentación. Algunos proyectos de mayor tamaño se desarrollaron en repositorios independientes y se encuentran enlazados desde la semana correspondiente.
 
@@ -17,3 +19,4 @@ Cada semana cuenta con su propia carpeta y documentación. Algunos proyectos de 
 - [Semana 03 - Java Avanzado, Seguridad, WebFlux y Testing](./semana03/)
 - [Semana 04 - React y TaskFlow](./semana04/)
 - [Semana 05 - Selenium y AWS](./semana05/)
+- [Semana 06 - GitHub Copilot, MCP, Skills y Agentes](./semana06/)
