@@ -672,37 +672,6 @@ y finalmente se publicó en `main`.
 
 ---
 
-## Resultados del Día 03
-
-Al finalizar se logró:
-
-- identificar `github-mcp-server` como servidor integrado;
-- crear un issue real mediante GitHub MCP;
-- comprobar que su cuerpo fuera idéntico a `issues/summary.md`;
-- registrar y utilizar `aws-knowledge`;
-- auditar una sesión mediante su transcript;
-- comprobar que el modelo no había leído por completo una respuesta de 23.5 KB;
-- repetir una llamada MCP directamente mediante JSON-RPC;
-- demostrar que `product` era ignorado mientras `filters` sí filtraba;
-- registrar Playwright MCP;
-- crear una tarea utilizando la interfaz gráfica;
-- comprobar por REST que la tarea fue creada correctamente;
-- compilar y probar un servidor MCP propio en Java;
-- validar **13 tests** del servidor sin fallos;
-- distinguir herramientas de lectura y escritura mediante `readOnlyHint`;
-- registrar `taskflow` como servidor MCP local;
-- listar tareas vencidas y crear tareas mediante el servidor propio;
-- comprobar los resultados mediante REST;
-- verificar el comportamiento cuando TaskFlow estaba apagado;
-- simular una prompt injection indirecta;
-- combinar TaskFlow MCP con GitHub MCP;
-- crear exactamente **1 issue válido**;
-- comprobar que **Limpieza urgente** no fue creado;
-- revisar transcripts antes de subirlos a un repositorio público;
-- publicar `issues/`, `taskflow-mcp/` y `evidencia/dia3/`.
-
----
-
 ## Conclusión
 
 El Día 03 mostró que MCP amplía considerablemente las capacidades de un agente, pero también amplía la superficie que debe supervisarse.
