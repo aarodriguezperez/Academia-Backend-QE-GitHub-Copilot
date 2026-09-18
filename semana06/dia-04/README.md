@@ -674,33 +674,6 @@ De esta forma, una credencial creada únicamente para la práctica no continuó 
 
 ---
 
-# Resultados del Día 04
-
-Al finalizar se logró:
-
-- incorporar y probar skills reutilizables;
-- comprobar el fallo producido por un frontmatter inválido;
-- implementar `GET /projects/{id}/summary` mediante una skill;
-- confirmar en el transcript que la skill se cargó;
-- aumentar la suite de **72 a 76 tests**;
-- obtener **8/8 OK** contra la aplicación real;
-- ejecutar esa misma verificación mediante Copilot y confirmar `exit code 0`;
-- crear los agentes `revisor` y `tester`;
-- comprobar que `revisor` no podía editar aunque la sesión tuviera `--allow-all-tools`;
-- revisar y descartar cambios innecesarios producidos por `tester`;
-- terminar con **77 tests en verde**;
-- configurar un agente AWS con una identidad de solo lectura;
-- obtener **Veredicto: CUENTA LIMPIA**;
-- demostrar mediante `AccessDenied` que `mcp-readonly` no podía crear un bucket;
-- sacar del repo público los transcripts completos de AWS;
-- introducir un bug intencional detectado tanto por la suite como por `verificar-taskflow`;
-- restaurar el código y regresar a **8/8 OK**;
-- integrar el trabajo mediante el PR `#4`;
-- cerrar el issue `#2`;
-- conservar únicamente evidencia segura dentro del repositorio.
-
----
-
 # Conclusión
 
 El Día 04 reunió los conceptos trabajados durante la semana y los organizó dentro de `.github/`.
