@@ -2,9 +2,11 @@
 
 ## Objetivo
 
-Durante el primer día se preparó el entorno para utilizar **GitHub Copilot CLI** sobre una copia propia de **TaskFlow API**. El propósito principal fue aprender a trabajar con un agente de forma controlada: instalar la CLI, consultar el repositorio, comprobar sus respuestas con comandos independientes, revisar permisos y generar documentación técnica que pudiera verificarse sin depender del modelo.
+Durante el primer día se preparó el entorno para utilizar **GitHub Copilot CLI** sobre una copia propia de **TaskFlow API**.
 
-El trabajo se realizó sobre el repositorio:
+El objetivo principal fue aprender a trabajar con un agente de forma controlada: instalar la CLI, preparar el repositorio, consultar el código, comprobar las respuestas del modelo mediante comandos independientes, administrar permisos y generar documentación técnica que pudiera verificarse sin depender únicamente de Copilot.
+
+El trabajo se realizó sobre:
 
 ```text
 taskflow-copilot-aarodriguezperez
@@ -14,74 +16,83 @@ taskflow-copilot-aarodriguezperez
 
 ## Preparación del entorno
 
-Toda la práctica se realizó en **PowerShell 7** dentro de Windows Terminal, como indica la guía de Moodle. También se validaron Git, Java 21 y Maven antes de comenzar.
+La guía establece **PowerShell 7 dentro de Windows Terminal** como terminal de trabajo para toda la semana.
 
-La versión de PowerShell utilizada fue:
+Antes de comenzar se validaron:
+
+- PowerShell 7;
+- Git;
+- Java 21;
+- Maven;
+- configuración de nombre y correo de Git.
+
+También se actualizó `academyMty` para disponer de:
 
 ```text
-PowerShell 7.6.6
+copilot-instructions.md
+verificar-arquitectura.ps1
 ```
 
-![Preparación · PowerShell 7](./evidencias/00-preparacion-powershell7.png)
+Estos archivos se utilizarían posteriormente en MP-9 y en el integrador.
 
 ---
 
 ## MP-1 · Node.js LTS
 
-GitHub Copilot CLI se instala mediante `npm`, por lo que primero se comprobó que Node.js y npm estuvieran disponibles.
+GitHub Copilot CLI se instala mediante `npm`, por lo que el primer paso fue comprobar que Node.js y npm estuvieran disponibles.
 
-El entorno quedó con:
+El entorno utilizado quedó con:
 
 ```text
 Node.js v24.20.0
 npm 11.19.0
 ```
 
-Ambas versiones cumplían el requisito de la práctica.
+Ambas versiones cumplían con el requisito de Node 22 o superior.
 
-![MP-1 · Node.js y npm](./evidencias/01-mp1-node-npm.png)
+![MP-1 · Node.js y npm disponibles](./evidencias/01-mp1-node-npm.png)
 
 ---
 
 ## MP-2 · Instalar GitHub Copilot CLI
 
-Se instaló GitHub Copilot CLI de forma global mediante npm y se verificó su versión.
+Después se instaló GitHub Copilot CLI globalmente mediante npm y se comprobó la versión instalada.
 
-La versión utilizada durante el Día 01 fue:
+La versión utilizada fue:
 
 ```text
 GitHub Copilot CLI 1.0.83
 ```
 
-![MP-2 · GitHub Copilot CLI](./evidencias/02-mp2-copilot-version.png)
+![MP-2 · Versión de GitHub Copilot CLI](./evidencias/02-mp2-copilot-version.png)
 
 ---
 
 ## MP-3 · Iniciar sesión
 
-Se ejecutó `copilot login` y se autorizó la cuenta de GitHub utilizada para la academia.
-
-Después se comprobó la configuración local de Copilot buscando el campo `login` dentro de:
+Se ejecutó:
 
 ```text
-$HOME\.copilot\config.json
+copilot login
 ```
 
-La configuración quedó asociada al usuario:
+y se autorizó la cuenta de GitHub utilizada durante la academia.
+
+La configuración local de Copilot confirmó el usuario:
 
 ```text
 aarodriguezperez
 ```
 
-![MP-3 · Sesión de GitHub Copilot](./evidencias/03-mp3-login-copilot.png)
+![MP-3 · Sesión iniciada en GitHub Copilot](./evidencias/03-mp3-login-copilot.png)
 
 ---
 
 ## MP-4 · Copiar, versionar y subir TaskFlow
 
-Se creó una copia independiente de `taskflow-api` para trabajar durante toda la semana sin modificar directamente `academyMty`.
+Toda la semana se trabajó sobre una copia independiente de `taskflow-api`, evitando modificar directamente `academyMty`.
 
-Antes del primer commit se configuró `.gitignore` para excluir archivos generados y posibles secretos, entre ellos:
+La copia se generó únicamente con archivos versionados mediante `git archive`. Después se creó `.gitignore` para excluir elementos generados o sensibles, por ejemplo:
 
 ```text
 target/
@@ -95,7 +106,17 @@ data/
 .playwright-mcp/
 ```
 
-El repositorio se inicializó con la rama `main`, se conectó con GitHub y quedó sincronizado con `origin/main`.
+Antes del commit se verificó que no hubiera secretos incluidos.
+
+Finalmente:
+
+- se inicializó Git en `main`;
+- se realizó el commit inicial;
+- se creó el repositorio público en GitHub;
+- se configuró `origin`;
+- se realizó el primer push.
+
+El repositorio quedó sincronizado con `origin/main`.
 
 ![MP-4 · Repositorio TaskFlow preparado](./evidencias/04-mp4-repositorio-taskflow.png)
 
@@ -103,52 +124,79 @@ El repositorio se inicializó con la rama `main`, se conectó con GitHub y qued�
 
 ## MP-5 · Suite base en verde
 
-Antes de trabajar con el agente se ejecutó la suite completa para establecer una línea base.
+Antes de comenzar a trabajar con el agente se ejecutó:
 
-El conteo final fue:
+```text
+mvn -q clean test
+```
+
+El resumen se obtuvo desde los reportes de Surefire para contar todos los tests correctamente.
+
+El resultado fue:
 
 ```text
 tests: 67
 fallos y errores: 0
 ```
 
-Esto confirmó que TaskFlow se encontraba estable antes de realizar cualquier modificación con Copilot.
+Esta cifra se tomó como línea base para el resto de la semana.
 
-![MP-5 · 67 tests sin fallos](./evidencias/05-mp5-suite-67-verde.png)
+![MP-5 · Suite base con 67 tests](./evidencias/05-mp5-suite-67-verde.png)
 
 ---
 
-## MP-6 · Fijar el modelo y revisar el consumo
+## MP-6 · Fijar `gpt-5-mini` y revisar los medidores
 
 Se configuró:
 
 ```text
-gpt-5-mini
+COPILOT_MODEL=gpt-5-mini
 ```
 
-como modelo de trabajo para la semana.
+como modelo de trabajo.
 
-Dentro de la CLI también se revisaron `/model`, `/usage` y `/context` para identificar:
+Dentro de Copilot CLI se revisaron:
 
-- el modelo activo;
-- los AI Credits utilizados;
-- el tamaño del contexto de la sesión.
+```text
+/model
+/usage
+/context
+```
 
-La práctica permitió distinguir el consumo de la sesión del acumulado mensual.
+Con esto se comprobó:
 
-![MP-6 · Modelo y uso de Copilot](./evidencias/06-mp6-modelo-usage.png)
+- que el modelo activo fuera GPT-5 mini;
+- el consumo de AI Credits;
+- el contexto utilizado por la sesión.
+
+![MP-6 · Modelo y medidores de Copilot](./evidencias/06-mp6-modelo-usage.png)
 
 ---
 
 ## MP-7 · Tres preguntas y tres comprobaciones
 
-El objetivo de este MP fue consultar el repositorio con Copilot y después verificar cada respuesta mediante comandos cuyo resultado no dependiera del agente.
+Este fue uno de los ejercicios centrales del día.
 
-### Pregunta 1 · Estructura del proyecto
+La dinámica consistió en hacer una pregunta a Copilot en una pestaña y comprobar la respuesta desde PowerShell en otra, utilizando comandos cuyo resultado no dependiera del agente.
 
-Se pidió a Copilot explicar qué hace TaskFlow, sus tecnologías y cómo está organizado.
+### Pregunta 1 · ¿Qué hay en este repositorio?
 
-La estructura real se comprobó con PowerShell. Se encontraron los diez paquetes esperados:
+Se pidió a Copilot explicar:
+
+- qué hace TaskFlow;
+- qué tecnologías utiliza;
+- cómo está organizado el código;
+- qué archivos había leído para responder.
+
+![MP-7 · Respuesta de Copilot sobre el repositorio](./evidencias/07-mp7-pregunta1-respuesta-repo.png)
+
+Después se comprobó la estructura real dentro de:
+
+```text
+src/main/java/com/taskflow
+```
+
+Los diez paquetes encontrados fueron:
 
 ```text
 advice
@@ -163,45 +211,113 @@ security
 service
 ```
 
-También se utilizó `Test-Path` para comprobar que los archivos citados por el agente existieran realmente.
+También se utilizó `Test-Path` para validar que las rutas citadas por Copilot existieran realmente.
 
-### Pregunta 2 · Regla de tareas vencidas
+![MP-7 · Verificación de estructura y archivos](./evidencias/08-mp7-pregunta1-verificacion-repo.png)
 
-Se preguntó dónde vive la regla que determina si una tarea está vencida.
+---
 
-La búsqueda independiente localizó `estaVencida` dentro de `Task.java` y `TaskOrders.java`, permitiendo contrastar clase, método y líneas con la respuesta del agente.
+### Pregunta 2 · ¿Dónde está la regla de tareas vencidas?
 
-### Pregunta 3 · Endpoint de tareas vencidas
+Se preguntó a Copilot dónde vive la regla que determina si una tarea está vencida, incluyendo clase, método y otros usos.
 
-Se preguntó qué endpoint devolvía las tareas vencidas.
+![MP-7 · Respuesta de Copilot sobre `estaVencida`](./evidencias/09-mp7-pregunta2-respuesta-esta-vencida.png)
 
-La búsqueda de anotaciones HTTP en los controladores mostró los endpoints existentes y confirmó que todavía **no existía**:
+La respuesta se contrastó mediante una búsqueda real de:
+
+```text
+estaVencida
+```
+
+en los archivos Java del proyecto.
+
+Las apariciones relevantes se encontraron en:
+
+```text
+Task.java
+TaskOrders.java
+```
+
+![MP-7 · Verificación real de `estaVencida`](./evidencias/10-mp7-pregunta2-verificacion-esta-vencida.png)
+
+---
+
+### Pregunta 3 · ¿Existe un endpoint para tareas vencidas?
+
+Se pidió a Copilot indicar qué endpoint devolvía tareas vencidas.
+
+![MP-7 · Respuesta de Copilot sobre endpoints](./evidencias/11-mp7-pregunta3-respuesta-endpoints.png)
+
+Después se buscaron todas las anotaciones HTTP dentro de los controllers.
+
+La comprobación mostró los endpoints reales de la API y confirmó que todavía no existía:
 
 ```text
 GET /tasks/overdue
 ```
 
-![MP-7 · Comprobaciones independientes de las respuestas](./evidencias/07-mp7-tres-comprobaciones.png)
+![MP-7 · Verificación de endpoints reales](./evidencias/12-mp7-pregunta3-verificacion-endpoints.png)
 
-La conclusión del ejercicio fue que una respuesta del modelo debe comprobarse con una fuente independiente siempre que sea posible.
+El aprendizaje principal de MP-7 fue que una respuesta del modelo debe comprobarse mediante una fuente independiente siempre que sea posible.
 
 ---
 
-## MP-8 · Aprobar, negar y deshacer acciones
+## MP-8 · Aprobar, negar y deshacer
 
-Se practicaron tres tipos de interacción con las herramientas del agente.
+En este MP se practicaron tres tipos de interacción con herramientas que podían modificar o ejecutar acciones en la máquina.
 
-Primero se permitió ejecutar:
+### 1. Aprobar una ejecución
+
+Se pidió a Copilot ejecutar:
 
 ```text
 mvn -q test
 ```
 
-después de revisar el comando propuesto.
+El comando se revisó antes de autorizarlo.
 
-Posteriormente se pidió borrar `target`, pero la operación fue rechazada. La carpeta continuó existiendo después de negar la acción.
+### 2. Negar una acción destructiva
 
-Finalmente se permitió agregar temporalmente una línea al `README.md`, se revisó el cambio mediante `/diff` y se utilizó `/rewind` con:
+Después se pidió:
+
+```text
+Borra la carpeta target.
+```
+
+La acción fue rechazada y se indicó al agente que no borrara nada.
+
+![MP-8 · Ejecución aprobada y borrado rechazado](./evidencias/13-mp8-aprobar-y-negar.png)
+
+La comprobación independiente confirmó que `target` seguía existiendo:
+
+```text
+Test-Path target
+True
+```
+
+![MP-8 · `target` continúa disponible](./evidencias/14-mp8-target-no-eliminado.png)
+
+### 3. Revisar y deshacer un cambio
+
+Se permitió que Copilot agregara temporalmente una línea al `README.md`.
+
+Con:
+
+```text
+/diff
+```
+
+se revisó exactamente qué archivo había cambiado y qué líneas se habían agregado.
+
+![MP-8 · Revisión del cambio mediante `/diff`](./evidencias/15-mp8-diff-readme.png)
+
+Posteriormente se utilizó:
+
+```text
+/rewind
+```
+
+seleccionando:
 
 ```text
 Conversation + files
@@ -209,17 +325,19 @@ Conversation + files
 
 para restaurar tanto la conversación como el archivo.
 
-Al terminar, Git volvió a mostrar el repositorio limpio.
+![MP-8 · `/rewind` con restauración de archivos](./evidencias/16-mp8-rewind-conversation-files.png)
 
-![MP-8 · Permisos y restauración de cambios](./evidencias/08-mp8-permisos-y-rewind.png)
+Finalmente Git confirmó que no quedaban cambios pendientes.
+
+![MP-8 · Repositorio limpio después de `/rewind`](./evidencias/17-mp8-rewind-repo-limpio.png)
 
 ---
 
 ## MP-9 · Instrucciones del proyecto
 
-Se probó `/init` para observar las instrucciones que Copilot generaba automáticamente.
+Primero se utilizó `/init` para observar el tipo de archivo que Copilot podía generar automáticamente.
 
-Después se reemplazaron por las instrucciones proporcionadas por el curso:
+Después ese archivo se reemplazó por las instrucciones oficiales del curso:
 
 ```text
 .github/copilot-instructions.md
@@ -229,44 +347,52 @@ Entre las reglas más importantes se definieron:
 
 - responder y comentar en español;
 - no modificar archivos no solicitados;
-- no modificar tests existentes únicamente para hacerlos pasar;
-- no realizar `git commit` o `git push` sin autorización;
+- no cambiar tests existentes únicamente para hacerlos pasar;
+- no ejecutar `git commit` ni `git push` sin autorización;
 - no afirmar resultados que no hayan sido verificados;
 - no escribir secretos.
 
-Finalmente `/instructions` confirmó que el archivo estaba cargado como instrucción del repositorio.
+Finalmente `/instructions` confirmó que la CLI cargaba el archivo como instrucción del repositorio.
 
-![MP-9 · Instrucciones de Copilot del proyecto](./evidencias/09-mp9-copilot-instructions.png)
+![MP-9 · Instrucciones de Copilot cargadas](./evidencias/18-mp9-copilot-instructions.png)
 
 ---
 
-## Integrador · `docs/ARQUITECTURA.md`
+# Integrador · `docs/ARQUITECTURA.md`
 
-Como ejercicio final se pidió a Copilot crear:
+Como ejercicio final, se pidió al agente crear:
 
 ```text
 docs/ARQUITECTURA.md
 ```
 
-para un desarrollador que llega nuevo al proyecto.
+para un desarrollador nuevo en TaskFlow.
 
 El documento debía explicar:
 
 - capas y paquetes;
 - recorrido de `POST /projects/{projectId}/tasks`;
 - reglas de negocio;
-- seguridad con JWT;
+- seguridad JWT;
 - organización de tests.
 
-### Verificación automática
+Primero se verificó que el archivo hubiera sido creado en la ubicación correcta.
 
-Se utilizó:
+![Integrador · Documento de arquitectura generado](./evidencias/19-integrador-arquitectura-generada.png)
+
+---
+
+## Verificador de arquitectura
+
+Después se ejecutó:
 
 ```text
 verificar-arquitectura.ps1
 ```
 
-para comprobar que las clases, métodos, rutas y endpoints mencionados por el documento existieran realmente.
+Este script extrae nombres de clases, métodos, archivos y endpoints mencionados en el Markdown y los contrasta contra el repositorio sin utilizar IA.
+
+Durante el ejercicio también se agregó intencionalmente una referencia inexistente para comprobar que el verificador realmente detectara errores. La referencia fue corregida posteriormente utilizando como evidencia la propia salida del script.
 
 El resultado final fue:
 
@@ -280,23 +406,23 @@ El dato principal fue:
 0 NO EXISTE
 ```
 
-![Integrador · Arquitectura generada y verificada](./evidencias/10-integrador-arquitectura-verificada.png)
+![Integrador · Arquitectura verificada](./evidencias/20-integrador-arquitectura-verificada.png)
 
-La práctica también dejó claro que `0 NO EXISTE` únicamente comprueba la existencia de los nombres citados. Las relaciones entre componentes todavía deben compararse con el código.
+`0 NO EXISTE` confirma que los nombres comprobables citados por el documento existen, pero no garantiza que las relaciones descritas entre ellos sean correctas.
 
-Por ello también se revisó manualmente el recorrido de:
+Por ello también se comparó manualmente el recorrido de:
 
 ```text
 POST /projects/{projectId}/tasks
 ```
 
-para confirmar que `TaskController`, `ProjectService`, `TaskService`, `TaskMapper` y `TaskRepository` fueran descritos correctamente.
+contra `TaskController`, `TaskService`, `TaskMapper` y los demás componentes involucrados.
 
 ---
 
 ## Evidencia final y push
 
-Al finalizar se generaron los archivos de evidencia:
+Al terminar el integrador se generaron:
 
 ```text
 evidencia/dia1/
@@ -313,11 +439,9 @@ AI Credits del integrador: 10.85
 modelo: gpt-5-mini
 ```
 
-También se volvió a guardar la salida del verificador y la versión de Copilot CLI.
+Después se realizó el commit y push final, comprobando que el repositorio quedara limpio y sincronizado.
 
-Finalmente el repositorio quedó sincronizado con `origin/main` y sin cambios pendientes.
-
-![Evidencia final del Día 01](./evidencias/11-evidencia-final.png)
+![Evidencia final del Día 01](./evidencias/21-evidencia-final.png)
 
 ---
 
@@ -325,29 +449,29 @@ Finalmente el repositorio quedó sincronizado con `origin/main` y sin cambios pe
 
 Al finalizar se logró:
 
-- trabajar durante toda la práctica en PowerShell 7;
+- trabajar en PowerShell 7;
 - instalar Node.js, npm y GitHub Copilot CLI;
 - iniciar sesión con la cuenta de GitHub;
-- preparar un repositorio independiente de TaskFlow;
-- establecer una línea base de **67 tests con 0 fallos**;
-- fijar **gpt-5-mini** como modelo;
-- consultar el repositorio y comprobar las respuestas mediante comandos independientes;
-- practicar aprobación, rechazo y restauración de acciones;
+- crear un repositorio independiente de TaskFlow;
+- establecer una línea base de **67 tests y 0 fallos**;
+- utilizar `gpt-5-mini` y revisar consumo/contexto;
+- comprobar respuestas del agente con comandos independientes;
+- aprobar, negar y deshacer acciones;
 - configurar `.github/copilot-instructions.md`;
 - generar `docs/ARQUITECTURA.md`;
-- obtener **0 NO EXISTE** en el verificador;
-- registrar consumo, versión y resultado final dentro de `evidencia/dia1/`.
+- validar la documentación hasta obtener **0 NO EXISTE**;
+- registrar evidencias y consumo del integrador.
 
 ---
 
 ## Conclusión
 
-El Día 01 estableció la forma de trabajo utilizada durante el resto de la semana: **el agente puede leer, ejecutar y editar, pero sus respuestas y acciones deben comprobarse**.
+El Día 01 estableció la forma de trabajo utilizada durante el resto de la semana: **Copilot puede leer, ejecutar y editar, pero sus respuestas y acciones deben comprobarse**.
 
-La práctica mostró tres ideas principales:
+La práctica dejó tres principios principales:
 
 1. una respuesta convincente no sustituye una verificación;
 2. los permisos deben revisarse antes de ejecutar una acción;
-3. la evidencia más útil es la que puede reproducirse mediante comandos independientes del modelo.
+3. la mejor evidencia es aquella cuyo resultado puede comprobarse sin depender del propio agente.
 
-Esta base permitió continuar con los siguientes días, donde Copilot comenzó a implementar especificaciones, revisar código y trabajar con herramientas externas mediante MCP.
+Esta base permitió continuar con los días posteriores, donde Copilot comenzó a implementar especificaciones, revisar código y utilizar herramientas externas.
